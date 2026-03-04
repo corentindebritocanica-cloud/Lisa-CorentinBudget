@@ -150,7 +150,7 @@
             <button class="btn-tab" id="btn-vue-annuelle" onclick="window.changerVue('annuelle')">Année</button>
         </div>
         <div class="month-slider" id="month-list"></div>
-        <button class="btn-new-month" onclick="window.creerMoisSuivant()">+ Démarrer un mois</button>
+        <button id="btn-new-month" class="btn-new-month" onclick="window.creerMoisSuivant()">+ Démarrer un mois</button>
     </nav>
 
     <main class="main-content">
@@ -257,7 +257,7 @@
                         <div class="progress-header"><span>✈️ Épargne / Projets</span><span id="pct-epargne-a">0%</span></div>
                         <div class="progress-track"><div class="progress-fill bg-info" id="bar-epargne-a"></div></div>
                     </div>
-                    </div>
+                </div>
             </div>
 
             <div style="display: grid; gap: 15px;">
@@ -354,8 +354,10 @@
             document.getElementById('btn-vue-annuelle').classList.toggle('active', vue === 'annuelle');
             document.getElementById('vue-mensuelle').classList.toggle('hidden', vue !== 'mensuelle');
             document.getElementById('vue-annuelle').classList.toggle('hidden', vue !== 'annuelle');
-            document.getElementById('month-list').style.display = vue === 'annuelle' ? 'none' : 'flex';
-            document.getElementById('btn-new-month').style.display = vue === 'annuelle' ? 'none' : 'block';
+            
+            // Cacher le menu latéral des mois ET le bouton "Démarrer un mois" quand on est en mode Année
+            document.getElementById('month-list').classList.toggle('hidden', vue === 'annuelle');
+            document.getElementById('btn-new-month').classList.toggle('hidden', vue === 'annuelle');
 
             if (vue === 'annuelle') { 
                 window.preparerFiltreAnnuel(); 
@@ -552,7 +554,7 @@
             document.getElementById(`bar-epargne-${suffixe}`).style.width = `${pE}%`;
             document.getElementById(`pct-epargne-${suffixe}`).innerText = `${Math.round(pE)}%`;
 
-            // Sécurité : ne met à jour le reste que s'il existe (présent dans le mois, mais plus dans l'année)
+            // Sécurité pour le reste à vivre qui n'existe qu'en vue mensuelle
             let barReste = document.getElementById(`bar-reste-${suffixe}`);
             let pctReste = document.getElementById(`pct-reste-${suffixe}`);
             if(barReste) barReste.style.width = `${pR}%`;
@@ -596,8 +598,6 @@
                 opt.value = annee; opt.innerText = annee;
                 select.appendChild(opt);
             });
-            
-            window.rendreVueAnnuelle();
         }
 
         window.rendreVueAnnuelle = function() {
@@ -628,7 +628,7 @@
             document.getElementById('annuel-total-depenses').innerText = tDep.toFixed(2) + ' €';
             document.getElementById('annuel-total-epargne').innerText = tEpa.toFixed(2) + ' €';
 
-            // Pour l'année, le reste est passé à 0, pour que la répartition soit 100% basée sur ce qui est dépensé/épargné
+            // Pour l'année, on envoie 0 au reste pour que la barre affiche 100% sur Dépenses/Épargne
             window.dessinerBarresProgression('a', tChar, tDep, tEpa, 0);
         }
     </script>
