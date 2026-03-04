@@ -100,12 +100,11 @@
         .bg-info { background: var(--info); }
         .bg-success { background: var(--success); }
 
-        /* NOUVEAU MENU ANNUEL BLINDÉ POUR IPHONE */
         .select-annee-wrapper { position: relative; display: inline-block; }
         .select-annee-wrapper select {
             background-color: var(--card-bg);
             border: 1px solid var(--border);
-            padding: 10px 35px 10px 15px; /* Place pour la flèche */
+            padding: 10px 35px 10px 15px; 
             border-radius: 8px;
             font-size: 1.1rem;
             font-weight: bold;
@@ -123,7 +122,7 @@
             transform: translateY(-50%);
             font-size: 0.8rem;
             color: var(--primary);
-            pointer-events: none; /* Laisse passer le clic vers le select en dessous */
+            pointer-events: none; 
         }
 
         @media (min-width: 768px) {
@@ -235,9 +234,12 @@
             </div>
 
             <div class="card summary-card" style="background: linear-gradient(135deg, #AF52DE, #5E5CE6); margin-bottom: 20px;">
-                <h3>Épargne + Reste accumulé</h3>
-                <div class="total-amount" id="annuel-reste">0 €</div>
-                <p>Total des revenus : <strong id="annuel-revenus">0 €</strong></p>
+                <h3>Total Épargné (Année)</h3>
+                <div class="total-amount" id="annuel-total-epargne-top">0 €</div>
+                <div style="background: rgba(255,255,255,0.2); padding: 12px; border-radius: 10px; margin-top: 15px;">
+                    <span style="font-size: 0.95rem;">Total Dépensé : </span>
+                    <strong style="font-size: 1.2rem;" id="annuel-total-depense-top">0 €</strong>
+                </div>
             </div>
 
             <div class="card">
@@ -255,11 +257,7 @@
                         <div class="progress-header"><span>✈️ Épargne / Projets</span><span id="pct-epargne-a">0%</span></div>
                         <div class="progress-track"><div class="progress-fill bg-info" id="bar-epargne-a"></div></div>
                     </div>
-                    <div class="progress-container">
-                        <div class="progress-header"><span>✅ Reste à vivre</span><span id="pct-reste-a">0%</span></div>
-                        <div class="progress-track"><div class="progress-fill bg-success" id="bar-reste-a"></div></div>
                     </div>
-                </div>
             </div>
 
             <div style="display: grid; gap: 15px;">
@@ -303,7 +301,8 @@
         let termeRecherche = "";
 
         const categories = [
-            "🏠 Logement", 
+            "🏠 Loyer", 
+            "⚡ Électricité",
             "💧 Eau", 
             "🛡️ Assurance", 
             "🌐 Internet", 
@@ -342,7 +341,7 @@
         window.initDefaut = function() {
             donnees = [{
                 id: Date.now(), nom: "Mars 2026", annee: 2026, revenus: 4500,
-                charges: [{ id: "c1", date: "", libelle: "", categorie: "🏠 Logement", montant: 1200 }],
+                charges: [{ id: "c1", date: "", libelle: "", categorie: "🏠 Loyer", montant: 1200 }],
                 depenses: [{ id: "d1", date: "", libelle: "Pizzeria", categorie: "🍽️ Restaurant", montant: 50 }],
                 epargne: [{ id: "e1", date: "", libelle: "", categorie: "✈️ Vacances", montant: 200 }]
             }];
@@ -553,8 +552,11 @@
             document.getElementById(`bar-epargne-${suffixe}`).style.width = `${pE}%`;
             document.getElementById(`pct-epargne-${suffixe}`).innerText = `${Math.round(pE)}%`;
 
-            document.getElementById(`bar-reste-${suffixe}`).style.width = `${pR}%`;
-            document.getElementById(`pct-reste-${suffixe}`).innerText = `${Math.round(pR)}%`;
+            // Sécurité : ne met à jour le reste que s'il existe (présent dans le mois, mais plus dans l'année)
+            let barReste = document.getElementById(`bar-reste-${suffixe}`);
+            let pctReste = document.getElementById(`pct-reste-${suffixe}`);
+            if(barReste) barReste.style.width = `${pR}%`;
+            if(pctReste) pctReste.innerText = `${Math.round(pR)}%`;
         }
 
         window.calculerBudget = function() {
@@ -577,7 +579,6 @@
             const select = document.getElementById('select-annee');
             select.innerHTML = '';
             
-            // On s'assure qu'on ne liste pas d'années "undefined" ou buggées, et on cherche dans le titre du mois si besoin
             let annees = donnees.map(m => {
                 if (m.annee) return m.annee;
                 let anneeTitre = m.nom.match(/\d{4}/);
@@ -586,7 +587,6 @@
             
             let anneesUniques = [...new Set(annees)].filter(a => !isNaN(a)).sort((a,b)=> b-a);
             
-            // Si vraiment tout est vide, on force l'année en cours
             if (anneesUniques.length === 0) {
                 anneesUniques.push(new Date().getFullYear());
             }
@@ -597,7 +597,6 @@
                 select.appendChild(opt);
             });
             
-            // Forcer le premier calcul dès l'ouverture de l'onglet
             window.rendreVueAnnuelle();
         }
 
@@ -606,7 +605,7 @@
             if(!select.value) return;
             const anneeChoisie = parseInt(select.value);
             
-            let tRev = 0, tChar = 0, tDep = 0, tEpa = 0;
+            let tChar = 0, tDep = 0, tEpa = 0;
             donnees.filter(m => {
                 let a = m.annee;
                 if(!a) {
@@ -615,20 +614,22 @@
                 }
                 return a === anneeChoisie;
             }).forEach(mois => {
-                tRev += (mois.revenus || 0);
                 tChar += (mois.charges || []).reduce((sum, i) => sum + (parseFloat(i.montant) || 0), 0);
                 tDep += (mois.depenses || []).reduce((sum, i) => sum + (parseFloat(i.montant) || 0), 0);
                 tEpa += (mois.epargne || []).reduce((sum, i) => sum + (parseFloat(i.montant) || 0), 0);
             });
 
-            const reste = tRev - tChar - tDep - tEpa;
-            document.getElementById('annuel-revenus').innerText = tRev.toFixed(2) + ' €';
+            const totalDepense = tChar + tDep;
+
+            document.getElementById('annuel-total-epargne-top').innerText = tEpa.toFixed(2) + ' €';
+            document.getElementById('annuel-total-depense-top').innerText = totalDepense.toFixed(2) + ' €';
+
             document.getElementById('annuel-total-charges').innerText = tChar.toFixed(2) + ' €';
             document.getElementById('annuel-total-depenses').innerText = tDep.toFixed(2) + ' €';
             document.getElementById('annuel-total-epargne').innerText = tEpa.toFixed(2) + ' €';
-            document.getElementById('annuel-reste').innerText = (tEpa + reste).toFixed(2) + ' €';
 
-            window.dessinerBarresProgression('a', tChar, tDep, tEpa, reste);
+            // Pour l'année, le reste est passé à 0, pour que la répartition soit 100% basée sur ce qui est dépensé/épargné
+            window.dessinerBarresProgression('a', tChar, tDep, tEpa, 0);
         }
     </script>
 </body>
