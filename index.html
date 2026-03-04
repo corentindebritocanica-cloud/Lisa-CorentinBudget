@@ -46,10 +46,12 @@
         .main-content { flex: 1; padding: 15px; max-width: 1000px; margin: 0 auto; width: 100%; }
         .hidden { display: none !important; }
 
-        input, select { font-size: 16px !important; appearance: none; -webkit-appearance: none; outline: none; }
+        /* Retrait de l'apparence native sauf pour le dropdown de l'année pour qu'il garde sa flèche sur iPhone */
+        input, select { font-size: 16px !important; outline: none; }
+        select:not(#select-annee) { appearance: none; -webkit-appearance: none; }
 
         .search-container { margin-bottom: 20px; }
-        .search-container input { width: 100%; padding: 12px 15px; border-radius: 12px; border: none; background: var(--card-bg); font-size: 1rem; box-shadow: 0 1px 5px rgba(0,0,0,0.03); }
+        .search-container input { width: 100%; padding: 12px 15px; border-radius: 12px; border: none; background: var(--card-bg); font-size: 1rem; box-shadow: 0 1px 5px rgba(0,0,0,0.03); appearance: none; -webkit-appearance: none; }
 
         .header-title-group { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
         .header-title-group h1 { font-size: 1.6rem; font-weight: 800; }
@@ -57,7 +59,7 @@
 
         .revenus-box { background: var(--card-bg); padding: 15px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
         .revenus-box strong { font-size: 1.1rem; }
-        .revenus-box input { width: 120px; text-align: right; border: 1px solid var(--border); padding: 10px; border-radius: 8px; font-weight: bold; color: var(--primary); background: var(--bg-color); }
+        .revenus-box input { width: 120px; text-align: right; border: 1px solid var(--border); padding: 10px; border-radius: 8px; font-weight: bold; color: var(--primary); background: var(--bg-color); appearance: none; -webkit-appearance: none; }
 
         .card { background-color: var(--card-bg); border-radius: 16px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); margin-bottom: 20px; }
         .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
@@ -74,11 +76,11 @@
         .item-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
         .item-bottom { display: flex; gap: 10px; }
         
-        .item-top input[type="text"] { flex: 1; border: none; font-weight: 600; color: var(--text-main); background: transparent; padding: 5px 0; }
+        .item-top input[type="text"] { flex: 1; border: none; font-weight: 600; color: var(--text-main); background: transparent; padding: 5px 0; appearance: none; -webkit-appearance: none; }
         .item-top input[type="text"]::placeholder { color: #C7C7CC; font-weight: 400; }
-        .item-top input[type="number"] { width: 90px; text-align: right; border: none; font-weight: 700; color: var(--text-main); background: #F2F2F7; padding: 8px; border-radius: 8px; }
+        .item-top input[type="number"] { width: 90px; text-align: right; border: none; font-weight: 700; color: var(--text-main); background: #F2F2F7; padding: 8px; border-radius: 8px; appearance: none; -webkit-appearance: none; }
         
-        .item-bottom input[type="date"] { flex: 1; background: #F2F2F7; border: none; color: var(--text-main); font-size: 0.85rem; padding: 6px 10px; border-radius: 6px; font-weight: 500; }
+        .item-bottom input[type="date"] { flex: 1; background: #F2F2F7; border: none; color: var(--text-main); font-size: 0.85rem; padding: 6px 10px; border-radius: 6px; font-weight: 500; appearance: none; -webkit-appearance: none; }
         .item-bottom select { flex: 1.5; background: #F2F2F7; border: none; color: var(--text-muted); font-size: 0.85rem; padding: 6px 10px; border-radius: 6px; font-weight: 500; }
         
         .btn-delete { color: var(--danger); background: none; border: none; font-size: 1.3rem; padding-left: 15px; cursor: pointer; }
@@ -202,7 +204,7 @@
         <div id="vue-annuelle" class="hidden">
             <div class="header-title-group" style="margin-bottom: 20px;">
                 <h1>Bilan Annuel</h1>
-                <select id="select-annee" onchange="window.rendreVueAnnuelle()" style="padding: 10px; border-radius: 8px; border: 1px solid var(--border); font-weight: bold; background: white;"></select>
+                <select id="select-annee" onchange="window.rendreVueAnnuelle()" style="padding: 10px 15px; border-radius: 8px; border: 1px solid var(--border); font-weight: bold; background: white; font-size: 1.1rem; appearance: auto; -webkit-appearance: auto;"></select>
             </div>
 
             <div class="card summary-card" style="background: linear-gradient(135deg, #AF52DE, #5E5CE6); margin-bottom: 20px;">
@@ -273,15 +275,34 @@
         let moisActifId = null;
         let termeRecherche = "";
 
-        // NOUVELLES CATÉGORIES (Shopping supprimé, ajout de Eau, Internet, Assurance, Travaux)
-        const categories = ["🏠 Logement", "🛒 Courses", "🚗 Transport", "🎬 Loisirs", "🏥 Santé", "✈️ Vacances", "🌐 Internet", "💧 Eau", "🛡️ Assurance", "🛠️ Travaux", "❓ Autre"];
+        // NOUVEL ORDRE DES CATÉGORIES ET AJOUT RESTAURANT
+        const categories = [
+            "🏠 Logement", 
+            "💧 Eau", 
+            "🛡️ Assurance", 
+            "🌐 Internet", 
+            "🛒 Courses", 
+            "🍽️ Restaurant", 
+            "🎬 Loisirs", 
+            "🏥 Santé", 
+            "✈️ Vacances", 
+            "🛠️ Travaux", 
+            "❓ Autre"
+        ];
 
         onValue(budgetRef, (snapshot) => {
             const data = snapshot.val();
             if (data) {
                 donnees = data;
                 donnees.forEach(m => {
-                    m.charges = m.charges || []; m.depenses = m.depenses || []; m.epargne = m.epargne || [];
+                    // MIGRATION : On s'assure que les vieux mois ont bien une année enregistrée
+                    if (!m.annee) {
+                        const match = m.nom.match(/\d{4}/);
+                        m.annee = match ? parseInt(match[0]) : new Date().getFullYear();
+                    }
+                    m.charges = m.charges || []; 
+                    m.depenses = m.depenses || []; 
+                    m.epargne = m.epargne || [];
                 });
                 
                 if (!donnees.find(m => m.id === moisActifId) && donnees.length > 0) {
@@ -301,7 +322,7 @@
             donnees = [{
                 id: Date.now(), nom: "Mars 2026", annee: 2026, revenus: 4500,
                 charges: [{ id: "c1", date: "", libelle: "", categorie: "🏠 Logement", montant: 1200 }],
-                depenses: [{ id: "d1", date: "", libelle: "Courses IKEA", categorie: "🛠️ Travaux", montant: 150 }],
+                depenses: [{ id: "d1", date: "", libelle: "Pizzeria", categorie: "🍽️ Restaurant", montant: 50 }],
                 epargne: [{ id: "e1", date: "", libelle: "", categorie: "✈️ Vacances", montant: 200 }]
             }];
             moisActifId = donnees[0].id;
@@ -359,7 +380,6 @@
                 
                 let contenuInterieur = '';
 
-                // CONDITION : Design Complet (Dépenses) vs Design Épuré (Charges & Projets)
                 if (type === 'depenses') {
                     contenuInterieur = `
                         <div class="item-top">
@@ -400,7 +420,7 @@
                 new Sortable(conteneur, {
                     handle: '.drag-handle',
                     animation: 150,
-                    delay: 100, // Petit délai pour le confort tactile sur iPhone
+                    delay: 100, 
                     delayOnTouchOnly: true,
                     onEnd: function (evt) {
                         const newOrderIds = Array.from(conteneur.children).map(row => row.dataset.id);
@@ -429,7 +449,8 @@
         }
 
         window.ajouterLigne = function(type) {
-            donnees.find(m => m.id === moisActifId)[type].push({ id: Math.random().toString(36).substr(2, 9), date: "", libelle: "", categorie: categories[7], montant: 0 });
+            // Pour les charges et épargnes, libellé vide par défaut car on ne l'affiche plus
+            donnees.find(m => m.id === moisActifId)[type].push({ id: Math.random().toString(36).substr(2, 9), date: "", libelle: "", categorie: categories[0], montant: 0 });
             window.sauvegarderDonnees();
         }
 
@@ -532,7 +553,11 @@
         window.preparerFiltreAnnuel = function() {
             const select = document.getElementById('select-annee');
             select.innerHTML = '';
-            [...new Set(donnees.map(m => m.annee))].sort((a,b)=> b-a).forEach(annee => {
+            
+            // On s'assure qu'on ne liste pas d'années "undefined" ou buggées
+            const annees = [...new Set(donnees.map(m => m.annee).filter(a => a != null))].sort((a,b)=> b-a);
+            
+            annees.forEach(annee => {
                 const opt = document.createElement('option');
                 opt.value = annee; opt.innerText = annee;
                 select.appendChild(opt);
