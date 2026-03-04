@@ -46,9 +46,8 @@
         .main-content { flex: 1; padding: 15px; max-width: 1000px; margin: 0 auto; width: 100%; }
         .hidden { display: none !important; }
 
-        /* Retrait de l'apparence native sauf pour le dropdown de l'année pour qu'il garde sa flèche sur iPhone */
         input, select { font-size: 16px !important; outline: none; }
-        select:not(#select-annee) { appearance: none; -webkit-appearance: none; }
+        select { appearance: none; -webkit-appearance: none; }
 
         .search-container { margin-bottom: 20px; }
         .search-container input { width: 100%; padding: 12px 15px; border-radius: 12px; border: none; background: var(--card-bg); font-size: 1rem; box-shadow: 0 1px 5px rgba(0,0,0,0.03); appearance: none; -webkit-appearance: none; }
@@ -100,6 +99,32 @@
         .bg-secondary { background: var(--secondary); }
         .bg-info { background: var(--info); }
         .bg-success { background: var(--success); }
+
+        /* NOUVEAU MENU ANNUEL BLINDÉ POUR IPHONE */
+        .select-annee-wrapper { position: relative; display: inline-block; }
+        .select-annee-wrapper select {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 10px 35px 10px 15px; /* Place pour la flèche */
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--primary);
+            appearance: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .select-annee-wrapper::after {
+            content: "▼";
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.8rem;
+            color: var(--primary);
+            pointer-events: none; /* Laisse passer le clic vers le select en dessous */
+        }
 
         @media (min-width: 768px) {
             body { flex-direction: row; }
@@ -204,7 +229,9 @@
         <div id="vue-annuelle" class="hidden">
             <div class="header-title-group" style="margin-bottom: 20px;">
                 <h1>Bilan Annuel</h1>
-                <select id="select-annee" onchange="window.rendreVueAnnuelle()" style="padding: 10px 15px; border-radius: 8px; border: 1px solid var(--border); font-weight: bold; background: white; font-size: 1.1rem; appearance: auto; -webkit-appearance: auto;"></select>
+                <div class="select-annee-wrapper">
+                    <select id="select-annee" onchange="window.rendreVueAnnuelle()"></select>
+                </div>
             </div>
 
             <div class="card summary-card" style="background: linear-gradient(135deg, #AF52DE, #5E5CE6); margin-bottom: 20px;">
@@ -275,7 +302,6 @@
         let moisActifId = null;
         let termeRecherche = "";
 
-        // NOUVEL ORDRE DES CATÉGORIES ET AJOUT RESTAURANT
         const categories = [
             "🏠 Logement", 
             "💧 Eau", 
@@ -295,11 +321,6 @@
             if (data) {
                 donnees = data;
                 donnees.forEach(m => {
-                    // MIGRATION : On s'assure que les vieux mois ont bien une année enregistrée
-                    if (!m.annee) {
-                        const match = m.nom.match(/\d{4}/);
-                        m.annee = match ? parseInt(match[0]) : new Date().getFullYear();
-                    }
                     m.charges = m.charges || []; 
                     m.depenses = m.depenses || []; 
                     m.epargne = m.epargne || [];
@@ -337,7 +358,10 @@
             document.getElementById('month-list').style.display = vue === 'annuelle' ? 'none' : 'flex';
             document.getElementById('btn-new-month').style.display = vue === 'annuelle' ? 'none' : 'block';
 
-            if (vue === 'annuelle') { window.preparerFiltreAnnuel(); window.rendreVueAnnuelle(); } 
+            if (vue === 'annuelle') { 
+                window.preparerFiltreAnnuel(); 
+                window.rendreVueAnnuelle(); 
+            } 
             else { window.rendreInterface(); }
         }
 
@@ -449,7 +473,6 @@
         }
 
         window.ajouterLigne = function(type) {
-            // Pour les charges et épargnes, libellé vide par défaut car on ne l'affiche plus
             donnees.find(m => m.id === moisActifId)[type].push({ id: Math.random().toString(36).substr(2, 9), date: "", libelle: "", categorie: categories[0], montant: 0 });
             window.sauvegarderDonnees();
         }
@@ -554,14 +577,28 @@
             const select = document.getElementById('select-annee');
             select.innerHTML = '';
             
-            // On s'assure qu'on ne liste pas d'années "undefined" ou buggées
-            const annees = [...new Set(donnees.map(m => m.annee).filter(a => a != null))].sort((a,b)=> b-a);
+            // On s'assure qu'on ne liste pas d'années "undefined" ou buggées, et on cherche dans le titre du mois si besoin
+            let annees = donnees.map(m => {
+                if (m.annee) return m.annee;
+                let anneeTitre = m.nom.match(/\d{4}/);
+                return anneeTitre ? parseInt(anneeTitre[0]) : new Date().getFullYear();
+            });
             
-            annees.forEach(annee => {
+            let anneesUniques = [...new Set(annees)].filter(a => !isNaN(a)).sort((a,b)=> b-a);
+            
+            // Si vraiment tout est vide, on force l'année en cours
+            if (anneesUniques.length === 0) {
+                anneesUniques.push(new Date().getFullYear());
+            }
+            
+            anneesUniques.forEach(annee => {
                 const opt = document.createElement('option');
                 opt.value = annee; opt.innerText = annee;
                 select.appendChild(opt);
             });
+            
+            // Forcer le premier calcul dès l'ouverture de l'onglet
+            window.rendreVueAnnuelle();
         }
 
         window.rendreVueAnnuelle = function() {
@@ -570,7 +607,14 @@
             const anneeChoisie = parseInt(select.value);
             
             let tRev = 0, tChar = 0, tDep = 0, tEpa = 0;
-            donnees.filter(m => m.annee === anneeChoisie).forEach(mois => {
+            donnees.filter(m => {
+                let a = m.annee;
+                if(!a) {
+                   let anneeTitre = m.nom.match(/\d{4}/);
+                   a = anneeTitre ? parseInt(anneeTitre[0]) : null;
+                }
+                return a === anneeChoisie;
+            }).forEach(mois => {
                 tRev += (mois.revenus || 0);
                 tChar += (mois.charges || []).reduce((sum, i) => sum + (parseFloat(i.montant) || 0), 0);
                 tDep += (mois.depenses || []).reduce((sum, i) => sum + (parseFloat(i.montant) || 0), 0);
