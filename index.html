@@ -29,57 +29,85 @@
 
         body { background-color: var(--bg-color); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
 
-        /* Navigation latérale / Top */
+        /* NAVIGATION */
         .top-nav { background-color: var(--card-bg); border-bottom: 1px solid var(--border); padding: 15px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
         .nav-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .nav-header h2 { font-size: 1.4rem; font-weight: 700; color: var(--text-main); }
         
-        .tab-buttons { display: flex; gap: 10px; background: #E5E5EA; padding: 4px; border-radius: 10px; }
+        .tab-buttons { display: flex; gap: 10px; background: #E5E5EA; padding: 4px; border-radius: 10px; margin-bottom: 15px; }
         .btn-tab { flex: 1; padding: 8px; border-radius: 8px; border: none; background: transparent; font-weight: 600; font-size: 0.9rem; color: var(--text-muted); cursor: pointer; transition: 0.2s; }
         .btn-tab.active { background: var(--card-bg); color: var(--text-main); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
 
-        /* Styles Menu Déroulant par Année */
-        .year-group { margin-bottom: 8px; border-radius: 12px; overflow: hidden; background: #f8f8fa; }
-        .year-header { 
-            padding: 10px 15px; background: #E5E5EA; color: var(--text-main); 
-            font-weight: 700; cursor: pointer; display: flex; justify-content: space-between; align-items: center;
-            transition: background 0.2s;
-        }
-        .year-header:hover { background: #dcdce2; }
+        /* ACCORDEON MOIS */
+        .year-group { margin-bottom: 8px; border-radius: 12px; overflow: hidden; background: #f8f8fa; border: 1px solid var(--border); }
+        .year-header { padding: 12px 15px; background: #E5E5EA; color: var(--text-main); font-weight: 700; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
         .year-header::after { content: '▼'; font-size: 0.7rem; transition: transform 0.3s; }
         .year-header.collapsed::after { transform: rotate(-90deg); }
         
-        .month-sublist { display: flex; flex-direction: column; gap: 4px; padding: 8px; transition: max-height 0.3s ease-out; }
+        .month-sublist { display: flex; flex-direction: column; gap: 4px; padding: 8px; }
         .month-sublist.hidden { display: none; }
+        .month-pill { padding: 12px; background: white; border-radius: 8px; font-weight: 600; font-size: 0.9rem; color: var(--text-main); cursor: pointer; border: 1px solid var(--border); }
+        .month-pill.active { background: #E1F0FF; color: var(--primary); border-color: var(--primary); }
 
-        .month-pill { 
-            padding: 10px 15px; background: white; border-radius: 8px; 
-            font-weight: 600; font-size: 0.9rem; color: var(--text-main); 
-            cursor: pointer; border: 1px solid var(--border); transition: 0.2s;
-        }
-        .month-pill.active { background: #E1F0FF; color: var(--primary); border-color: var(--primary); box-shadow: 0 2px 5px rgba(0,122,255,0.1); }
-
-        .btn-new-month { padding: 12px; background: var(--primary); color: white; border-radius: 12px; font-weight: 700; font-size: 0.9rem; cursor: pointer; border: none; width: 100%; margin-top: 10px; }
+        .btn-new-month { padding: 14px; background: var(--primary); color: white; border-radius: 12px; font-weight: 700; font-size: 1rem; cursor: pointer; border: none; width: 100%; }
 
         .main-content { flex: 1; padding: 15px; max-width: 1000px; margin: 0 auto; width: 100%; }
         .hidden { display: none !important; }
 
-        /* ... (Reste des styles identiques à votre version précédente) ... */
+        /* INPUTS */
+        input, select { font-size: 16px !important; outline: none; }
+        select { appearance: none; -webkit-appearance: none; }
+
         .search-container { margin-bottom: 20px; }
-        .search-container input { width: 100%; padding: 12px 15px; border-radius: 12px; border: none; background: var(--card-bg); font-size: 1rem; box-shadow: 0 1px 5px rgba(0,0,0,0.03); }
+        .search-container input { width: 100%; padding: 12px 15px; border-radius: 12px; border: none; background: var(--card-bg); font-size: 1rem; box-shadow: 0 1px 5px rgba(0,0,0,0.03); -webkit-appearance: none; }
+
         .header-title-group { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
         .header-title-group h1 { font-size: 1.6rem; font-weight: 800; }
-        .btn-delete-month { background: #FFE5E5; color: var(--danger); border: none; border-radius: 8px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; }
+        .btn-delete-month { background: #FFE5E5; color: var(--danger); border: none; border-radius: 8px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+
         .revenus-box { background: var(--card-bg); padding: 15px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
-        .revenus-box input { width: 120px; text-align: right; border: 1px solid var(--border); padding: 10px; border-radius: 8px; font-weight: bold; color: var(--primary); }
+        .revenus-box input { width: 110px; text-align: right; border: 1px solid var(--border); padding: 8px; border-radius: 8px; font-weight: bold; color: var(--primary); background: var(--bg-color); -webkit-appearance: none; }
+
+        /* CARTES ET LIGNES */
         .card { background-color: var(--card-bg); border-radius: 16px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); margin-bottom: 20px; }
-        .total-amount { font-size: 3.5rem; font-weight: 800; text-align: center; margin: 10px 0; }
-        .summary-card { background: linear-gradient(135deg, #007AFF, #5AC8FA); color: white; border-radius: 16px; padding: 30px 20px; }
-        /* ... */
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+        .card-header h3 { font-size: 1.1rem; font-weight: 700; }
+        .btn-sort { background: var(--bg-color); border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); }
+
+        .item-row { display: flex; align-items: center; background: var(--card-bg); padding: 15px 0; border-bottom: 1px solid var(--border); }
+        .item-row:last-child { border-bottom: none; }
+        .drag-handle { padding-right: 15px; color: #C7C7CC; cursor: grab; font-size: 1.4rem; touch-action: none; }
+        .item-content { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+        .item-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+        .item-bottom { display: flex; gap: 10px; }
+        .item-top input[type="text"] { flex: 1; border: none; font-weight: 600; color: var(--text-main); background: transparent; }
+        .item-top input[type="number"] { width: 85px; text-align: right; border: none; font-weight: 700; background: #F2F2F7; padding: 8px; border-radius: 8px; -webkit-appearance: none; }
+        .item-bottom input[type="date"], .item-bottom select { flex: 1; background: #F2F2F7; border: none; color: var(--text-muted); font-size: 0.85rem; padding: 6px 10px; border-radius: 6px; }
+
+        .btn-delete { color: var(--danger); background: none; border: none; font-size: 1.3rem; padding-left: 15px; }
+        .btn-add { background-color: var(--primary); color: white; border: none; padding: 14px; border-radius: 12px; width: 100%; font-weight: 700; margin-top: 10px; }
+
+        /* RÉCAPITULATIF */
+        .summary-card { background: linear-gradient(135deg, #007AFF, #5AC8FA); color: white; text-align: center; border-radius: 16px; padding: 30px 20px; }
+        .total-amount { font-size: 3.2rem; font-weight: 800; margin: 10px 0; letter-spacing: -1px; }
+
+        .progress-container { margin-bottom: 12px; }
+        .progress-header { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; margin-bottom: 5px; }
+        .progress-track { background: #E5E5EA; border-radius: 10px; height: 10px; overflow: hidden; }
+        .progress-fill { height: 100%; transition: width 0.5s ease; }
+        .bg-danger { background: var(--danger); }
+        .bg-secondary { background: var(--secondary); }
+        .bg-info { background: var(--info); }
+        .bg-success { background: var(--success); }
+
+        /* BILAN ANNUEL SPECIAL */
+        .select-annee-wrapper { position: relative; display: inline-block; }
+        .select-annee-wrapper select { background: white; border: 1px solid var(--border); padding: 10px 35px 10px 15px; border-radius: 8px; font-weight: bold; color: var(--primary); }
+        .select-annee-wrapper::after { content: "▼"; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 0.7rem; color: var(--primary); pointer-events: none; }
 
         @media (min-width: 768px) {
             body { flex-direction: row; }
-            .top-nav { width: 280px; height: 100vh; position: sticky; border-right: 1px solid var(--border); border-bottom: none; display: flex; flex-direction: column; padding: 20px; overflow-y: auto; }
+            .top-nav { width: 280px; height: 100vh; position: sticky; border-right: 1px solid var(--border); border-bottom: none; display: flex; flex-direction: column; padding: 20px; }
         }
     </style>
 </head>
@@ -89,48 +117,137 @@
         <div class="nav-header">
             <h2>Budget</h2>
         </div>
-        <div class="tab-buttons" style="margin-bottom: 20px;">
+        <div class="tab-buttons">
             <button class="btn-tab active" id="btn-vue-mensuelle" onclick="window.changerVue('mensuelle')">Mois</button>
             <button class="btn-tab" id="btn-vue-annuelle" onclick="window.changerVue('annuelle')">Année</button>
         </div>
         
-        <div id="month-nav-container">
+        <div id="month-nav-group">
             <div id="month-list"></div>
-            <button id="btn-new-month" class="btn-new-month" onclick="window.creerMoisSuivant()">+ Démarrer un mois</button>
+            <button id="btn-new-month-nav" class="btn-new-month" style="margin-top:10px;" onclick="window.creerMoisSuivant()">+ Démarrer un mois</button>
         </div>
     </nav>
 
     <main class="main-content">
+        
         <div id="vue-mensuelle">
             <div class="search-container">
-                <input type="text" id="search-bar" placeholder="🔍 Rechercher..." oninput="window.filtrerRecherche()">
+                <input type="text" id="search-bar" placeholder="🔍 Rechercher (ex: Ikea)..." oninput="window.filtrerRecherche()">
             </div>
+
             <div class="header-title-group">
                 <h1 id="titre-mois">Chargement...</h1>
                 <button class="btn-delete-month" onclick="window.supprimerMoisActif()">🗑️</button>
             </div>
+
             <div class="revenus-box">
                 <strong>Revenus communs</strong>
-                <input type="number" id="revenus" onchange="window.majRevenus(this.value)">
+                <input type="number" id="revenus" value="0" onchange="window.majRevenus(this.value)">
             </div>
+
             <div class="card summary-card">
                 <h3>Reste à vivre</h3>
                 <div class="total-amount" id="reste-a-vivre">0 €</div>
             </div>
-            <div id="conteneur-sections-budget">
+
+            <div class="card">
+                <h3>Répartition</h3>
+                <div style="margin-top: 15px;">
+                    <div class="progress-container">
+                        <div class="progress-header"><span>🏠 Charges Fixes</span><span id="pct-charges-m">0%</span></div>
+                        <div class="progress-track"><div class="progress-fill bg-danger" id="bar-charges-m"></div></div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-header"><span>🛒 Dépenses</span><span id="pct-depenses-m">0%</span></div>
+                        <div class="progress-track"><div class="progress-fill bg-secondary" id="bar-depenses-m"></div></div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-header"><span>✈️ Épargne</span><span id="pct-epargne-m">0%</span></div>
+                        <div class="progress-track"><div class="progress-fill bg-info" id="bar-epargne-m"></div></div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-header"><span>✅ Reste</span><span id="pct-reste-m">0%</span></div>
+                        <div class="progress-track"><div class="progress-fill bg-success" id="bar-reste-m"></div></div>
+                    </div>
                 </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>🏠 Charges Fixes (<span id="total-charges">0</span> €)</h3>
+                    <button class="btn-sort" onclick="window.trierMontant('charges')">Trier ↓</button>
+                </div>
+                <div id="conteneur-charges"></div>
+                <button class="btn-add" onclick="window.ajouterLigne('charges')">+ Nouvelle charge</button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>🛒 Dépenses (<span id="total-depenses">0</span> €)</h3>
+                    <button class="btn-sort" onclick="window.trierMontant('depenses')">Trier ↓</button>
+                </div>
+                <div id="conteneur-depenses"></div>
+                <button class="btn-add" onclick="window.ajouterLigne('depenses')">+ Nouvelle dépense</button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>✈️ Projets (<span id="total-epargne">0</span> €)</h3>
+                    <button class="btn-sort" onclick="window.trierMontant('epargne')">Trier ↓</button>
+                </div>
+                <div id="conteneur-epargne"></div>
+                <button class="btn-add" onclick="window.ajouterLigne('epargne')">+ Nouvelle épargne</button>
+            </div>
         </div>
 
         <div id="vue-annuelle" class="hidden">
-             <h1>Bilan Annuel</h1>
+            <div class="header-title-group">
+                <h1>Bilan Annuel</h1>
+                <div class="select-annee-wrapper">
+                    <select id="select-annee" onchange="window.rendreVueAnnuelle()"></select>
+                </div>
+            </div>
+
+            <div class="card summary-card" style="background: linear-gradient(135deg, #AF52DE, #5E5CE6);">
+                <h3>Total Épargné (Année)</h3>
+                <div class="total-amount" id="annuel-total-epargne-top">0 €</div>
+                <div style="background: rgba(255,255,255,0.2); padding: 12px; border-radius: 10px; margin-top: 10px;">
+                    <span>Total Dépensé : </span>
+                    <strong id="annuel-total-depense-top">0 €</strong>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Répartition de l'année</h3>
+                <div style="margin-top: 15px;">
+                    <div class="progress-container">
+                        <div class="progress-header"><span>🏠 Charges Fixes</span><span id="pct-charges-a">0%</span></div>
+                        <div class="progress-track"><div class="progress-fill bg-danger" id="bar-charges-a"></div></div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-header"><span>🛒 Dépenses</span><span id="pct-depenses-a">0%</span></div>
+                        <div class="progress-track"><div class="progress-fill bg-secondary" id="bar-depenses-a"></div></div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-header"><span>✈️ Épargne</span><span id="pct-epargne-a">0%</span></div>
+                        <div class="progress-track"><div class="progress-fill bg-info" id="bar-epargne-a"></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: grid; gap: 15px;">
+                <div class="revenus-box"><strong>🏠 Charges</strong><h3 style="color:var(--danger);" id="annuel-total-charges">0 €</h3></div>
+                <div class="revenus-box"><strong>🛒 Dépenses</strong><h3 style="color:var(--secondary);" id="annuel-total-depenses">0 €</h3></div>
+                <div class="revenus-box"><strong>✈️ Épargne</strong><h3 style="color:var(--info);" id="annuel-total-epargne">0 €</h3></div>
+            </div>
         </div>
+
     </main>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
-        // CONFIGURATION FIREBASE (La vôtre)
         const firebaseConfig = {
             apiKey: "AIzaSyBro9AXaoXhSptyUVxoKVtr6xC4rtZQ3FI",
             authDomain: "lisa-et-corentin.firebaseapp.com",
@@ -147,89 +264,185 @@
 
         let donnees = [];
         let moisActifId = null;
-        let anneesOuvertes = new Set(); // Pour garder les menus ouverts quand on change de mois
+        let termeRecherche = "";
+        let anneesOuvertes = new Set();
+
+        const categories = ["🏠 Loyer", "⚡ Électricité", "💧 Eau", "🛡️ Assurance", "🌐 Internet", "🛒 Courses", "🍽️ Restaurant", "🎬 Loisirs", "🏥 Santé", "✈️ Vacances", "🛠️ Travaux", "❓ Autre"];
 
         onValue(budgetRef, (snapshot) => {
             const data = snapshot.val();
             if (data) {
                 donnees = data;
+                donnees.forEach(m => {
+                    if(!m.annee) {
+                        let match = m.nom.match(/\d{4}/);
+                        m.annee = match ? parseInt(match[0]) : 2026;
+                    }
+                    m.charges = m.charges || []; m.depenses = m.depenses || []; m.epargne = m.epargne || [];
+                });
                 if (!moisActifId && donnees.length > 0) moisActifId = donnees[donnees.length - 1].id;
                 
-                // Par défaut, on ouvre l'année du mois actif
-                const moisActuel = donnees.find(m => m.id === moisActifId);
-                if (moisActuel) anneesOuvertes.add(moisActuel.annee);
-                
-                window.rendreInterface();
-            }
+                if (document.getElementById('vue-annuelle').classList.contains('hidden')) {
+                    window.rendreInterface();
+                } else {
+                    window.rendreMenu();
+                    window.preparerFiltreAnnuel();
+                }
+            } else { window.initDefaut(); }
         });
 
-        window.rendreMenu = function() {
-            const conteneur = document.getElementById('month-list');
-            conteneur.innerHTML = '';
+        window.sauvegarderDonnees = function() { set(budgetRef, donnees); }
 
-            // 1. Grouper les mois par année
-            const groupes = {};
-            donnees.forEach(m => {
-                if (!groupes[m.annee]) groupes[m.annee] = [];
-                groupes[m.annee].push(m);
-            });
+        window.initDefaut = function() {
+            donnees = [{ id: Date.now(), nom: "Mars 2026", annee: 2026, revenus: 4500, charges: [], depenses: [], epargne: [] }];
+            moisActifId = donnees[0].id; window.sauvegarderDonnees();
+        }
 
-            // 2. Trier les années (plus récente en haut)
-            const anneesTriees = Object.keys(groupes).sort((a, b) => b - a);
-
-            anneesTriees.forEach(annee => {
-                const moisDeLAnnee = groupes[annee].reverse(); // Plus récent en haut dans l'année
-                
-                // Si une seule année et un seul mois, on affiche normalement
-                // Mais si plusieurs mois, on crée le menu déroulant
-                const yearDiv = document.createElement('div');
-                yearDiv.className = 'year-group';
-
-                const isCollapsed = !anneesOuvertes.has(parseInt(annee));
-
-                yearDiv.innerHTML = `
-                    <div class="year-header ${isCollapsed ? 'collapsed' : ''}" onclick="window.toggleAnnee(${annee})">
-                        ${annee} (${moisDeLAnnee.length} mois)
-                    </div>
-                    <div class="month-sublist ${isCollapsed ? 'hidden' : ''}" id="list-${annee}"></div>
-                `;
-
-                const sublist = yearDiv.querySelector('.month-sublist');
-                moisDeLAnnee.forEach(mois => {
-                    const pill = document.createElement('div');
-                    pill.className = `month-pill ${mois.id === moisActifId ? 'active' : ''}`;
-                    pill.innerText = mois.nom.split(' ')[0]; // On garde juste "Mars" car l'année est au-dessus
-                    pill.onclick = (e) => {
-                        e.stopPropagation();
-                        moisActifId = mois.id;
-                        window.rendreInterface();
-                    };
-                    sublist.appendChild(pill);
-                });
-
-                conteneur.appendChild(yearDiv);
-            });
-        };
+        window.changerVue = function(vue) {
+            document.getElementById('btn-vue-mensuelle').classList.toggle('active', vue === 'mensuelle');
+            document.getElementById('btn-vue-annuelle').classList.toggle('active', vue === 'annuelle');
+            document.getElementById('vue-mensuelle').classList.toggle('hidden', vue !== 'mensuelle');
+            document.getElementById('vue-annuelle').classList.toggle('hidden', vue !== 'annuelle');
+            document.getElementById('month-nav-group').classList.toggle('hidden', vue === 'annuelle');
+            
+            if (vue === 'annuelle') { window.preparerFiltreAnnuel(); } 
+            else { window.rendreInterface(); }
+        }
 
         window.toggleAnnee = function(annee) {
-            if (anneesOuvertes.has(annee)) {
-                anneesOuvertes.delete(annee);
-            } else {
-                anneesOuvertes.add(annee);
-            }
+            if (anneesOuvertes.has(annee)) anneesOuvertes.delete(annee);
+            else anneesOuvertes.add(annee);
             window.rendreMenu();
-        };
+        }
+
+        window.rendreMenu = function() {
+            const liste = document.getElementById('month-list');
+            liste.innerHTML = '';
+            const groupes = {};
+            donnees.forEach(m => { if(!groupes[m.annee]) groupes[m.annee] = []; groupes[m.annee].push(m); });
+            
+            Object.keys(groupes).sort((a,b) => b-a).forEach(annee => {
+                const isOpened = anneesOuvertes.has(parseInt(annee));
+                const yearDiv = document.createElement('div');
+                yearDiv.className = 'year-group';
+                yearDiv.innerHTML = `<div class="year-header ${!isOpened?'collapsed':''}" onclick="window.toggleAnnee(${annee})">${annee} (${groupes[annee].length})</div>
+                                     <div class="month-sublist ${!isOpened?'hidden':''}"></div>`;
+                const sublist = yearDiv.querySelector('.month-sublist');
+                [...groupes[annee]].reverse().forEach(m => {
+                    const pill = document.createElement('div');
+                    pill.className = `month-pill ${m.id === moisActifId ? 'active' : ''}`;
+                    pill.innerText = m.nom.split(' ')[0];
+                    pill.onclick = () => { moisActifId = m.id; anneesOuvertes.clear(); window.rendreInterface(); };
+                    sublist.appendChild(pill);
+                });
+                liste.appendChild(yearDiv);
+            });
+        }
 
         window.rendreInterface = function() {
             window.rendreMenu();
             const mois = donnees.find(m => m.id === moisActifId);
             if (!mois) return;
             document.getElementById('titre-mois').innerText = mois.nom;
-            // ... (Ici, remettre vos fonctions de calcul et rendu habituelles)
-        };
+            document.getElementById('revenus').value = mois.revenus || 0;
+            window.rendreLignes('conteneur-charges', mois.charges, 'charges');
+            window.rendreLignes('conteneur-depenses', mois.depenses, 'depenses');
+            window.rendreLignes('conteneur-epargne', mois.epargne, 'epargne');
+            window.calculerBudget();
+        }
 
-        // ... (Remettre ici vos fonctions créerMoisSuivant, majRevenus, etc. du code précédent)
+        window.rendreLignes = function(idConteneur, tableau, type) {
+            const conteneur = document.getElementById(idConteneur);
+            conteneur.innerHTML = '';
+            tableau.filter(item => item.libelle.toLowerCase().includes(termeRecherche)).forEach((item) => {
+                const row = document.createElement('div');
+                row.className = 'item-row'; row.dataset.id = item.id;
+                let html = (type === 'depenses') ? 
+                    `<div class="item-top"><input type="text" value="${item.libelle}" onchange="window.majValeur('${type}','${item.id}','libelle',this.value)"><input type="number" value="${item.montant}" onchange="window.majValeur('${type}','${item.id}','montant',this.value)"></div>
+                     <div class="item-bottom"><input type="date" value="${item.date}" onchange="window.majValeur('${type}','${item.id}','date',this.value)"><select onchange="window.majValeur('${type}','${item.id}','categorie',this.value)">${categories.map(c=>`<option value="${c}" ${c===item.categorie?'selected':''}>${c}</option>`).join('')}</select></div>` :
+                    `<div class="item-top"><select onchange="window.majValeur('${type}','${item.id}','categorie',this.value)" style="flex:1; background:none; border:none; font-weight:600;">${categories.map(c=>`<option value="${c}" ${c===item.categorie?'selected':''}>${c}</option>`).join('')}</select><input type="number" value="${item.montant}" onchange="window.majValeur('${type}','${item.id}','montant',this.value)"></div>`;
+                row.innerHTML = `<div class="drag-handle">☰</div><div class="item-content">${html}</div><button class="btn-delete" onclick="window.supprimerLigne('${type}','${item.id}')">✕</button>`;
+                conteneur.appendChild(row);
+            });
+            new Sortable(conteneur, { handle: '.drag-handle', animation: 150, onEnd: () => {
+                const ids = Array.from(conteneur.children).map(r => r.dataset.id);
+                const mois = donnees.find(m => m.id === moisActifId);
+                const old = [...mois[type]];
+                mois[type] = ids.map(id => old.find(i => i.id === id));
+                window.sauvegarderDonnees();
+            }});
+        }
 
+        window.majValeur = function(type, id, champ, val) {
+            const mois = donnees.find(m => m.id === moisActifId);
+            const item = mois[type].find(i => i.id === id);
+            item[champ] = (champ === 'montant') ? parseFloat(val) || 0 : val;
+            window.sauvegarderDonnees();
+        }
+
+        window.majRevenus = function(val) { donnees.find(m => m.id === moisActifId).revenus = parseFloat(val) || 0; window.sauvegarderDonnees(); }
+        window.ajouterLigne = function(type) { donnees.find(m => m.id === moisActifId)[type].push({ id: Math.random().toString(36).substr(2,9), date:"", libelle:"", categorie: categories[0], montant:0 }); window.sauvegarderDonnees(); }
+        window.supprimerLigne = function(type, id) { const mois = donnees.find(m => m.id === moisActifId); mois[type] = mois[type].filter(i => i.id !== id); window.sauvegarderDonnees(); }
+        window.supprimerMoisActif = function() { if(confirm("Supprimer ce mois ?")) { donnees = donnees.filter(m => m.id !== moisActifId); moisActifId = donnees.length ? donnees[donnees.length-1].id : null; window.sauvegarderDonnees(); } }
+        window.trierMontant = function(type) { donnees.find(m => m.id === moisActifId)[type].sort((a,b) => b.montant - a.montant); window.sauvegarderDonnees(); }
+        window.filtrerRecherche = function() { termeRecherche = document.getElementById('search-bar').value.toLowerCase(); window.rendreInterface(); }
+        
+        window.creerMoisSuivant = function() {
+            const d = donnees[donnees.length-1];
+            const noms = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
+            let idx = noms.indexOf(d.nom.split(' ')[0]) + 1;
+            let an = d.annee; if(idx > 11) { idx = 0; an++; }
+            const nouveau = { id: Date.now(), nom: noms[idx]+" "+an, annee: an, revenus: d.revenus, charges: d.charges.map(c=>({...c, id:Math.random().toString(36).substr(2,9)})), depenses:[], epargne: d.epargne.map(e=>({...e, id:Math.random().toString(36).substr(2,9)})) };
+            donnees.push(nouveau); moisActifId = nouveau.id; window.sauvegarderDonnees(); window.changerVue('mensuelle');
+        }
+
+        window.calculerBudget = function() {
+            const m = donnees.find(m => m.id === moisActifId);
+            const tc = m.charges.reduce((s,i)=>s+i.montant,0), td = m.depenses.reduce((s,i)=>s+i.montant,0), te = m.epargne.reduce((s,i)=>s+i.montant,0);
+            const r = m.revenus - tc - td - te;
+            document.getElementById('total-charges').innerText = tc.toFixed(2);
+            document.getElementById('total-depenses').innerText = td.toFixed(2);
+            document.getElementById('total-epargne').innerText = te.toFixed(2);
+            document.getElementById('reste-a-vivre').innerText = r.toFixed(2) + " €";
+            window.bars('m', tc, td, te, r);
+        }
+
+        window.preparerFiltreAnnuel = function() {
+            const s = document.getElementById('select-annee'); s.innerHTML = '';
+            const ans = [...new Set(donnees.map(m=>m.annee))].sort((a,b)=>b-a);
+            ans.forEach(a => { const o = document.createElement('option'); o.value=a; o.innerText=a; s.appendChild(o); });
+            window.rendreVueAnnuelle();
+        }
+
+        window.rendreVueAnnuelle = function() {
+            const a = parseInt(document.getElementById('select-annee').value);
+            let tc=0, td=0, te=0;
+            donnees.filter(m=>m.annee===a).forEach(m=>{
+                tc += m.charges.reduce((s,i)=>s+i.montant,0);
+                td += m.depenses.reduce((s,i)=>s+i.montant,0);
+                te += m.epargne.reduce((s,i)=>s+i.montant,0);
+            });
+            document.getElementById('annuel-total-epargne-top').innerText = te.toFixed(2) + " €";
+            document.getElementById('annuel-total-depense-top').innerText = (tc+td).toFixed(2) + " €";
+            document.getElementById('annuel-total-charges').innerText = tc.toFixed(2) + " €";
+            document.getElementById('annuel-total-depenses').innerText = td.toFixed(2) + " €";
+            document.getElementById('annuel-total-epargne').innerText = te.toFixed(2) + " €";
+            window.bars('a', tc, td, te, 0);
+        }
+
+        window.bars = function(s, c, d, e, r) {
+            let t = c+d+e+(r>0?r:0); if(t===0) return;
+            document.getElementById(`bar-charges-${s}`).style.width = (c/t*100)+'%';
+            document.getElementById(`pct-charges-${s}`).innerText = Math.round(c/t*100)+'%';
+            document.getElementById(`bar-depenses-${s}`).style.width = (d/t*100)+'%';
+            document.getElementById(`pct-depenses-${s}`).innerText = Math.round(d/t*100)+'%';
+            document.getElementById(`bar-epargne-${s}`).style.width = (e/t*100)+'%';
+            document.getElementById(`pct-epargne-${s}`).innerText = Math.round(e/t*100)+'%';
+            if(document.getElementById(`bar-reste-${s}`)) {
+                document.getElementById(`bar-reste-${s}`).style.width = (r>0?r/t*100:0)+'%';
+                document.getElementById(`pct-reste-${s}`).innerText = Math.round(r>0?r/t*100:0)+'%';
+            }
+        }
     </script>
 </body>
 </html>
