@@ -74,9 +74,19 @@
         .card-header h3 { font-size: 1.1rem; font-weight: 700; }
         .btn-sort { background: var(--bg-color); border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); }
 
-        .item-row { display: flex; align-items: center; background: var(--card-bg); padding: 15px 0; border-bottom: 1px solid var(--border); }
+        .item-row { display: flex; align-items: center; background: var(--card-bg); padding: 15px 0; border-bottom: 1px solid var(--border); touch-action: none; }
         .item-row:last-child { border-bottom: none; }
-        .drag-handle { padding-right: 15px; color: #C7C7CC; cursor: grab; font-size: 1.4rem; touch-action: none; }
+        
+        /* Poignée de déplacement optimisée */
+        .drag-handle { 
+            padding: 10px 20px 10px 10px; 
+            color: #C7C7CC; 
+            cursor: grab; 
+            font-size: 1.6rem; 
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        
         .item-content { flex: 1; display: flex; flex-direction: column; gap: 8px; }
         .item-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
         .item-bottom { display: flex; gap: 10px; }
@@ -84,7 +94,7 @@
         .item-top input[type="number"] { width: 85px; text-align: right; border: none; font-weight: 700; background: #F2F2F7; padding: 8px; border-radius: 8px; -webkit-appearance: none; }
         .item-bottom input[type="date"], .item-bottom select { flex: 1; background: #F2F2F7; border: none; color: var(--text-muted); font-size: 0.85rem; padding: 6px 10px; border-radius: 6px; }
 
-        .btn-delete { color: var(--danger); background: none; border: none; font-size: 1.3rem; padding-left: 15px; }
+        .btn-delete { color: var(--danger); background: none; border: none; font-size: 1.3rem; padding-left: 15px; padding-right: 5px; }
         .btn-add { background-color: var(--primary); color: white; border: none; padding: 14px; border-radius: 12px; width: 100%; font-weight: 700; margin-top: 10px; }
 
         /* RÉCAPITULATIF */
@@ -129,27 +139,22 @@
     </nav>
 
     <main class="main-content">
-        
         <div id="vue-mensuelle">
             <div class="search-container">
-                <input type="text" id="search-bar" placeholder="🔍 Rechercher (ex: Ikea)..." oninput="window.filtrerRecherche()">
+                <input type="text" id="search-bar" placeholder="🔍 Rechercher..." oninput="window.filtrerRecherche()">
             </div>
-
             <div class="header-title-group">
                 <h1 id="titre-mois">Chargement...</h1>
                 <button class="btn-delete-month" onclick="window.supprimerMoisActif()">🗑️</button>
             </div>
-
             <div class="revenus-box">
                 <strong>Revenus communs</strong>
                 <input type="number" id="revenus" value="0" onchange="window.majRevenus(this.value)">
             </div>
-
             <div class="card summary-card">
                 <h3>Reste à vivre</h3>
                 <div class="total-amount" id="reste-a-vivre">0 €</div>
             </div>
-
             <div class="card">
                 <h3>Répartition</h3>
                 <div style="margin-top: 15px;">
@@ -171,7 +176,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="card">
                 <div class="card-header">
                     <h3>🏠 Charges Fixes (<span id="total-charges">0</span> €)</h3>
@@ -180,7 +184,6 @@
                 <div id="conteneur-charges"></div>
                 <button class="btn-add" onclick="window.ajouterLigne('charges')">+ Nouvelle charge</button>
             </div>
-
             <div class="card">
                 <div class="card-header">
                     <h3>🛒 Dépenses (<span id="total-depenses">0</span> €)</h3>
@@ -189,7 +192,6 @@
                 <div id="conteneur-depenses"></div>
                 <button class="btn-add" onclick="window.ajouterLigne('depenses')">+ Nouvelle dépense</button>
             </div>
-
             <div class="card">
                 <div class="card-header">
                     <h3>✈️ Projets (<span id="total-epargne">0</span> €)</h3>
@@ -207,7 +209,6 @@
                     <select id="select-annee" onchange="window.rendreVueAnnuelle()"></select>
                 </div>
             </div>
-
             <div class="card summary-card" style="background: linear-gradient(135deg, #AF52DE, #5E5CE6);">
                 <h3>Total Épargné (Année)</h3>
                 <div class="total-amount" id="annuel-total-epargne-top">0 €</div>
@@ -216,7 +217,6 @@
                     <strong id="annuel-total-depense-top">0 €</strong>
                 </div>
             </div>
-
             <div class="card">
                 <h3>Répartition de l'année</h3>
                 <div style="margin-top: 15px;">
@@ -234,14 +234,12 @@
                     </div>
                 </div>
             </div>
-
             <div style="display: grid; gap: 15px;">
                 <div class="revenus-box"><strong>🏠 Charges</strong><h3 style="color:var(--danger);" id="annuel-total-charges">0 €</h3></div>
                 <div class="revenus-box"><strong>🛒 Dépenses</strong><h3 style="color:var(--secondary);" id="annuel-total-depenses">0 €</h3></div>
                 <div class="revenus-box"><strong>✈️ Épargne</strong><h3 style="color:var(--info);" id="annuel-total-epargne">0 €</h3></div>
             </div>
         </div>
-
     </main>
 
     <script type="module">
@@ -304,7 +302,6 @@
             document.getElementById('vue-mensuelle').classList.toggle('hidden', vue !== 'mensuelle');
             document.getElementById('vue-annuelle').classList.toggle('hidden', vue !== 'annuelle');
             document.getElementById('month-nav-group').classList.toggle('hidden', vue === 'annuelle');
-            
             if (vue === 'annuelle') { window.preparerFiltreAnnuel(); } 
             else { window.rendreInterface(); }
         }
@@ -320,7 +317,6 @@
             liste.innerHTML = '';
             const groupes = {};
             donnees.forEach(m => { if(!groupes[m.annee]) groupes[m.annee] = []; groupes[m.annee].push(m); });
-            
             Object.keys(groupes).sort((a,b) => b-a).forEach(annee => {
                 const isOpened = anneesOuvertes.has(parseInt(annee));
                 const yearDiv = document.createElement('div');
@@ -364,13 +360,22 @@
                 row.innerHTML = `<div class="drag-handle">☰</div><div class="item-content">${html}</div><button class="btn-delete" onclick="window.supprimerLigne('${type}','${item.id}')">✕</button>`;
                 conteneur.appendChild(row);
             });
-            new Sortable(conteneur, { handle: '.drag-handle', animation: 150, onEnd: () => {
-                const ids = Array.from(conteneur.children).map(r => r.dataset.id);
-                const mois = donnees.find(m => m.id === moisActifId);
-                const old = [...mois[type]];
-                mois[type] = ids.map(id => old.find(i => i.id === id));
-                window.sauvegarderDonnees();
-            }});
+
+            // CONFIGURATION SORTABLE SPECIAL IPHONE
+            new Sortable(conteneur, { 
+                handle: '.drag-handle', 
+                animation: 150,
+                delay: 150, // Délai de 150ms avant de commencer le drag pour permettre le scroll
+                delayOnTouchOnly: true, // Applique le délai uniquement sur mobile
+                touchStartThreshold: 5, // Sensibilité au mouvement
+                onEnd: () => {
+                    const ids = Array.from(conteneur.children).map(r => r.dataset.id);
+                    const mois = donnees.find(m => m.id === moisActifId);
+                    const old = [...mois[type]];
+                    mois[type] = ids.map(id => old.find(i => i.id === id));
+                    window.sauvegarderDonnees();
+                }
+            });
         }
 
         window.majValeur = function(type, id, champ, val) {
@@ -398,6 +403,7 @@
 
         window.calculerBudget = function() {
             const m = donnees.find(m => m.id === moisActifId);
+            if(!m) return;
             const tc = m.charges.reduce((s,i)=>s+i.montant,0), td = m.depenses.reduce((s,i)=>s+i.montant,0), te = m.epargne.reduce((s,i)=>s+i.montant,0);
             const r = m.revenus - tc - td - te;
             document.getElementById('total-charges').innerText = tc.toFixed(2);
