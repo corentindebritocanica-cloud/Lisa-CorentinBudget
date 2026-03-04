@@ -50,7 +50,7 @@
         .month-pill.active { background: #E1F0FF; color: var(--primary); border-color: var(--primary); }
 
         .btn-new-month { padding: 14px; background: var(--primary); color: white; border-radius: 12px; font-weight: 700; font-size: 1rem; cursor: pointer; border: none; width: 100%; margin-bottom: 10px; }
-        .btn-backup { padding: 10px; background: var(--text-muted); color: white; border-radius: 10px; font-weight: 600; font-size: 0.85rem; cursor: pointer; border: none; width: 100%; opacity: 0.8; }
+        .btn-backup { padding: 10px; background: #5856D6; color: white; border-radius: 10px; font-weight: 600; font-size: 0.85rem; cursor: pointer; border: none; width: 100%; box-shadow: 0 2px 5px rgba(88, 86, 214, 0.2); }
 
         .main-content { flex: 1; padding: 15px; max-width: 1000px; margin: 0 auto; width: 100%; }
         .hidden { display: none !important; }
@@ -97,7 +97,7 @@
         .bg-success { background: var(--success); }
 
         .select-annee-wrapper { position: relative; display: inline-block; }
-        .select-annee-wrapper select { background: white; border: 1px solid var(--border); padding: 10px 35px 10px 15px; border-radius: 8px; font-weight: bold; color: var(--primary); }
+        .select-annee-wrapper select { background: white; border: 1px solid var(--border); padding: 10px 35px 10px 15px; border-radius: 8px; font-weight: bold; color: var(--primary); appearance: auto; }
         .select-annee-wrapper::after { content: "▼"; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 0.7rem; color: var(--primary); pointer-events: none; }
 
         @media (min-width: 768px) {
@@ -120,7 +120,7 @@
         <div id="month-nav-group">
             <div id="month-list"></div>
             <button id="btn-new-month-nav" class="btn-new-month" onclick="window.creerMoisSuivant()">+ Démarrer un mois</button>
-            <button class="btn-backup" onclick="window.telechargerSauvegarde()">📥 Sauvegarde .json</button>
+            <button class="btn-backup" onclick="window.envoyerSauvegardeMail()">📧 Envoyer par Mail</button>
         </div>
     </nav>
 
@@ -128,7 +128,7 @@
         
         <div id="vue-mensuelle">
             <div class="search-container">
-                <input type="text" id="search-bar" placeholder="🔍 Rechercher (ex: Ikea)..." oninput="window.filtrerRecherche()">
+                <input type="text" id="search-bar" placeholder="🔍 Rechercher..." oninput="window.filtrerRecherche()">
             </div>
 
             <div class="header-title-group">
@@ -327,7 +327,7 @@
                     pill.innerText = m.nom.split(' ')[0];
                     pill.onclick = () => { 
                         moisActifId = m.id; 
-                        anneesOuvertes.clear(); // Ferme l'accordéon après sélection
+                        anneesOuvertes.clear(); 
                         window.rendreInterface(); 
                     };
                     sublist.appendChild(pill);
@@ -451,18 +451,29 @@
             }
         }
 
-        window.telechargerSauvegarde = function() {
-            const dataStr = JSON.stringify(donnees, null, 2);
-            const blob = new Blob([dataStr], { type: "application/json" });
-            const url = URL.createObjectURL(blob);
-            const date = new Date().toLocaleDateString('fr-FR').replace(/\//g, '-');
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `budget-lc-sauvegarde-${date}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+        window.envoyerSauvegardeMail = function() {
+            const btn = event.target;
+            const originalText = btn.innerText;
+            btn.innerText = "⏳ Envoi...";
+            btn.disabled = true;
+
+            const urlScript = "https://script.google.com/macros/s/AKfycbwW3w-ScyWzRousgkNA7tdUeifNqB_kr2fXbGH1AqUSduOEdqjegbllEcxkkhVAko3ZIA/exec";
+
+            fetch(urlScript, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: JSON.stringify(donnees)
+            })
+            .then(() => {
+                alert("✅ Sauvegarde envoyée par mail !");
+                btn.innerText = originalText;
+                btn.disabled = false;
+            })
+            .catch(error => {
+                alert("❌ Erreur d'envoi");
+                btn.innerText = originalText;
+                btn.disabled = false;
+            });
         };
     </script>
 </body>
