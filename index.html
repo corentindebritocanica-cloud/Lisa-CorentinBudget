@@ -45,6 +45,7 @@
         .search-container input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); font-size: 1.1rem; }
 
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid var(--border); flex-wrap: wrap; gap: 15px; }
+        .header-title-group { display: flex; align-items: center; gap: 15px; }
         .header select { padding: 10px; font-size: 1.1rem; width: 130px; border: 1px solid #ccc; border-radius: 5px; font-weight: bold; color: var(--primary); }
         .revenus-box { display: flex; align-items: center; background: white; padding: 10px 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         .revenus-box input { padding: 10px; width: 130px; text-align: right; border: 1px solid var(--border); border-radius: 5px; font-weight: bold; font-size: 1.1rem; color: var(--primary); }
@@ -61,6 +62,8 @@
         .input-row input, .input-row select { padding: 8px; border: 1px solid #ccc; border-radius: 4px; width: 100%; font-size: 0.9rem; }
         .input-row input[type="number"] { text-align: right; }
         .btn-delete { background: none; border: none; color: var(--danger); font-size: 1.2rem; cursor: pointer; }
+        .btn-delete-month { background: none; border: none; color: var(--danger); font-size: 1.5rem; cursor: pointer; transition: 0.2s; }
+        .btn-delete-month:hover { transform: scale(1.1); }
 
         .btn-add { background-color: #ecf0f1; color: var(--primary); border: 1px dashed var(--primary); padding: 10px 15px; border-radius: 5px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px; }
         
@@ -74,10 +77,9 @@
         .legend-item { display: flex; align-items: center; gap: 5px; }
         .legend-color { width: 12px; height: 12px; border-radius: 3px; }
 
-        /* Mobile */
+        /* Adaptation Mobile & Tablette */
         @media (max-width: 1100px) {
-            .input-row { grid-template-columns: 30px 1fr 100px 40px; }
-            .input-date, .input-cat { display: none; }
+            .input-row { grid-template-columns: 30px 120px 1fr 120px 90px 40px; }
         }
         @media (max-width: 768px) {
             body { flex-direction: column; }
@@ -86,9 +88,10 @@
             .nav-tabs { flex-direction: row; }
             .btn-tab { flex: 1; }
             .month-list { display: flex; overflow-x: auto; white-space: nowrap; padding: 10px; margin-bottom: 0;}
-            .input-row { display: flex; flex-wrap: wrap; gap: 5px; }
+            /* Sur mobile, on laisse les éléments s'empiler naturellement */
+            .input-row { display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; }
             .input-row > * { flex: 1 1 40%; }
-            .drag-handle, .btn-delete { flex: 0 0 30px; }
+            .drag-handle, .btn-delete { flex: 0 0 30px; text-align: center; }
         }
     </style>
 </head>
@@ -113,10 +116,13 @@
             </div>
 
             <div class="header">
-                <h1 id="titre-mois">Tableau de Bord</h1>
+                <div class="header-title-group">
+                    <h1 id="titre-mois">Tableau de Bord</h1>
+                    <button class="btn-delete-month" onclick="window.supprimerMoisActif()" title="Supprimer ce mois">🗑️</button>
+                </div>
                 <div class="revenus-box">
                     <strong>Revenus communs : &nbsp;</strong>
-                    <input type="number" id="revenus" value="0" oninput="window.majRevenus(this.value)"> &nbsp;€
+                    <input type="number" id="revenus" value="0" onchange="window.majRevenus(this.value)"> &nbsp;€
                 </div>
             </div>
 
@@ -251,7 +257,8 @@
                     m.epargne = m.epargne || [];
                 });
                 
-                if (!moisActifId && donnees.length > 0) {
+                // Si le mois actif a été supprimé ou n'existe pas, on prend le dernier
+                if (!donnees.find(m => m.id === moisActifId) && donnees.length > 0) {
                     moisActifId = donnees[donnees.length - 1].id;
                 }
                 
@@ -345,14 +352,15 @@
                     }
                 };
 
+                // Utilisation de onchange au lieu de oninput pour éviter que le clavier mobile se ferme
                 row.innerHTML = `
                     <div class="drag-handle" title="Glisser pour réorganiser">☰</div>
                     <input type="date" class="input-date" value="${item.date}" onchange="window.majValeur('${type}', ${realIndex}, 'date', this.value)">
-                    <input type="text" value="${item.libelle}" oninput="window.majValeur('${type}', ${realIndex}, 'libelle', this.value)" placeholder="Libellé">
+                    <input type="text" value="${item.libelle}" onchange="window.majValeur('${type}', ${realIndex}, 'libelle', this.value)" placeholder="Libellé">
                     <select class="input-cat" onchange="window.majValeur('${type}', ${realIndex}, 'categorie', this.value)">
                         ${categories.map(opt => `<option value="${opt}" ${opt === item.categorie ? 'selected' : ''}>${opt}</option>`).join('')}
                     </select>
-                    <input type="number" value="${item.montant}" oninput="window.majValeur('${type}', ${realIndex}, 'montant', this.value)">
+                    <input type="number" value="${item.montant}" onchange="window.majValeur('${type}', ${realIndex}, 'montant', this.value)">
                     <button class="btn-delete" onclick="window.supprimerLigne('${type}', ${realIndex})" title="Supprimer">🗑️</button>
                 `;
                 conteneur.appendChild(row);
@@ -379,6 +387,19 @@
         window.supprimerLigne = function(type, index) {
             donnees.find(m => m.id === moisActifId)[type].splice(index, 1);
             window.sauvegarderDonnees();
+        }
+
+        // NOUVELLE FONCTION : Supprimer le mois en cours
+        window.supprimerMoisActif = function() {
+            if (donnees.length <= 1) {
+                alert("Vous ne pouvez pas supprimer le seul mois existant. Créez un nouveau mois d'abord !");
+                return;
+            }
+            if (confirm("Êtes-vous sûr de vouloir supprimer définitivement ce mois et toutes ses données ?")) {
+                donnees = donnees.filter(m => m.id !== moisActifId);
+                moisActifId = donnees[donnees.length - 1].id; // Bascule sur le mois précédent
+                window.sauvegarderDonnees();
+            }
         }
 
         window.trierMontant = function(type) {
