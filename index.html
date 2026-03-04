@@ -38,7 +38,7 @@
         .btn-tab { flex: 1; padding: 8px; border-radius: 8px; border: none; background: transparent; font-weight: 600; font-size: 0.9rem; color: var(--text-muted); cursor: pointer; transition: 0.2s; }
         .btn-tab.active { background: var(--card-bg); color: var(--text-main); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
 
-        /* ACCORDEON MOIS */
+        /* ACCORDÉON MOIS */
         .year-group { margin-bottom: 8px; border-radius: 12px; overflow: hidden; background: #f8f8fa; border: 1px solid var(--border); }
         .year-header { padding: 12px 15px; background: #E5E5EA; color: var(--text-main); font-weight: 700; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
         .year-header::after { content: '▼'; font-size: 0.7rem; transition: transform 0.3s; }
@@ -49,7 +49,8 @@
         .month-pill { padding: 12px; background: white; border-radius: 8px; font-weight: 600; font-size: 0.9rem; color: var(--text-main); cursor: pointer; border: 1px solid var(--border); }
         .month-pill.active { background: #E1F0FF; color: var(--primary); border-color: var(--primary); }
 
-        .btn-new-month { padding: 14px; background: var(--primary); color: white; border-radius: 12px; font-weight: 700; font-size: 1rem; cursor: pointer; border: none; width: 100%; }
+        .btn-new-month { padding: 14px; background: var(--primary); color: white; border-radius: 12px; font-weight: 700; font-size: 1rem; cursor: pointer; border: none; width: 100%; margin-bottom: 10px; }
+        .btn-backup { padding: 10px; background: var(--text-muted); color: white; border-radius: 10px; font-weight: 600; font-size: 0.85rem; cursor: pointer; border: none; width: 100%; opacity: 0.8; }
 
         .main-content { flex: 1; padding: 15px; max-width: 1000px; margin: 0 auto; width: 100%; }
         .hidden { display: none !important; }
@@ -66,38 +67,23 @@
         .btn-delete-month { background: #FFE5E5; color: var(--danger); border: none; border-radius: 8px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
 
         .revenus-box { background: var(--card-bg); padding: 15px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
-        .revenus-box input { width: 110px; text-align: right; border: 1px solid var(--border); padding: 8px; border-radius: 8px; font-weight: bold; color: var(--primary); background: var(--bg-color); -webkit-appearance: none; }
+        .revenus-box input { width: 110px; text-align: right; border: 1px solid var(--border); padding: 8px; border-radius: 8px; font-weight: bold; color: var(--primary); background: var(--bg-color); }
 
-        /* CARTES ET LIGNES */
-        .card { background-color: var(--card-bg); border-radius: 16px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); margin-bottom: 20px; }
-        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
-        .card-header h3 { font-size: 1.1rem; font-weight: 700; }
-        .btn-sort { background: var(--bg-color); border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); }
-
+        /* LIGNES ET DRAG */
         .item-row { display: flex; align-items: center; background: var(--card-bg); padding: 15px 0; border-bottom: 1px solid var(--border); touch-action: none; }
         .item-row:last-child { border-bottom: none; }
-        
-        /* Poignée de déplacement optimisée */
-        .drag-handle { 
-            padding: 10px 20px 10px 10px; 
-            color: #C7C7CC; 
-            cursor: grab; 
-            font-size: 1.6rem; 
-            user-select: none;
-            -webkit-user-select: none;
-        }
-        
+        .drag-handle { padding: 10px 20px 10px 10px; color: #C7C7CC; cursor: grab; font-size: 1.6rem; user-select: none; }
         .item-content { flex: 1; display: flex; flex-direction: column; gap: 8px; }
         .item-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
         .item-bottom { display: flex; gap: 10px; }
         .item-top input[type="text"] { flex: 1; border: none; font-weight: 600; color: var(--text-main); background: transparent; }
-        .item-top input[type="number"] { width: 85px; text-align: right; border: none; font-weight: 700; background: #F2F2F7; padding: 8px; border-radius: 8px; -webkit-appearance: none; }
+        .item-top input[type="number"] { width: 85px; text-align: right; border: none; font-weight: 700; background: #F2F2F7; padding: 8px; border-radius: 8px; }
         .item-bottom input[type="date"], .item-bottom select { flex: 1; background: #F2F2F7; border: none; color: var(--text-muted); font-size: 0.85rem; padding: 6px 10px; border-radius: 6px; }
 
-        .btn-delete { color: var(--danger); background: none; border: none; font-size: 1.3rem; padding-left: 15px; padding-right: 5px; }
+        .btn-delete { color: var(--danger); background: none; border: none; font-size: 1.3rem; padding-left: 15px; }
         .btn-add { background-color: var(--primary); color: white; border: none; padding: 14px; border-radius: 12px; width: 100%; font-weight: 700; margin-top: 10px; }
 
-        /* RÉCAPITULATIF */
+        /* RÉCAP ET BILAN */
         .summary-card { background: linear-gradient(135deg, #007AFF, #5AC8FA); color: white; text-align: center; border-radius: 16px; padding: 30px 20px; }
         .total-amount { font-size: 3.2rem; font-weight: 800; margin: 10px 0; letter-spacing: -1px; }
 
@@ -110,7 +96,6 @@
         .bg-info { background: var(--info); }
         .bg-success { background: var(--success); }
 
-        /* BILAN ANNUEL SPECIAL */
         .select-annee-wrapper { position: relative; display: inline-block; }
         .select-annee-wrapper select { background: white; border: 1px solid var(--border); padding: 10px 35px 10px 15px; border-radius: 8px; font-weight: bold; color: var(--primary); }
         .select-annee-wrapper::after { content: "▼"; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 0.7rem; color: var(--primary); pointer-events: none; }
@@ -134,27 +119,33 @@
         
         <div id="month-nav-group">
             <div id="month-list"></div>
-            <button id="btn-new-month-nav" class="btn-new-month" style="margin-top:10px;" onclick="window.creerMoisSuivant()">+ Démarrer un mois</button>
+            <button id="btn-new-month-nav" class="btn-new-month" onclick="window.creerMoisSuivant()">+ Démarrer un mois</button>
+            <button class="btn-backup" onclick="window.telechargerSauvegarde()">📥 Sauvegarde .json</button>
         </div>
     </nav>
 
     <main class="main-content">
+        
         <div id="vue-mensuelle">
             <div class="search-container">
-                <input type="text" id="search-bar" placeholder="🔍 Rechercher..." oninput="window.filtrerRecherche()">
+                <input type="text" id="search-bar" placeholder="🔍 Rechercher (ex: Ikea)..." oninput="window.filtrerRecherche()">
             </div>
+
             <div class="header-title-group">
                 <h1 id="titre-mois">Chargement...</h1>
                 <button class="btn-delete-month" onclick="window.supprimerMoisActif()">🗑️</button>
             </div>
+
             <div class="revenus-box">
                 <strong>Revenus communs</strong>
                 <input type="number" id="revenus" value="0" onchange="window.majRevenus(this.value)">
             </div>
+
             <div class="card summary-card">
                 <h3>Reste à vivre</h3>
                 <div class="total-amount" id="reste-a-vivre">0 €</div>
             </div>
+
             <div class="card">
                 <h3>Répartition</h3>
                 <div style="margin-top: 15px;">
@@ -176,6 +167,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="card">
                 <div class="card-header">
                     <h3>🏠 Charges Fixes (<span id="total-charges">0</span> €)</h3>
@@ -184,6 +176,7 @@
                 <div id="conteneur-charges"></div>
                 <button class="btn-add" onclick="window.ajouterLigne('charges')">+ Nouvelle charge</button>
             </div>
+
             <div class="card">
                 <div class="card-header">
                     <h3>🛒 Dépenses (<span id="total-depenses">0</span> €)</h3>
@@ -192,6 +185,7 @@
                 <div id="conteneur-depenses"></div>
                 <button class="btn-add" onclick="window.ajouterLigne('depenses')">+ Nouvelle dépense</button>
             </div>
+
             <div class="card">
                 <div class="card-header">
                     <h3>✈️ Projets (<span id="total-epargne">0</span> €)</h3>
@@ -209,6 +203,7 @@
                     <select id="select-annee" onchange="window.rendreVueAnnuelle()"></select>
                 </div>
             </div>
+
             <div class="card summary-card" style="background: linear-gradient(135deg, #AF52DE, #5E5CE6);">
                 <h3>Total Épargné (Année)</h3>
                 <div class="total-amount" id="annuel-total-epargne-top">0 €</div>
@@ -217,6 +212,7 @@
                     <strong id="annuel-total-depense-top">0 €</strong>
                 </div>
             </div>
+
             <div class="card">
                 <h3>Répartition de l'année</h3>
                 <div style="margin-top: 15px;">
@@ -234,6 +230,7 @@
                     </div>
                 </div>
             </div>
+
             <div style="display: grid; gap: 15px;">
                 <div class="revenus-box"><strong>🏠 Charges</strong><h3 style="color:var(--danger);" id="annuel-total-charges">0 €</h3></div>
                 <div class="revenus-box"><strong>🛒 Dépenses</strong><h3 style="color:var(--secondary);" id="annuel-total-depenses">0 €</h3></div>
@@ -328,7 +325,11 @@
                     const pill = document.createElement('div');
                     pill.className = `month-pill ${m.id === moisActifId ? 'active' : ''}`;
                     pill.innerText = m.nom.split(' ')[0];
-                    pill.onclick = () => { moisActifId = m.id; anneesOuvertes.clear(); window.rendreInterface(); };
+                    pill.onclick = () => { 
+                        moisActifId = m.id; 
+                        anneesOuvertes.clear(); // Ferme l'accordéon après sélection
+                        window.rendreInterface(); 
+                    };
                     sublist.appendChild(pill);
                 });
                 liste.appendChild(yearDiv);
@@ -361,13 +362,11 @@
                 conteneur.appendChild(row);
             });
 
-            // CONFIGURATION SORTABLE SPECIAL IPHONE
             new Sortable(conteneur, { 
                 handle: '.drag-handle', 
                 animation: 150,
-                delay: 150, // Délai de 150ms avant de commencer le drag pour permettre le scroll
-                delayOnTouchOnly: true, // Applique le délai uniquement sur mobile
-                touchStartThreshold: 5, // Sensibilité au mouvement
+                delay: 150, 
+                delayOnTouchOnly: true,
                 onEnd: () => {
                     const ids = Array.from(conteneur.children).map(r => r.dataset.id);
                     const mois = donnees.find(m => m.id === moisActifId);
@@ -421,7 +420,9 @@
         }
 
         window.rendreVueAnnuelle = function() {
-            const a = parseInt(document.getElementById('select-annee').value);
+            const val = document.getElementById('select-annee').value;
+            if(!val) return;
+            const a = parseInt(val);
             let tc=0, td=0, te=0;
             donnees.filter(m=>m.annee===a).forEach(m=>{
                 tc += m.charges.reduce((s,i)=>s+i.montant,0);
@@ -449,6 +450,20 @@
                 document.getElementById(`pct-reste-${s}`).innerText = Math.round(r>0?r/t*100:0)+'%';
             }
         }
+
+        window.telechargerSauvegarde = function() {
+            const dataStr = JSON.stringify(donnees, null, 2);
+            const blob = new Blob([dataStr], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const date = new Date().toLocaleDateString('fr-FR').replace(/\//g, '-');
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `budget-lc-sauvegarde-${date}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        };
     </script>
 </body>
 </html>
