@@ -397,7 +397,6 @@
             
             const moisNoms = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
             
-            // Sécurisation du nom et de l'année
             let nomActuel = "Janvier";
             if (dernier.nom) nomActuel = dernier.nom.split(' ')[0];
             let anneeActuelle = dernier.annee || new Date().getFullYear();
@@ -413,7 +412,6 @@
                 nom: moisNoms[indexMois] + " " + anneeActuelle,
                 annee: anneeActuelle,
                 revenus: dernier.revenus || 0,
-                // Le "|| []" est la sécurité vitale pour contrer la suppression Firebase
                 charges: (dernier.charges || []).map(i => ({ ...i, id: Math.random().toString(36).substr(2, 9), date: "" })),
                 depenses: [], 
                 epargne: (dernier.epargne || []).map(i => ({ ...i, id: Math.random().toString(36).substr(2, 9), date: "" }))
