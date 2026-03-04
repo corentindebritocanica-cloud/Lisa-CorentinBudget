@@ -98,25 +98,25 @@
         <h2>Budget</h2>
         
         <div class="nav-tabs">
-            <button class="btn-tab active" id="btn-vue-mensuelle" onclick="changerVue('mensuelle')">📅 Mensuelle</button>
-            <button class="btn-tab" id="btn-vue-annuelle" onclick="changerVue('annuelle')">📊 Annuelle</button>
+            <button class="btn-tab active" id="btn-vue-mensuelle" onclick="window.changerVue('mensuelle')">📅 Mensuelle</button>
+            <button class="btn-tab" id="btn-vue-annuelle" onclick="window.changerVue('annuelle')">📊 Annuelle</button>
         </div>
 
-        <button class="btn-new-month" id="btn-new-month" onclick="creerMoisSuivant()">+ Nouveau Mois</button>
+        <button class="btn-new-month" id="btn-new-month" onclick="window.creerMoisSuivant()">+ Nouveau Mois</button>
         <ul class="month-list" id="month-list"></ul>
     </nav>
 
     <main class="main-content">
         <div id="vue-mensuelle">
             <div class="search-container">
-                <input type="text" id="search-bar" placeholder="🔍 Rechercher une dépense ou une catégorie..." oninput="filtrerRecherche()">
+                <input type="text" id="search-bar" placeholder="🔍 Rechercher une dépense ou une catégorie..." oninput="window.filtrerRecherche()">
             </div>
 
             <div class="header">
                 <h1 id="titre-mois">Tableau de Bord</h1>
                 <div class="revenus-box">
                     <strong>Revenus communs : &nbsp;</strong>
-                    <input type="number" id="revenus" value="0" oninput="majRevenus(this.value)"> &nbsp;€
+                    <input type="number" id="revenus" value="0" oninput="window.majRevenus(this.value)"> &nbsp;€
                 </div>
             </div>
 
@@ -143,28 +143,28 @@
                 <div class="card">
                     <div class="card-header">
                         <h3>🏠 Charges Fixes (<span id="total-charges">0</span> €)</h3>
-                        <button class="btn-sort" onclick="trierMontant('charges')">↕️ Trier</button>
+                        <button class="btn-sort" onclick="window.trierMontant('charges')">↕️ Trier</button>
                     </div>
                     <div id="conteneur-charges"></div>
-                    <button class="btn-add" onclick="ajouterLigne('charges')">+ Ajouter une charge</button>
+                    <button class="btn-add" onclick="window.ajouterLigne('charges')">+ Ajouter une charge</button>
                 </div>
 
                 <div class="card">
                     <div class="card-header">
                         <h3>🛒 Dépenses Courantes (<span id="total-depenses">0</span> €)</h3>
-                        <button class="btn-sort" onclick="trierMontant('depenses')">↕️ Trier</button>
+                        <button class="btn-sort" onclick="window.trierMontant('depenses')">↕️ Trier</button>
                     </div>
                     <div id="conteneur-depenses"></div>
-                    <button class="btn-add" onclick="ajouterLigne('depenses')">+ Ajouter une dépense</button>
+                    <button class="btn-add" onclick="window.ajouterLigne('depenses')">+ Ajouter une dépense</button>
                 </div>
 
                 <div class="card">
                     <div class="card-header">
                         <h3>✈️ Épargne Vacances / Projets (<span id="total-epargne">0</span> €)</h3>
-                        <button class="btn-sort" onclick="trierMontant('epargne')">↕️ Trier</button>
+                        <button class="btn-sort" onclick="window.trierMontant('epargne')">↕️ Trier</button>
                     </div>
                     <div id="conteneur-epargne"></div>
-                    <button class="btn-add" onclick="ajouterLigne('epargne')">+ Ajouter une épargne</button>
+                    <button class="btn-add" onclick="window.ajouterLigne('epargne')">+ Ajouter une épargne</button>
                 </div>
             </div>
         </div>
@@ -174,7 +174,7 @@
                 <h1>Bilan Annuel</h1>
                 <div>
                     <strong>Sélectionnez l'année : </strong>
-                    <select id="select-annee" onchange="rendreVueAnnuelle()"></select>
+                    <select id="select-annee" onchange="window.rendreVueAnnuelle()"></select>
                 </div>
             </div>
 
@@ -220,7 +220,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
-        // VOS CLES FIREBASE (Avec la databaseURL ajoutée manuellement pour la Belgique)
         const firebaseConfig = {
             apiKey: "AIzaSyBro9AXaoXhSptyUVxoKVtr6xC4rtZQ3FI",
             authDomain: "lisa-et-corentin.firebaseapp.com",
@@ -233,7 +232,7 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-        const budgetRef = ref(db, 'budgetDataLC'); // Le dossier dans votre cloud
+        const budgetRef = ref(db, 'budgetDataLC');
 
         let donnees = [];
         let moisActifId = null;
@@ -242,12 +241,10 @@
 
         const categories = ["🏠 Logement", "🛒 Courses", "🚗 Transport", "🎬 Loisirs", "🏥 Santé", "🛍️ Shopping", "✈️ Vacances", "❓ Autre"];
 
-        // --- ECOUTEUR FIREBASE : Met à jour l'appli sur tous les écrans en temps réel ---
         onValue(budgetRef, (snapshot) => {
             const data = snapshot.val();
             if (data) {
                 donnees = data;
-                // Correction Firebase : Firebase supprime les tableaux vides, on les recrée
                 donnees.forEach(m => {
                     m.charges = m.charges || [];
                     m.depenses = m.depenses || [];
@@ -260,22 +257,21 @@
                 
                 const estVueAnnuelle = !document.getElementById('vue-annuelle').classList.contains('hidden');
                 if (estVueAnnuelle) {
-                    preparerFiltreAnnuel();
-                    rendreVueAnnuelle();
+                    window.preparerFiltreAnnuel();
+                    window.rendreVueAnnuelle();
                 } else {
-                    rendreInterface();
+                    window.rendreInterface();
                 }
             } else {
-                initDefaut();
+                window.initDefaut();
             }
         });
 
-        // Envoi des données vers le cloud
-        function sauvegarderDonnees() {
+        window.sauvegarderDonnees = function() {
             set(budgetRef, donnees);
         }
 
-        function initDefaut() {
+        window.initDefaut = function() {
             donnees = [{
                 id: Date.now(),
                 nom: "Mars 2026",
@@ -286,12 +282,10 @@
                 epargne: [{ id: "e1", date: "", libelle: "Billet d'avion", categorie: "✈️ Vacances", montant: 200 }]
             }];
             moisActifId = donnees[0].id;
-            sauvegarderDonnees();
+            window.sauvegarderDonnees();
         }
-
-        // --- FONCTIONS CONNECTEES A L'HTML ---
         
-        function changerVue(vue) {
+        window.changerVue = function(vue) {
             document.getElementById('btn-vue-mensuelle').classList.toggle('active', vue === 'mensuelle');
             document.getElementById('btn-vue-annuelle').classList.toggle('active', vue === 'annuelle');
             document.getElementById('vue-mensuelle').classList.toggle('hidden', vue !== 'mensuelle');
@@ -299,35 +293,35 @@
             document.getElementById('month-list').style.display = vue === 'annuelle' ? 'none' : 'block';
             document.getElementById('btn-new-month').style.display = vue === 'annuelle' ? 'none' : 'block';
 
-            if (vue === 'annuelle') { preparerFiltreAnnuel(); rendreVueAnnuelle(); } 
-            else { rendreInterface(); }
+            if (vue === 'annuelle') { window.preparerFiltreAnnuel(); window.rendreVueAnnuelle(); } 
+            else { window.rendreInterface(); }
         }
 
-        function rendreInterface() {
-            rendreMenu();
+        window.rendreInterface = function() {
+            window.rendreMenu();
             const mois = donnees.find(m => m.id === moisActifId);
             if (!mois) return;
             document.getElementById('titre-mois').innerText = "Tableau de Bord - " + mois.nom;
-            document.getElementById('revenus').value = mois.revenus;
-            rendreLignes('conteneur-charges', mois.charges, 'charges');
-            rendreLignes('conteneur-depenses', mois.depenses, 'depenses');
-            rendreLignes('conteneur-epargne', mois.epargne, 'epargne');
-            calculerBudget();
+            document.getElementById('revenus').value = mois.revenus || 0;
+            window.rendreLignes('conteneur-charges', mois.charges, 'charges');
+            window.rendreLignes('conteneur-depenses', mois.depenses, 'depenses');
+            window.rendreLignes('conteneur-epargne', mois.epargne, 'epargne');
+            window.calculerBudget();
         }
 
-        function rendreMenu() {
+        window.rendreMenu = function() {
             const liste = document.getElementById('month-list');
             liste.innerHTML = '';
             [...donnees].reverse().forEach(mois => {
                 const li = document.createElement('li');
                 li.innerText = mois.nom;
                 if (mois.id === moisActifId) li.className = 'active';
-                li.onclick = () => { moisActifId = mois.id; rendreInterface(); };
+                li.onclick = () => { moisActifId = mois.id; window.rendreInterface(); };
                 liste.appendChild(li);
             });
         }
 
-        function rendreLignes(idConteneur, tableau, type) {
+        window.rendreLignes = function(idConteneur, tableau, type) {
             const conteneur = document.getElementById(idConteneur);
             conteneur.innerHTML = '';
             const tabFiltre = tableau.filter(item => item.libelle.toLowerCase().includes(termeRecherche) || item.categorie.toLowerCase().includes(termeRecherche));
@@ -347,7 +341,7 @@
                         const temp = arr[dragSourceInfo.index];
                         arr[dragSourceInfo.index] = arr[realIndex];
                         arr[realIndex] = temp;
-                        sauvegarderDonnees();
+                        window.sauvegarderDonnees();
                     }
                 };
 
@@ -365,79 +359,91 @@
             });
         }
 
-        function majRevenus(valeur) {
+        window.majRevenus = function(valeur) {
             donnees.find(m => m.id === moisActifId).revenus = parseFloat(valeur) || 0;
-            sauvegarderDonnees();
+            window.sauvegarderDonnees();
         }
 
-        function majValeur(type, index, champ, valeur) {
+        window.majValeur = function(type, index, champ, valeur) {
             const mois = donnees.find(m => m.id === moisActifId);
             if (champ === 'montant') mois[type][index][champ] = parseFloat(valeur) || 0;
             else mois[type][index][champ] = valeur;
-            sauvegarderDonnees();
+            window.sauvegarderDonnees();
         }
 
-        function ajouterLigne(type) {
+        window.ajouterLigne = function(type) {
             donnees.find(m => m.id === moisActifId)[type].push({ id: Math.random().toString(36).substr(2, 9), date: "", libelle: "", categorie: categories[7], montant: 0 });
-            sauvegarderDonnees();
+            window.sauvegarderDonnees();
         }
 
-        function supprimerLigne(type, index) {
+        window.supprimerLigne = function(type, index) {
             donnees.find(m => m.id === moisActifId)[type].splice(index, 1);
-            sauvegarderDonnees();
+            window.sauvegarderDonnees();
         }
 
-        function trierMontant(type) {
+        window.trierMontant = function(type) {
             donnees.find(m => m.id === moisActifId)[type].sort((a, b) => b.montant - a.montant);
-            sauvegarderDonnees();
+            window.sauvegarderDonnees();
         }
 
-        function filtrerRecherche() {
+        window.filtrerRecherche = function() {
             termeRecherche = document.getElementById('search-bar').value.toLowerCase();
-            rendreInterface();
+            window.rendreInterface();
         }
 
-        function creerMoisSuivant() {
+        window.creerMoisSuivant = function() {
+            if (!donnees || donnees.length === 0) return;
             const dernier = donnees[donnees.length - 1];
-            const moisNoms = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
-            let nomActuel = dernier.nom.split(' ')[0];
-            let anneeActuelle = dernier.annee;
             
-            let indexMois = moisNoms.indexOf(nomActuel) + 1;
+            const moisNoms = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
+            
+            // Sécurisation du nom et de l'année
+            let nomActuel = "Janvier";
+            if (dernier.nom) nomActuel = dernier.nom.split(' ')[0];
+            let anneeActuelle = dernier.annee || new Date().getFullYear();
+            
+            let indexMois = moisNoms.findIndex(m => m.toLowerCase() === nomActuel.toLowerCase());
+            if (indexMois === -1) indexMois = 0;
+            
+            indexMois++;
             if(indexMois > 11) { indexMois = 0; anneeActuelle++; }
             
-            donnees.push({
+            const nouveauMois = {
                 id: Date.now(),
                 nom: moisNoms[indexMois] + " " + anneeActuelle,
                 annee: anneeActuelle,
-                revenus: dernier.revenus,
-                charges: dernier.charges.map(i => ({ ...i, id: Math.random().toString(36).substr(2, 9), date: "" })),
+                revenus: dernier.revenus || 0,
+                // Le "|| []" est la sécurité vitale pour contrer la suppression Firebase
+                charges: (dernier.charges || []).map(i => ({ ...i, id: Math.random().toString(36).substr(2, 9), date: "" })),
                 depenses: [], 
-                epargne: dernier.epargne.map(i => ({ ...i, id: Math.random().toString(36).substr(2, 9), date: "" }))
-            });
-            moisActifId = donnees[donnees.length - 1].id;
-            sauvegarderDonnees();
-            changerVue('mensuelle');
+                epargne: (dernier.epargne || []).map(i => ({ ...i, id: Math.random().toString(36).substr(2, 9), date: "" }))
+            };
+
+            donnees.push(nouveauMois);
+            moisActifId = nouveauMois.id;
+            window.sauvegarderDonnees();
+            
+            window.changerVue('mensuelle');
             window.scrollTo(0,0);
         }
 
-        function calculerBudget() {
+        window.calculerBudget = function() {
             const m = donnees.find(m => m.id === moisActifId);
-            const tC = m.charges.reduce((s, i) => s + (i.montant || 0), 0);
-            const tD = m.depenses.reduce((s, i) => s + (i.montant || 0), 0);
-            const tE = m.epargne.reduce((s, i) => s + (i.montant || 0), 0);
+            const tC = (m.charges || []).reduce((s, i) => s + (i.montant || 0), 0);
+            const tD = (m.depenses || []).reduce((s, i) => s + (i.montant || 0), 0);
+            const tE = (m.epargne || []).reduce((s, i) => s + (i.montant || 0), 0);
             
             document.getElementById('total-charges').innerText = tC.toFixed(2);
             document.getElementById('total-depenses').innerText = tD.toFixed(2);
             document.getElementById('total-epargne').innerText = tE.toFixed(2);
 
-            const reste = m.revenus - tC - tD - tE;
+            const reste = (m.revenus || 0) - tC - tD - tE;
             document.getElementById('reste-a-vivre').innerText = reste.toFixed(2) + ' €';
 
-            dessinerCamembertCSS('camembert-mensuel', tC, tD, tE, reste);
+            window.dessinerCamembertCSS('camembert-mensuel', tC, tD, tE, reste);
         }
 
-        function preparerFiltreAnnuel() {
+        window.preparerFiltreAnnuel = function() {
             const select = document.getElementById('select-annee');
             select.innerHTML = '';
             [...new Set(donnees.map(m => m.annee))].sort((a,b)=> b-a).forEach(annee => {
@@ -447,17 +453,17 @@
             });
         }
 
-        function rendreVueAnnuelle() {
+        window.rendreVueAnnuelle = function() {
             const select = document.getElementById('select-annee');
             if(!select.value) return;
             const anneeChoisie = parseInt(select.value);
             
             let tRev = 0, tChar = 0, tDep = 0, tEpa = 0;
             donnees.filter(m => m.annee === anneeChoisie).forEach(mois => {
-                tRev += mois.revenus;
-                tChar += mois.charges.reduce((sum, i) => sum + (parseFloat(i.montant) || 0), 0);
-                tDep += mois.depenses.reduce((sum, i) => sum + (parseFloat(i.montant) || 0), 0);
-                tEpa += mois.epargne.reduce((sum, i) => sum + (parseFloat(i.montant) || 0), 0);
+                tRev += (mois.revenus || 0);
+                tChar += (mois.charges || []).reduce((sum, i) => sum + (parseFloat(i.montant) || 0), 0);
+                tDep += (mois.depenses || []).reduce((sum, i) => sum + (parseFloat(i.montant) || 0), 0);
+                tEpa += (mois.epargne || []).reduce((sum, i) => sum + (parseFloat(i.montant) || 0), 0);
             });
 
             const reste = tRev - tChar - tDep - tEpa;
@@ -467,10 +473,10 @@
             document.getElementById('annuel-total-epargne').innerText = tEpa.toFixed(2) + ' €';
             document.getElementById('annuel-reste').innerText = (tEpa + reste).toFixed(2) + ' €';
 
-            dessinerCamembertCSS('camembert-annuel', tChar, tDep, tEpa, reste);
+            window.dessinerCamembertCSS('camembert-annuel', tChar, tDep, tEpa, reste);
         }
 
-        function dessinerCamembertCSS(idElement, charges, depenses, epargne, reste) {
+        window.dessinerCamembertCSS = function(idElement, charges, depenses, epargne, reste) {
             const camembert = document.getElementById(idElement);
             if (!camembert) return;
             let total = charges + depenses + epargne + (reste > 0 ? reste : 0);
@@ -482,18 +488,6 @@
 
             camembert.style.background = `conic-gradient(var(--danger) 0% ${fC}%, var(--secondary) ${fC}% ${fD}%, var(--info) ${fD}% ${fE}%, var(--success) ${fE}% 100%)`;
         }
-
-        // On expose les fonctions à l'HTML
-        window.changerVue = changerVue;
-        window.creerMoisSuivant = creerMoisSuivant;
-        window.filtrerRecherche = filtrerRecherche;
-        window.majRevenus = majRevenus;
-        window.trierMontant = trierMontant;
-        window.ajouterLigne = ajouterLigne;
-        window.majValeur = majValeur;
-        window.supprimerLigne = supprimerLigne;
-        window.rendreVueAnnuelle = rendreVueAnnuelle;
-
     </script>
 </body>
 </html>
