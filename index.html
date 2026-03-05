@@ -84,7 +84,10 @@
         .status-dot.saving { background-color: var(--secondary); animation: pulse 1s infinite; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
-        .revenus-box { background: var(--card-bg); padding: 15px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
+        /* NOUVEAU DESIGN REVENUS */
+        .revenus-box { background: var(--card-bg); padding: 15px; border-radius: 16px; display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
+        .revenus-row { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+        .revenus-row:not(:last-child) { padding-bottom: 12px; border-bottom: 1px dashed var(--border); }
         .revenus-box input { width: 110px; text-align: right; border: 1px solid var(--border); padding: 8px; border-radius: 8px; font-weight: bold; color: var(--primary); }
 
         .card { background-color: var(--card-bg); border-radius: 16px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); margin-bottom: 20px; }
@@ -184,7 +187,18 @@
             </div>
 
             <div id="mois-content-wrapper">
-                <div class="revenus-box"><strong>Revenus communs</strong><input type="number" id="revenus" value="0" onchange="window.majRevenus(this.value)"></div>
+                
+                <div class="revenus-box">
+                    <div class="revenus-row">
+                        <strong>Revenus initiaux</strong>
+                        <input type="number" id="revenus" value="0" onchange="window.majRevenuField('revenus', this.value)">
+                    </div>
+                    <div class="revenus-row">
+                        <strong>Ajouts en cours de mois</strong>
+                        <input type="number" id="revenus_add" value="0" placeholder="+ 0" onchange="window.majRevenuField('revenus_add', this.value)">
+                    </div>
+                </div>
+
                 <div class="card summary-card">
                     <h3>Reste à vivre</h3>
                     <div class="total-amount" id="reste-a-vivre">0 €</div>
@@ -348,6 +362,7 @@
         let firstLoad = true;
 
         const blagues = {
+            nouveauMois: "Un nouveau mois ! Prêt à prendre de nouvelles mauvaises décisions ?|On efface tout et on recommence à se ruiner.|Nouveau mois, nouveau découvert. C'est la tradition.|30 jours pour prouver que vous savez gérer votre argent. J'en doute.|C'est reparti pour un tour de manège financier terrifiant.|Allez, ce mois-ci on essaie de ne pas pleurer en regardant son compte.|Préparez-vous psychologiquement, le capitalisme ne dort jamais.".split('|'),
             resto: "Encore au resto ? Vos artères et votre banquier pleurent en chœur.|Le serveur va finir par vous compter comme personne à charge.|Ce soir c'est caviar ou juste un manque de self-control ?|Votre estomac a un meilleur train de vie que vous.|Le livreur Uber Eats a mis votre adresse en favori.|On dit que l'appétit vient en mangeant, la ruine aussi.|Le TPE du restaurant a fait une danse de la joie à votre approche.|Un jour, votre estomac fera banqueroute.|Vous appelez ça un brunch, j'appelle ça un suicide financier.|L'hospice vous donnera de la soupe gratuite.|Vous confondez 'se faire plaisir' et 'nourrir un régiment'.|Cuisiner, c'est pour les pauvres. Oh, attendez... vous l'êtes bientôt.|Ce repas vous a coûté l'équivalent du PIB d'un petit pays.|Le doggy bag est obligatoire à ce niveau, c'est pour la semaine.|Payer 25€ pour une salade. Le QI est en chute libre.|Si la gourmandise est un péché, votre compte est déjà en enfer.|Chaque fois que vous touchez un menu, le CAC 40 grimpe de deux points.".split('|'),
             courses: "Vous savez qu'un paquet de riz coûte 1€, n'est-ce pas ?|Les actionnaires de Carrefour vous remercient.|Encore des courses ? On prépare la fin du monde ?|Le PDG de Leclerc s'est acheté une Ferrari grâce à vous.|L'industrie agroalimentaire va vous couler une statue en beurre.|Ce n'est pas parce que le chariot a des roulettes qu'il faut le remplir.|Vous êtes la cible marketing parfaite. Littéralement un pigeon en or.|Acheter bio pour mourir ruiné. Beau choix.|Votre caddie déborde, votre compte se vide. L'équilibre naturel.|Vous allez devoir payer vos courses en chèques-vacances.|La caissière connaît mieux votre code PIN que vous.|Mangez bien, le stress des huissiers vous fera brûler des calories.|Vous devriez sponsoriser des vaches laitières, ce serait plus direct.|Le caddie pèse plus lourd que vos regrets dans la vie.".split('|'),
             loisirs: "Encore un truc qui va prendre la poussière.|Amazon devrait vous décerner le titre d'Employé du Mois.|Le capitalisme vous remercie pour votre noble sacrifice.|Vous venez d'acheter un aller simple pour la culpabilité de minuit.|C'est incroyable de payer si cher pour un truc si moche.|Si vous achetiez des neurones à la place, vous seriez prix Nobel.|Payer pour s'amuser, c'est triste. L'ennui, c'est gratuit.|La thérapie par le shopping, c'est boire de l'eau de mer quand on a soif.|Acheter, jeter, pleurer. Le grand cycle de votre vie.|Vous savez que Vinted a été créé pour les gens comme vous ?|Le capitalisme sourit, la planète pleure, votre banquier aiguise un couteau.|Ce n'est pas parce que 'vous le valez bien' qu'il fallait l'acheter.|Un 'achat plaisir'. Le nom de code pour 'regret matinal'.".split('|'),
@@ -393,7 +408,8 @@
                 const te = eList.reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
                 const tass = aList.reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
                 
-                const r = (parseFloat(m.revenus)||0) - tc - td - te - tass;
+                const totalRevenus = (parseFloat(m.revenus)||0) + (parseFloat(m.revenus_add)||0);
+                const r = totalRevenus - tc - td - te - tass;
                 
                 if(mode === "load" && !hasShownLoadSarcasm) {
                     hasShownLoadSarcasm = true;
@@ -434,6 +450,7 @@
                     m.depenses = Array.isArray(m.depenses) ? m.depenses : (m.depenses ? Object.values(m.depenses) : []);
                     m.epargne = Array.isArray(m.epargne) ? m.epargne : (m.epargne ? Object.values(m.epargne) : []);
                     m.assurances = Array.isArray(m.assurances) ? m.assurances : (m.assurances ? Object.values(m.assurances) : []);
+                    if(typeof m.revenus_add === 'undefined') m.revenus_add = 0; // Sécurité ancien format
                 });
 
                 if (!moisActifId && donnees.length > 0) moisActifId = donnees[donnees.length - 1].id;
@@ -464,7 +481,7 @@
         window.sauvegarderConfig = function() { set(configRef, { categories, corbeille: corbeille }); }
 
         window.initDefaut = function() {
-            donnees = [{ id: Date.now(), nom: "Mars 2026", annee: 2026, revenus: 4500, charges: [], depenses: [], epargne: [], assurances: [], locked: false }];
+            donnees = [{ id: Date.now(), nom: "Mars 2026", annee: 2026, revenus: 4500, revenus_add: 0, charges: [], depenses: [], epargne: [], assurances: [], locked: false }];
             moisActifId = donnees[0].id; window.sauvegarderDonnees();
             rafraichirVueActuelle();
         }
@@ -562,6 +579,7 @@
             
             document.getElementById('titre-mois').innerText = mois.nom;
             document.getElementById('revenus').value = mois.revenus || 0;
+            document.getElementById('revenus_add').value = mois.revenus_add || 0;
             
             const wrapper = document.getElementById('mois-content-wrapper');
             const btnLock = document.getElementById('btn-lock');
@@ -618,30 +636,25 @@
 
         const regexSupermarche = /leclerc|lecler|carrefour|carefour|auchan|intermarch|super\s*u|lidl|aldi|frais|cora|casino|netto/i;
 
-        // --- ICI LE SARCASME EST SOUS HAUTE SURVEILLANCE ---
         window.majValeur = function(type, id, champ, val) {
             const mois = donnees.find(m => m.id === moisActifId);
             const item = (mois[type]||[]).find(i => i.id === id);
             if(!item) return;
             
-            // Auto-catégorisation Courses
             if(champ === 'libelle' && type === 'depenses' && regexSupermarche.test(val)) {
                 item.categorie = categories.find(c => c.includes("Courses")) || categories[0];
                 const sel = document.getElementById(`sel-${id}`); if(sel) sel.value = item.categorie;
             }
             
-            // On sauvegarde D'ABORD les données, ça c'est prioritaire
             item[champ] = (champ === 'montant') ? parseFloat(val) || 0 : val;
             window.sauvegarderDonnees();
-            window.calculerBudget(); // On met à jour l'interface instantanément
+            window.calculerBudget(); 
             
-            // ENSUITE SEULEMENT, on tente une vanne (dans un try...catch pour ne rien casser)
             try {
                 if(champ === 'montant' || champ === 'categorie') {
                     const amt = parseFloat(item.montant) || 0;
                     const cat = item.categorie || '';
                     
-                    // DOUBLE CONDITION : Il faut un montant > 0 ET une catégorie choisie
                     if(amt > 0 && cat !== '') {
                         if(type === 'epargne') window.afficherSarcasme('riche');
                         else if(type === 'assurances' || cat.includes('Assurance') || cat.includes('Auto')) window.afficherSarcasme('assurances_vehicules');
@@ -658,13 +671,20 @@
                     }
                 }
             } catch (e) {
-                console.error("L'IA a raté sa blague, mais l'appli survit.", e);
+                console.error("L'IA a raté sa blague", e);
             }
         }
 
-        window.majRevenus = function(val) { donnees.find(m => m.id === moisActifId).revenus = parseFloat(val) || 0; window.sauvegarderDonnees(); window.calculerBudget(); }
+        // GESTION DES REVENUS (Initial + Additionnel)
+        window.majRevenuField = function(champ, val) {
+            const m = donnees.find(m => m.id === moisActifId);
+            if(m) {
+                m[champ] = parseFloat(val) || 0;
+                window.sauvegarderDonnees();
+                window.calculerBudget();
+            }
+        }
         
-        // BOUTON AJOUTER : TOTALEMENT CLEAN (Pas de sarcasme, juste de l'ajout)
         window.ajouterLigne = function(type) { 
             const mois = donnees.find(m => m.id === moisActifId);
             if(!mois) return;
@@ -683,7 +703,8 @@
 
             mois[type].unshift({ id: Math.random().toString(36).substr(2,9), date:"", libelle:"", categorie: catDefaut, montant:0 }); 
             
-            if(type === 'epargne' || type === 'assurances') {
+            // Les confettis SONT SUPPRIMÉS pour les assurances
+            if(type === 'epargne') {
                 if(document.body.classList.contains('theme-christmas')) {
                     if(typeof window.neigeNoel === 'function') window.neigeNoel();
                 } else {
@@ -692,7 +713,7 @@
             }
             
             window.sauvegarderDonnees(); 
-            window.rendreInterface(); // Rend l'interface immédiatement
+            window.rendreInterface(); 
         }
 
         window.demanderSuppression = function(type, id) {
@@ -754,14 +775,19 @@
             const noms = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
             let idx = noms.indexOf(d.nom.split(' ')[0]) + 1; let an = d.annee; if(idx > 11) { idx = 0; an++; }
             const nouveau = { 
-                id: Date.now(), nom: noms[idx]+" "+an, annee: an, revenus: d.revenus, 
+                id: Date.now(), nom: noms[idx]+" "+an, annee: an, revenus: d.revenus, revenus_add: 0, // Reset des ajouts
                 charges: (Array.isArray(d.charges)?d.charges:[]).map(c=>({...c, id:Math.random().toString(36).substr(2,9)})), 
                 depenses:[], 
                 epargne: (Array.isArray(d.epargne)?d.epargne:[]).map(e=>({...e, id:Math.random().toString(36).substr(2,9)})), 
                 assurances: (Array.isArray(d.assurances)?d.assurances:[]).map(a=>({...a, id:Math.random().toString(36).substr(2,9)})),
                 locked: false 
             };
-            donnees.push(nouveau); moisActifId = nouveau.id; window.sauvegarderDonnees(); window.changerVue('mensuelle');
+            donnees.push(nouveau); moisActifId = nouveau.id; 
+            window.sauvegarderDonnees(); 
+            window.changerVue('mensuelle');
+            
+            // SARCASME NOUVEAU MOIS
+            setTimeout(() => window.afficherSarcasme('nouveauMois'), 600);
         }
 
         function updateSyncDot(status) {
@@ -778,7 +804,10 @@
             const td = (Array.isArray(m.depenses)?m.depenses:[]).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
             const te = (Array.isArray(m.epargne)?m.epargne:[]).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
             const tass = (Array.isArray(m.assurances)?m.assurances:[]).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
-            const r = (parseFloat(m.revenus)||0) - tc - td - te - tass;
+            
+            // Cacul avec les revenus initiaux + additionnels
+            const totalRevenus = (parseFloat(m.revenus)||0) + (parseFloat(m.revenus_add)||0);
+            const r = totalRevenus - tc - td - te - tass;
             
             document.getElementById('total-charges').innerText = tc.toFixed(2);
             document.getElementById('total-depenses').innerText = td.toFixed(2);
