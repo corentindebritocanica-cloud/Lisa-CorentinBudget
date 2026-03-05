@@ -59,7 +59,6 @@
         input, select { font-size: 16px !important; outline: none; background: transparent; color: var(--text-main); }
         input[type="number"] { background: var(--bg-color); }
         select { appearance: none; -webkit-appearance: none; }
-        /* Fix pour les listes déroulantes en mode sombre */
         option { background-color: var(--card-bg); color: var(--text-main); }
 
         .search-container input { width: 100%; padding: 12px 15px; border-radius: 12px; border: 1px solid var(--border); background: var(--card-bg); font-size: 1rem; margin-bottom: 15px;}
@@ -109,6 +108,10 @@
         #toast { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 12px 20px; border-radius: 20px; font-weight: 600; display: flex; align-items: center; gap: 15px; transition: bottom 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
         #toast.show { bottom: 25px; }
         #btn-undo { background: var(--secondary); color: white; border: none; padding: 6px 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+
+        /* POPUP HORS-LIGNE */
+        #offline-popup { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 9999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(3px); }
+        .offline-box { background: var(--card-bg); padding: 30px; border-radius: 20px; text-align: center; max-width: 85%; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
 
         /* VUE ADMIN */
         .admin-section { background: var(--card-bg); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--border); }
@@ -226,7 +229,6 @@
 
             <div class="admin-section">
                 <h3>🗑️ Corbeille (Lignes supprimées)</h3>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Les 10 dernières suppressions. Elles retourneront exactement là où elles étaient.</p>
                 <div id="admin-corbeille"></div>
             </div>
 
@@ -243,6 +245,15 @@
     <div id="toast">
         <span id="toast-msg">Ligne supprimée</span>
         <button id="btn-undo" onclick="window.annulerSuppression()">Annuler</button>
+    </div>
+
+    <div id="offline-popup" class="hidden">
+        <div class="offline-box">
+            <h2 style="color:var(--danger); margin-bottom:15px; font-size:2rem;">⚠️</h2>
+            <h3 style="margin-bottom:10px;">Connexion Perdue</h3>
+            <p style="color:var(--text-muted); font-size:0.95rem; line-height:1.4;">Vous n'avez plus de réseau internet.<br><strong style="color:var(--text-main);">Aucune donnée ne sera sauvegardée</strong> tant que la connexion ne sera pas rétablie.</p>
+            <button class="btn-action bg-primary" style="margin-top:20px; width:auto; padding:10px 25px;" onclick="document.getElementById('offline-popup').classList.add('hidden')">J'ai compris</button>
+        </div>
     </div>
 
     <script type="module">
@@ -275,14 +286,20 @@
         let suppressionEnAttente = null;
         let toastTimeout = null;
 
-        // DÉTECTION HORS-LIGNE
-        window.addEventListener('offline', () => updateSyncDot('offline'));
-        window.addEventListener('online', () => updateSyncDot('online'));
+        // DÉTECTION HORS-LIGNE (ALERTE SEULEMENT)
+        window.addEventListener('offline', () => {
+            updateSyncDot('offline');
+            document.getElementById('offline-popup').classList.remove('hidden');
+        });
+        window.addEventListener('online', () => {
+            updateSyncDot('online');
+            document.getElementById('offline-popup').classList.add('hidden');
+        });
 
         function updateSyncDot(state) {
             const dot = document.getElementById('sync-dot');
             dot.className = 'status-dot ' + state;
-            dot.title = state === 'offline' ? 'Mode Hors-ligne (Sauvegarde locale)' : 'Synchronisé';
+            dot.title = state === 'offline' ? 'Hors-Ligne (Pas de sauvegarde)' : 'Synchronisé';
         }
 
         // CHARGEMENT DONNÉES
@@ -294,10 +311,6 @@
                     m.charges = m.charges || []; m.depenses = m.depenses || []; m.epargne = m.epargne || [];
                 });
                 if (!moisActifId && donnees.length > 0) moisActifId = donnees[donnees.length - 1].id;
-                
-                // Sauvegarde locale secrète pour le mode hors-ligne
-                localStorage.setItem('backupBudgetLC', JSON.stringify(donnees));
-                
                 rafraichirVueActuelle();
             } else { window.initDefaut(); }
         });
@@ -313,13 +326,10 @@
 
         window.sauvegarderDonnees = function() {
             updateSyncDot('saving');
-            if (navigator.onLine) {
-                set(budgetRef, donnees).then(() => setTimeout(() => updateSyncDot('online'), 500));
-            } else {
-                localStorage.setItem('backupBudgetLC', JSON.stringify(donnees)); // Cache local
-            }
+            // Sauvegarde UNIQUEMENT vers Firebase. Pas de mode local.
+            set(budgetRef, donnees).then(() => setTimeout(() => updateSyncDot('online'), 500)).catch(e => console.log("Erreur de sauvegarde", e));
         }
-        window.sauvegarderConfig = function() { if (navigator.onLine) set(configRef, { categories, corbeille: corbeille.slice(0, 10) }); }
+        window.sauvegarderConfig = function() { set(configRef, { categories, corbeille: corbeille }); }
 
         window.initDefaut = function() {
             donnees = [{ id: Date.now(), nom: "Mars 2026", annee: 2026, revenus: 4500, charges: [], depenses: [], epargne: [] }];
@@ -357,7 +367,7 @@
         window.toggleSection = function(id, headerEl) {
             const content = document.getElementById(id);
             content.classList.toggle('collapsed');
-            headerEl.classList.toggle('collapsed');
+            if(headerEl) headerEl.classList.toggle('collapsed');
         }
 
         window.toggleAnnee = function(annee) {
@@ -422,7 +432,7 @@
                 conteneur.appendChild(row);
             });
 
-            if (conteneur._sortable) conteneur._sortable.destroy(); // Fix iPhone Drag
+            if (conteneur._sortable) conteneur._sortable.destroy(); 
             conteneur._sortable = new Sortable(conteneur, { 
                 handle: '.drag-handle', animation: 150, delay: 150, delayOnTouchOnly: true, fallbackOnBody: true,
                 onEnd: () => {
@@ -465,26 +475,24 @@
             const index = mois[type].findIndex(i => i.id === id);
             if(index > -1) {
                 const item = mois[type][index];
-                // On stocke pour Undo en gardant la trace exacte de son type d'origine
                 suppressionEnAttente = { type: type, item: item, moisId: moisActifId, index: index };
                 
-                // On supprime visuellement et en base
                 mois[type].splice(index, 1);
                 window.sauvegarderDonnees();
                 
-                // On affiche le Toast
                 const toast = document.getElementById('toast');
                 toast.classList.add('show');
                 clearTimeout(toastTimeout);
                 
                 toastTimeout = setTimeout(() => {
                     toast.classList.remove('show');
-                    // Validation finale -> Corbeille (on sauvegarde le type original !)
                     if(suppressionEnAttente) {
+                        const dateActuelle = new Date();
+                        const dateFormat = dateActuelle.toLocaleDateString('fr-FR') + ' à ' + dateActuelle.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'});
                         corbeille.unshift({
                             ...suppressionEnAttente.item, 
                             typeOriginal: suppressionEnAttente.type, 
-                            dateSuppr: new Date().toLocaleString()
+                            dateSuppr: dateFormat
                         });
                         window.sauvegarderConfig();
                         suppressionEnAttente = null;
@@ -510,11 +518,9 @@
             const item = corbeille[index];
             const mois = donnees.find(m => m.id === moisActifId);
             if(mois) {
-                // On récupère le type original exact (ou on devine si c'est une vieille donnée)
                 let typeCible = item.typeOriginal || 'depenses';
                 if (!item.typeOriginal && item.libelle === undefined) typeCible = 'charges'; 
                 
-                // On nettoie les traces de la corbeille avant de remettre la ligne
                 delete item.typeOriginal;
                 delete item.dateSuppr;
 
@@ -524,7 +530,15 @@
                 window.sauvegarderDonnees();
                 window.sauvegarderConfig();
                 alert("Élément restauré avec succès !");
-                window.rendreInterface(); // On force le rafraichissement pour voir la ligne réapparaître
+                window.rendreInterface(); 
+            }
+        }
+
+        window.viderCorbeille = function() {
+            if(confirm("Vider définitivement TOUTE la corbeille ? Action irréversible.")) {
+                corbeille = [];
+                window.sauvegarderConfig();
+                window.rendreAdmin();
             }
         }
 
@@ -606,13 +620,33 @@
             if(corbeille.length === 0) {
                 corbDiv.innerHTML = "<p style='color:var(--text-muted);font-size:0.9rem;'>Corbeille vide.</p>";
             } else {
-                corbDiv.innerHTML = corbeille.map((c, i) => {
+                let html = `<button class="btn-action bg-danger" style="padding:10px; font-size:0.9rem; margin-bottom:15px;" onclick="window.viderCorbeille()">🗑️ Vider la corbeille</button>`;
+                
+                const creerLigneHTML = (c, index) => {
                     let badge = c.typeOriginal === 'charges' ? '🏠 Fixe' : (c.typeOriginal === 'epargne' ? '✈️ Épargne' : '🛒 Dépense');
+                    let dateInfo = c.dateSuppr ? `<br><small style="color:var(--text-muted); font-size:0.75rem;">Supprimé le ${c.dateSuppr}</small>` : '';
                     return `<div style="display:flex; justify-content:space-between; align-items:center; padding:10px 5px; border-bottom:1px solid var(--border); font-size:0.9rem;">
-                                <div><strong style="color:var(--primary); font-size:0.8rem;">[${badge}]</strong> ${c.categorie} ${c.libelle ? '- '+c.libelle : ''} <b>(${c.montant}€)</b></div>
-                                <button class="btn-small bg-primary" style="color:white; font-size:0.8rem;" onclick="window.restaurerCorbeille(${i})">Restaurer</button>
+                                <div><strong style="color:var(--primary); font-size:0.8rem;">[${badge}]</strong> ${c.categorie} ${c.libelle ? '- '+c.libelle : ''} <b>(${c.montant}€)</b>${dateInfo}</div>
+                                <button class="btn-small bg-primary" style="color:white; font-size:0.8rem;" onclick="window.restaurerCorbeille(${index})">Restaurer</button>
                             </div>`;
-                }).join('');
+                };
+
+                // Les 3 premiers éléments
+                html += corbeille.slice(0, 3).map((c, i) => creerLigneHTML(c, i)).join('');
+
+                // Les suivants dans un accordéon
+                if(corbeille.length > 3) {
+                    html += `
+                        <div class="card-header collapsed" style="margin-top:15px; cursor:pointer;" onclick="window.toggleSection('corbeille-plus', this)">
+                            <h3 style="font-size:0.9rem; color:var(--text-muted);">Voir les ${corbeille.length - 3} autres suppressions</h3>
+                        </div>
+                        <div id="corbeille-plus" class="section-content collapsed">
+                            ${corbeille.slice(3).map((c, i) => creerLigneHTML(c, i + 3)).join('')}
+                        </div>
+                    `;
+                }
+
+                corbDiv.innerHTML = html;
             }
         }
 
