@@ -21,6 +21,7 @@
 
         /* Variables Thème Sombre */
         body.dark-mode {
+            color-scheme: dark; /* Force les éléments natifs (select, date) en mode sombre */
             --primary: #0A84FF; --secondary: #FF9F0A; --danger: #FF453A; --success: #30D158; --info: #BF5AF2;
             --bg-color: #000000; --card-bg: #1C1C1E; --text-main: #FFFFFF; --text-muted: #EBEBF599; --border: #38383A;
         }
@@ -54,9 +55,12 @@
         .main-content { flex: 1; padding: 15px; max-width: 1000px; margin: 0 auto; width: 100%; }
         .hidden { display: none !important; }
 
+        /* INPUTS */
         input, select { font-size: 16px !important; outline: none; background: transparent; color: var(--text-main); }
         input[type="number"] { background: var(--bg-color); }
         select { appearance: none; -webkit-appearance: none; }
+        /* Fix pour les listes déroulantes en mode sombre */
+        option { background-color: var(--card-bg); color: var(--text-main); }
 
         .search-container input { width: 100%; padding: 12px 15px; border-radius: 12px; border: 1px solid var(--border); background: var(--card-bg); font-size: 1rem; margin-bottom: 15px;}
         
@@ -222,7 +226,7 @@
 
             <div class="admin-section">
                 <h3>🗑️ Corbeille (Lignes supprimées)</h3>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Les 10 dernières suppressions.</p>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Les 10 dernières suppressions. Elles retourneront exactement là où elles étaient.</p>
                 <div id="admin-corbeille"></div>
             </div>
 
@@ -461,8 +465,8 @@
             const index = mois[type].findIndex(i => i.id === id);
             if(index > -1) {
                 const item = mois[type][index];
-                // On stocke pour Undo
-                suppressionEnAttente = { type, item, moisId: moisActifId, index };
+                // On stocke pour Undo en gardant la trace exacte de son type d'origine
+                suppressionEnAttente = { type: type, item: item, moisId: moisActifId, index: index };
                 
                 // On supprime visuellement et en base
                 mois[type].splice(index, 1);
@@ -475,9 +479,13 @@
                 
                 toastTimeout = setTimeout(() => {
                     toast.classList.remove('show');
-                    // Validation finale -> Corbeille
+                    // Validation finale -> Corbeille (on sauvegarde le type original !)
                     if(suppressionEnAttente) {
-                        corbeille.unshift({...suppressionEnAttente.item, dateSuppr: new Date().toLocaleString()});
+                        corbeille.unshift({
+                            ...suppressionEnAttente.item, 
+                            typeOriginal: suppressionEnAttente.type, 
+                            dateSuppr: new Date().toLocaleString()
+                        });
                         window.sauvegarderConfig();
                         suppressionEnAttente = null;
                     }
@@ -502,14 +510,21 @@
             const item = corbeille[index];
             const mois = donnees.find(m => m.id === moisActifId);
             if(mois) {
-                // Devine le type
-                let type = 'depenses';
-                if(!item.libelle && item.libelle !== "") type = 'charges'; // Simplification
-                mois[type].unshift(item);
+                // On récupère le type original exact (ou on devine si c'est une vieille donnée)
+                let typeCible = item.typeOriginal || 'depenses';
+                if (!item.typeOriginal && item.libelle === undefined) typeCible = 'charges'; 
+                
+                // On nettoie les traces de la corbeille avant de remettre la ligne
+                delete item.typeOriginal;
+                delete item.dateSuppr;
+
+                mois[typeCible].unshift(item);
                 corbeille.splice(index, 1);
+                
                 window.sauvegarderDonnees();
                 window.sauvegarderConfig();
-                alert("Élément restauré dans le mois actuel !");
+                alert("Élément restauré avec succès !");
+                window.rendreInterface(); // On force le rafraichissement pour voir la ligne réapparaître
             }
         }
 
@@ -586,10 +601,19 @@
             const catDiv = document.getElementById('admin-categories');
             catDiv.innerHTML = categories.map((c, i) => `<span class="cat-tag">${c} <button style="border:none;background:none;color:red;cursor:pointer;" onclick="window.supprimerCategorie(${i})">✕</button></span>`).join('');
             
-            // Corbeille
+            // Corbeille améliorée
             const corbDiv = document.getElementById('admin-corbeille');
-            if(corbeille.length === 0) corbDiv.innerHTML = "<p style='color:var(--text-muted);font-size:0.9rem;'>Corbeille vide.</p>";
-            else corbDiv.innerHTML = corbeille.map((c, i) => `<div style="display:flex; justify-content:space-between; padding:8px; border-bottom:1px solid var(--border); font-size:0.9rem;"><span>${c.categorie} - ${c.libelle||'Charge'} (${c.montant}€)</span> <button class="btn-small" onclick="window.restaurerCorbeille(${i})">Restaurer</button></div>`).join('');
+            if(corbeille.length === 0) {
+                corbDiv.innerHTML = "<p style='color:var(--text-muted);font-size:0.9rem;'>Corbeille vide.</p>";
+            } else {
+                corbDiv.innerHTML = corbeille.map((c, i) => {
+                    let badge = c.typeOriginal === 'charges' ? '🏠 Fixe' : (c.typeOriginal === 'epargne' ? '✈️ Épargne' : '🛒 Dépense');
+                    return `<div style="display:flex; justify-content:space-between; align-items:center; padding:10px 5px; border-bottom:1px solid var(--border); font-size:0.9rem;">
+                                <div><strong style="color:var(--primary); font-size:0.8rem;">[${badge}]</strong> ${c.categorie} ${c.libelle ? '- '+c.libelle : ''} <b>(${c.montant}€)</b></div>
+                                <button class="btn-small bg-primary" style="color:white; font-size:0.8rem;" onclick="window.restaurerCorbeille(${i})">Restaurer</button>
+                            </div>`;
+                }).join('');
+            }
         }
 
         window.ajouterCategorie = function() {
