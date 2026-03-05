@@ -68,6 +68,7 @@
         .header-actions { display: flex; gap: 10px; align-items: center; flex-shrink: 0; }
         .btn-icon { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; flex-shrink:0; }
         .btn-icon.danger { background: #FFE5E5; color: var(--danger); border:none; }
+        .btn-icon.locked { background: var(--primary-light); border-color: var(--primary); }
         body.dark-mode .btn-icon.danger { background: #4A1515; }
 
         .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--success); display: inline-block; margin-left: 8px; transition: 0.3s; flex-shrink: 0;}
@@ -137,6 +138,8 @@
         .color-selector { display: flex; gap: 10px; margin-top: 10px; }
         .color-circle { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
         .color-circle.active { border-color: var(--text-main); transform: scale(1.1); }
+        .locked-mode .drag-handle, .locked-mode .btn-delete, .locked-mode .btn-add { display: none; }
+        .locked-mode input, .locked-mode select, .locked-mode textarea { pointer-events: none; opacity: 0.8; }
 
         @media (min-width: 768px) { body { flex-direction: row; } .top-nav { width: 280px; height: 100vh; position: sticky; display: flex; flex-direction: column; padding: 20px; overflow-y: auto; } }
     </style>
@@ -280,6 +283,12 @@
             <h1 style="margin-bottom: 20px;">Paramètres</h1>
 
             <div class="admin-section">
+                <h3>🔄 Outils Système</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Forcer la mise à jour de l'application (utile en cas de bug d'affichage).</p>
+                <button class="btn-action" style="background:var(--secondary);" onclick="window.location.reload(true)">Forcer le rechargement</button>
+            </div>
+
+            <div class="admin-section">
                 <h3>📅 Créer un mois spécifique</h3>
                 <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Ajouter un mois manuellement (ex: Février 2026).</p>
                 <div style="display:flex; gap:10px;">
@@ -335,6 +344,11 @@
                 <p style="font-size: 0.85rem; margin-top:5px; font-weight:bold;">Écraser les données actuelles avec un .json</p>
                 <input type="file" id="import-json" accept=".json" style="margin-top:5px; font-size: 0.9rem !important;">
             </div>
+
+            <div style="text-align: right; color: var(--text-muted); font-size: 0.85rem; margin-top: 30px; font-weight: bold; padding-bottom: 20px;">
+                Version v1.1
+            </div>
+
         </div>
     </main>
 
@@ -488,7 +502,7 @@
         window.sauvegarderConfig = function() { set(configRef, { categories, corbeille, objectifsProvisions }); }
 
         window.initDefaut = function() {
-            donnees = [{ id: Date.now(), nom: "Mars 2026", annee: 2026, revenus: 4500, revenus_add: 0, charges: [], depenses: [], epargne: [], provisions: [] }];
+            donnees = [{ id: Date.now(), nom: "Mars 2026", annee: 2026, revenus: 4500, revenus_add: 0, charges: [], depenses: [], epargne: [], provisions: [], locked: false }];
             moisActifId = donnees[0].id; window.sauvegarderDonnees();
             rafraichirVueActuelle();
         }
@@ -540,9 +554,10 @@
             });
         }
 
-        // --- CALCUL DU SOLDE REPORTE (ITERATIF ABSOLU) ---
+        // --- CALCUL DU SOLDE REPORTE (ITERATIF ABSOLU CORRIGÉ) ---
         window.calculerSoldeReporte = function(cibleIdx) {
             let solde = 0;
+            // On boucle depuis le tout premier mois existant (idx 0) jusqu'au mois PRÉCÉDENT le mois ciblé.
             for (let i = 0; i < cibleIdx; i++) {
                 const m = donnees[i];
                 const tc = (Array.isArray(m.charges)?m.charges:[]).reduce((s,item)=>s+(parseFloat(item.montant)||0),0);
@@ -552,7 +567,7 @@
                 const rev = (parseFloat(m.revenus)||0) + (parseFloat(m.revenus_add)||0);
                 solde += (rev - tc - td - te - tprov);
             }
-            return solde;
+            return solde; // Sera exactement 0 si cibleIdx === 0 (ex: Janvier si c'est le 1er mois de la liste)
         }
 
         // --- VUE MENSUELLE ---
@@ -561,19 +576,21 @@
             const mois = donnees.find(m => m.id === moisActifId);
             if (!mois) return;
 
-            document.getElementById('conteneur-charges').innerHTML = '';
-            document.getElementById('conteneur-depenses').innerHTML = '';
-            document.getElementById('conteneur-epargne').innerHTML = '';
-            document.getElementById('conteneur-provisions').innerHTML = '';
+            // NETTOYAGE COMPLET DES DOM ELEMENTS
+            ['conteneur-charges', 'conteneur-depenses', 'conteneur-epargne', 'conteneur-provisions'].forEach(id => {
+                const el = document.getElementById(id);
+                if(el) el.innerHTML = '';
+            });
             
             document.getElementById('titre-mois').innerText = mois.nom;
             document.getElementById('revenus').value = mois.revenus || 0;
             document.getElementById('revenus_add').value = mois.revenus_add || 0;
             
+            // Recalcul strict du solde précédent
             const idx = donnees.findIndex(m => m.id === moisActifId);
             const soldePrecedent = window.calculerSoldeReporte(idx);
             document.getElementById('solde_reporte').value = soldePrecedent.toFixed(2);
-            
+
             const [nomMois, anneeStr] = mois.nom.split(' ');
             const moisIndex = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"].indexOf(nomMois);
             const today = new Date();
@@ -846,6 +863,7 @@
             document.getElementById('annuel-total-epargne-top').innerText = te.toFixed(2) + " €";
             document.getElementById('annuel-total-depense-top').innerText = (tc+td).toFixed(2) + " €";
             document.getElementById('annuel-moyenne-depense').innerText = ((tc+td) / (mois.length||1)).toFixed(2) + " €";
+            
             document.getElementById('annuel-total-charges').innerText = tc.toFixed(2) + " €";
             document.getElementById('annuel-total-depenses').innerText = td.toFixed(2) + " €";
             document.getElementById('annuel-total-epargne-bottom').innerText = te.toFixed(2) + " €";
