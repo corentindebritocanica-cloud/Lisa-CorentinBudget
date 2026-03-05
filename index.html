@@ -34,6 +34,32 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; transition: background-color 0.3s, color 0.3s; }
         body { background-color: var(--bg-color); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
 
+        /* ÉCRAN DE CONNEXION */
+        #login-screen {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: var(--bg-color); z-index: 10000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 20px; transition: opacity 0.5s;
+        }
+        .login-box {
+            background: var(--card-bg); padding: 40px 30px; border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 400px;
+            text-align: center;
+        }
+        .login-box h1 { margin-bottom: 5px; font-size: 1.8rem; }
+        .login-box p { color: var(--text-muted); margin-bottom: 25px; font-size: 0.9rem; }
+        .login-box input {
+            width: 100%; padding: 15px; border-radius: 12px; border: 1px solid var(--border);
+            background: var(--bg-color); margin-bottom: 15px; font-size: 1rem; color: var(--text-main);
+        }
+        .login-btn {
+            width: 100%; padding: 15px; border-radius: 12px; border: none;
+            background: var(--primary); color: white; font-weight: bold; font-size: 1.1rem;
+            cursor: pointer; margin-top: 10px;
+        }
+        #login-error { color: var(--danger); font-size: 0.9rem; margin-top: 15px; display: none; }
+
+        /* RESTE DE L'APP */
         .top-nav { background-color: var(--card-bg); border-bottom: 1px solid var(--border); padding: 15px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
         .nav-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .nav-header h2 { font-size: 1.4rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
@@ -75,7 +101,6 @@
         .status-dot.saving { background-color: var(--secondary); animation: pulse 1s infinite; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
-        /* REVENUS */
         .revenus-box { background: var(--card-bg); padding: 15px; border-radius: 16px; display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid var(--border); min-width: 0; }
         .revenus-row { display: flex; justify-content: space-between; align-items: center; width: 100%; min-width: 0;}
         .revenus-row:not(:last-child) { padding-bottom: 12px; border-bottom: 1px dashed var(--border); }
@@ -99,21 +124,13 @@
         .item-bottom { display: flex; gap: 8px; min-width: 0; }
         .item-top textarea { flex: 1; border: none; font-weight: 600; padding:0; resize: none; min-height: 24px; overflow:hidden; min-width: 0; }
         .item-top input[type="number"] { width: 75px; text-align: right; border: none; font-weight: 700; padding: 6px; border-radius: 8px; flex-shrink: 0; background: var(--bg-color);}
-        
-        .item-bottom input[type="date"], .item-bottom select { 
-            flex: 1; background: var(--bg-color); border: none; font-size: 0.8rem; 
-            padding: 6px 8px; border-radius: 6px; min-width: 0; 
-            text-overflow: ellipsis; white-space: nowrap; overflow: hidden; 
-        }
+        .item-bottom input[type="date"], .item-bottom select { flex: 1; background: var(--bg-color); border: none; font-size: 0.8rem; padding: 6px 8px; border-radius: 6px; min-width: 0; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
         .item-top select { min-width: 0; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; font-size:0.9rem !important; }
-        
         .btn-delete { color: var(--danger); background: none; border: none; font-size: 1.3rem; padding-left: 10px; flex-shrink: 0;}
 
         .summary-card { background: linear-gradient(135deg, var(--primary), var(--info)); color: white; text-align: center; border-radius: 16px; padding: 20px 15px; position: relative; }
         .total-amount { font-size: 2.6rem; font-weight: 800; margin: 5px 0; letter-spacing: -1px; }
         .sub-text { font-size: 0.85rem; opacity: 0.9; margin-top: 5px; }
-        .comparison { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 0.8rem; font-weight: bold; margin-top: 10px; background: rgba(255,255,255,0.2); }
-        .comp-good { color: #D4EDDA; text-shadow: 0 1px 2px rgba(0,0,0,0.1); } .comp-bad { color: #FFE5E5; text-shadow: 0 1px 2px rgba(0,0,0,0.1); }
 
         .progress-container { margin-bottom: 12px; }
         .progress-header { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; margin-bottom: 5px; }
@@ -123,7 +140,6 @@
         .cat-item { display: flex; align-items: center; background: var(--bg-color); padding: 10px 15px; border-radius: 12px; margin-bottom: 8px; border: 1px solid var(--border); }
         .drag-handle-cat { cursor: grab; font-size: 1.2rem; margin-right: 15px; color: var(--text-muted); }
 
-        /* TOAST ANNULER */
         #toast { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 12px 20px; border-radius: 20px; font-weight: 600; display: flex; align-items: center; gap: 15px; transition: bottom 0.3s ease; z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
         #toast.show { bottom: 25px; }
         #btn-undo { background: var(--secondary); color: white; border: none; padding: 6px 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
@@ -133,17 +149,25 @@
 
         .admin-section { background: var(--card-bg); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--border); }
         .btn-small { padding: 6px 12px; border-radius: 8px; border: none; background: var(--bg-color); color: var(--text-main); font-weight: 600; cursor:pointer;}
-        
         .color-selector { display: flex; gap: 10px; margin-top: 10px; }
         .color-circle { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
         .color-circle.active { border-color: var(--text-main); transform: scale(1.1); }
-        .locked-mode .drag-handle, .locked-mode .btn-delete, .locked-mode .btn-add { display: none; }
-        .locked-mode input, .locked-mode select, .locked-mode textarea { pointer-events: none; opacity: 0.8; }
 
         @media (min-width: 768px) { body { flex-direction: row; } .top-nav { width: 280px; height: 100vh; position: sticky; display: flex; flex-direction: column; padding: 20px; overflow-y: auto; } }
     </style>
 </head>
 <body>
+
+    <div id="login-screen">
+        <div class="login-box">
+            <h1>🔒 Connexion</h1>
+            <p>Espace sécurisé L&C</p>
+            <input type="email" id="login-email" placeholder="Adresse e-mail">
+            <input type="password" id="login-password" placeholder="Mot de passe">
+            <button class="login-btn" onclick="window.seConnecter()">Ouvrir les comptes</button>
+            <div id="login-error">Identifiants incorrects.</div>
+        </div>
+    </div>
 
     <nav class="top-nav">
         <div class="nav-header">
@@ -193,7 +217,6 @@
                     <h3>Reste à vivre</h3>
                     <div class="total-amount" id="reste-a-vivre">0 €</div>
                     <div class="sub-text" id="jours-restants">-- jours restants ce mois</div>
-                    <div class="comparison" id="comparaison-n1" style="display:none;"></div>
                 </div>
 
                 <div class="card">
@@ -222,7 +245,6 @@
                 <div class="card">
                     <div class="card-header" onclick="window.toggleSection('conteneur-epargne', this)"><h3>✈️ Projets / Épargne (<span id="total-epargne">0</span> €)</h3></div>
                     <div id="conteneur-epargne" class="section-content" style="max-height: 2000px;"></div>
-                    
                     <div style="display:flex; gap:10px;">
                         <button class="btn-action bg-primary btn-add" style="flex:1; margin-bottom:0;" onclick="window.ajouterLigne('epargne')">+ Épargner</button>
                         <button class="btn-action btn-add" style="background:var(--danger); flex:1; margin-bottom:0;" onclick="window.retirerEpargne()">- Utiliser</button>
@@ -281,13 +303,18 @@
                     </div>
                 </div>
                 
-                <div class="revenus-box" id="bloc-annuel-provisions">
-                    </div>
+                <div class="revenus-box" id="bloc-annuel-provisions"></div>
             </div>
         </div>
 
         <div id="vue-admin" class="hidden">
             <h1 style="margin-bottom: 20px;">Paramètres</h1>
+
+            <div class="admin-section" style="border-color: var(--danger); background: rgba(255,59,48,0.05);">
+                <h3 style="color: var(--danger);">🔒 Sécurité</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Déconnectez cet appareil pour empêcher l'accès aux comptes.</p>
+                <button class="btn-action bg-danger" onclick="window.seDeconnecter()">Se déconnecter</button>
+            </div>
 
             <div class="admin-section">
                 <h3>🔄 Outils Système</h3>
@@ -353,7 +380,7 @@
             </div>
 
             <div style="text-align: right; color: var(--text-muted); font-size: 0.85rem; margin-top: 30px; font-weight: bold; padding-bottom: 20px;">
-                Version v1.2
+                Version v1.3 (Sécurisée)
             </div>
 
         </div>
@@ -380,7 +407,9 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+        import { getDatabase, ref, set, onValue, off } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+        // AJOUT DE L'AUTHENTIFICATION
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBro9AXaoXhSptyUVxoKVtr6xC4rtZQ3FI",
@@ -394,6 +423,8 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
+        const auth = getAuth(app); // Initialisation de l'Auth
+        
         const budgetRef = ref(db, 'budgetDataLC');
         const configRef = ref(db, 'budgetConfigLC');
 
@@ -407,7 +438,44 @@
         let anneesOuvertes = new Set();
         let suppressionEnAttente = null;
         let toastTimeout = null;
-        let firstLoad = true;
+
+        // --- GESTION DE LA CONNEXION ---
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // Connecté : On cache l'écran de login et on télécharge les données
+                document.getElementById('login-screen').style.opacity = '0';
+                setTimeout(() => document.getElementById('login-screen').style.display = 'none', 500);
+                attacherEcouteursDB();
+            } else {
+                // Déconnecté : On affiche le login et on bloque tout
+                document.getElementById('login-screen').style.display = 'flex';
+                document.getElementById('login-screen').style.opacity = '1';
+                // On arrête d'écouter la base pour éviter les erreurs "Permission Denied"
+                off(budgetRef);
+                off(configRef);
+            }
+        });
+
+        window.seConnecter = function() {
+            const e = document.getElementById('login-email').value;
+            const p = document.getElementById('login-password').value;
+            const errBox = document.getElementById('login-error');
+            
+            if(!e || !p) { errBox.innerText = "Remplissez tous les champs"; errBox.style.display = "block"; return; }
+            
+            signInWithEmailAndPassword(auth, e, p)
+                .then(() => { errBox.style.display = "none"; })
+                .catch((error) => {
+                    errBox.innerText = "Identifiants incorrects.";
+                    errBox.style.display = "block";
+                });
+        }
+
+        window.seDeconnecter = function() {
+            if(confirm("Êtes-vous sûr de vouloir déconnecter cet appareil ?")) {
+                signOut(auth).then(() => { window.location.reload(true); });
+            }
+        }
 
         // --- THEME & NOEL ---
         window.toggleDarkMode = function() {
@@ -450,57 +518,49 @@
             }());
         }
 
-        // --- FIREBASE DATA LOAD ---
-        onValue(budgetRef, (snapshot) => {
-            if (snapshot.exists()) {
-                let rawData = snapshot.val();
-                if (!Array.isArray(rawData)) rawData = Object.values(rawData);
-                donnees = rawData;
-                
-                donnees.forEach(m => {
-                    if(!m.annee) m.annee = m.nom.match(/\d{4}/) ? parseInt(m.nom.match(/\d{4}/)[0]) : new Date().getFullYear();
-                    m.charges = Array.isArray(m.charges) ? m.charges : (m.charges ? Object.values(m.charges) : []);
-                    m.depenses = Array.isArray(m.depenses) ? m.depenses : (m.depenses ? Object.values(m.depenses) : []);
-                    m.epargne = Array.isArray(m.epargne) ? m.epargne : (m.epargne ? Object.values(m.epargne) : []);
-                    m.provisions = Array.isArray(m.provisions) ? m.provisions : (Array.isArray(m.assurances) ? m.assurances : (m.assurances ? Object.values(m.assurances) : []));
-                    delete m.assurances;
-                    if(typeof m.revenus_add === 'undefined') m.revenus_add = 0; 
-                });
+        // --- FIREBASE DATA LOAD (Seulement si connecté) ---
+        function attacherEcouteursDB() {
+            onValue(budgetRef, (snapshot) => {
+                if (snapshot.exists()) {
+                    let rawData = snapshot.val();
+                    if (!Array.isArray(rawData)) rawData = Object.values(rawData);
+                    donnees = rawData;
+                    
+                    donnees.forEach(m => {
+                        if(!m.annee) m.annee = m.nom.match(/\d{4}/) ? parseInt(m.nom.match(/\d{4}/)[0]) : new Date().getFullYear();
+                        m.charges = Array.isArray(m.charges) ? m.charges : (m.charges ? Object.values(m.charges) : []);
+                        m.depenses = Array.isArray(m.depenses) ? m.depenses : (m.depenses ? Object.values(m.depenses) : []);
+                        m.epargne = Array.isArray(m.epargne) ? m.epargne : (m.epargne ? Object.values(m.epargne) : []);
+                        m.provisions = Array.isArray(m.provisions) ? m.provisions : (Array.isArray(m.assurances) ? m.assurances : (m.assurances ? Object.values(m.assurances) : []));
+                        delete m.assurances;
+                        if(typeof m.revenus_add === 'undefined') m.revenus_add = 0; 
+                    });
 
-                const nomsMois = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
-                donnees.sort((a,b) => {
-                    if(a.annee !== b.annee) return a.annee - b.annee;
-                    return nomsMois.indexOf(a.nom.split(' ')[0]) - nomsMois.indexOf(b.nom.split(' ')[0]);
-                });
+                    const nomsMois = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
+                    donnees.sort((a,b) => {
+                        if(a.annee !== b.annee) return a.annee - b.annee;
+                        return nomsMois.indexOf(a.nom.split(' ')[0]) - nomsMois.indexOf(b.nom.split(' ')[0]);
+                    });
 
-                if (!moisActifId && donnees.length > 0) moisActifId = donnees[donnees.length - 1].id;
-                
-                if (firstLoad) {
+                    if (!moisActifId && donnees.length > 0) moisActifId = donnees[donnees.length - 1].id;
                     rafraichirVueActuelle();
-                    firstLoad = false;
+                } else { 
+                    window.initDefaut(); 
                 }
-            } else { 
-                if (firstLoad) { window.initDefaut(); firstLoad = false; }
-            }
-        });
+            });
 
-        onValue(configRef, (snapshot) => {
-            if(snapshot.exists()) {
-                const conf = snapshot.val();
-                if(conf.categories) categories = conf.categories;
-                if(conf.corbeille) corbeille = conf.corbeille;
-                
-                if(conf.objectifsProvisions) {
-                    objectifsProvisions = conf.objectifsProvisions;
-                } else if(conf.objectifAssurance) {
-                    objectifsProvisions = [{ nom: "Assurance", montant: parseFloat(conf.objectifAssurance) || 600 }];
-                    window.sauvegarderConfig();
+            onValue(configRef, (snapshot) => {
+                if(snapshot.exists()) {
+                    const conf = snapshot.val();
+                    if(conf.categories) categories = conf.categories;
+                    if(conf.corbeille) corbeille = conf.corbeille;
+                    if(conf.objectifsProvisions) objectifsProvisions = conf.objectifsProvisions;
+
+                    if(!document.getElementById('vue-admin').classList.contains('hidden')) window.rendreAdmin();
+                    if(!document.getElementById('vue-annuelle').classList.contains('hidden')) window.rendreVueAnnuelle();
                 }
-
-                if(!document.getElementById('vue-admin').classList.contains('hidden')) window.rendreAdmin();
-                if(!document.getElementById('vue-annuelle').classList.contains('hidden')) window.rendreVueAnnuelle();
-            }
-        });
+            });
+        }
 
         window.sauvegarderDonnees = function() { 
             updateSyncDot('saving'); 
@@ -509,7 +569,7 @@
         window.sauvegarderConfig = function() { set(configRef, { categories, corbeille, objectifsProvisions }); }
 
         window.initDefaut = function() {
-            donnees = [{ id: Date.now(), nom: "Mars 2026", annee: 2026, revenus: 4500, revenus_add: 0, charges: [], depenses: [], epargne: [], provisions: [], locked: false }];
+            donnees = [{ id: Date.now(), nom: "Mars 2026", annee: 2026, revenus: 4500, revenus_add: 0, charges: [], depenses: [], epargne: [], provisions: [] }];
             moisActifId = donnees[0].id; window.sauvegarderDonnees();
             rafraichirVueActuelle();
         }
@@ -561,10 +621,9 @@
             });
         }
 
-        // --- CALCUL DU SOLDE REPORTE ---
+        // --- CALCUL DU SOLDE REPORTE STRICT ---
         window.calculerSoldeReporte = function(cibleIdx) {
             let solde = 0;
-            // On calcule rigoureusement depuis le début de l'historique jusqu'au mois précédent
             for (let i = 0; i < cibleIdx; i++) {
                 const m = donnees[i];
                 const tc = (Array.isArray(m.charges)?m.charges:[]).reduce((s,item)=>s+(parseFloat(item.montant)||0),0);
@@ -574,7 +633,7 @@
                 const rev = (parseFloat(m.revenus)||0) + (parseFloat(m.revenus_add)||0);
                 solde += (rev - tc - td - te - tprov);
             }
-            return solde; // Retourne 0 si c'est le tout premier mois
+            return solde; 
         }
 
         // --- VUE MENSUELLE ---
@@ -583,7 +642,6 @@
             const mois = donnees.find(m => m.id === moisActifId);
             if (!mois) return;
 
-            // NETTOYAGE COMPLET DES DOM ELEMENTS
             ['conteneur-charges', 'conteneur-depenses', 'conteneur-epargne', 'conteneur-provisions'].forEach(id => {
                 const el = document.getElementById(id);
                 if(el) el.innerHTML = '';
@@ -625,7 +683,6 @@
             tableau.filter(item => (item.libelle||'').toLowerCase().includes(termeRecherche)).forEach((item) => {
                 const row = document.createElement('div'); row.className = 'item-row'; row.dataset.id = item.id;
                 
-                // Design Visuel si c'est un "Retrait d'épargne" (Montant négatif ou isRetrait)
                 const isRetrait = item.isRetrait || parseFloat(item.montant) < 0;
                 const colorVal = isRetrait ? 'color:var(--danger);' : '';
                 const mSign = isRetrait ? '<span style="font-weight:bold; color:var(--danger);">-</span> ' : '';
@@ -640,7 +697,6 @@
                      </div>
                      <div class="item-bottom"><input type="date" value="${item.date||''}" onchange="window.majValeur('${type}','${item.id}','date',this.value)"><select id="sel-${item.id}" onchange="window.majValeur('${type}','${item.id}','categorie',this.value)">${categories.map(c=>`<option value="${c}" ${c===item.categorie?'selected':''}>${c}</option>`).join('')}</select></div>` :
                     `<div class="item-top"><select onchange="window.majValeur('${type}','${item.id}','categorie',this.value)" style="flex:1; background:none; border:none; font-weight:600;">${categories.map(c=>`<option value="${c}" ${c===item.categorie?'selected':''}>${c}</option>`).join('')}</select><input type="number" value="${item.montant}" onchange="window.majValeur('${type}','${item.id}','montant',this.value)"></div>`;
-                
                 row.innerHTML = `<div class="drag-handle">☰</div><div class="item-content">${html}</div><button class="btn-delete" onclick="window.demanderSuppression('${type}','${item.id}')">✕</button>`;
                 conteneur.appendChild(row);
                 const ta = row.querySelector('textarea'); if(ta) window.autoResize(ta);
@@ -675,7 +731,7 @@
             
             if(champ === 'montant') {
                 let num = parseFloat(val) || 0;
-                if(item.isRetrait) num = -Math.abs(num); // Force le montant négatif si c'est un retrait
+                if(item.isRetrait) num = -Math.abs(num); 
                 item[champ] = num;
             } else {
                 item[champ] = val;
@@ -723,8 +779,7 @@
             let catDefaut = (categories && categories.length > 0) ? categories[0] : "Autre";
             catDefaut = categories.find(c => c.toLowerCase().includes("vacance")) || catDefaut;
             
-            // isRetrait: true force l'affichage en rouge et transforme la valeur en négatif à la sauvegarde
-            mois.epargne.unshift({ id: Math.random().toString(36).substr(2,9), date:"", libelle:"Dépense / Retrait...", categorie: catDefaut, montant: 0, isRetrait: true });
+            mois.epargne.unshift({ id: Math.random().toString(36).substr(2,9), date:"", libelle:"Retrait d'épargne...", categorie: catDefaut, montant: 0, isRetrait: true });
             
             window.sauvegarderDonnees();
             window.rendreInterface();
@@ -751,6 +806,16 @@
             document.getElementById('total-epargne').innerText = te.toFixed(2);
             document.getElementById('total-provisions').innerText = tprov.toFixed(2);
             document.getElementById('reste-a-vivre').innerText = r.toFixed(2) + " €";
+            
+            const compEl = document.getElementById('comparaison-n1');
+            if(idxMoisActuel > 0) {
+                const mPrec = donnees[idxMoisActuel - 1];
+                const depPrec = (Array.isArray(mPrec.depenses)?mPrec.depenses:[]).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
+                const diff = td - depPrec;
+                compEl.style.display = 'inline-block';
+                if(diff > 0) { compEl.innerText = `↗ +${diff.toFixed(0)}€ de dépenses / mois préc.`; compEl.className = 'comparison comp-bad'; }
+                else { compEl.innerText = `↘ ${diff.toFixed(0)}€ de dépenses / mois préc.`; compEl.className = 'comparison comp-good'; }
+            } else { compEl.style.display = 'none'; }
 
             let t = Math.abs(tc) + Math.abs(td) + Math.abs(te) + Math.abs(tprov) + (r>0?r:0); if(t===0) return;
             document.getElementById(`bar-charges-m`).style.width = (tc/t*100)+'%'; 
@@ -832,7 +897,7 @@
             const noms = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
             let idx = noms.indexOf(d.nom.split(' ')[0]) + 1; let an = d.annee; if(idx > 11) { idx = 0; an++; }
             
-            // LA MAGIE : on force le montant des charges fixes copiées à 0.
+            // Les charges fixes sont copiées, mais LEUR MONTANT EST MIS A 0€
             const nouveau = { 
                 id: Date.now(), nom: noms[idx]+" "+an, annee: an, revenus: d.revenus, revenus_add: 0,
                 charges: (Array.isArray(d.charges)?d.charges:[]).map(c=>({...c, id:Math.random().toString(36).substr(2,9), montant: 0})), 
@@ -892,7 +957,7 @@
                     if(v >= 0) te_plus += v; else te_moins += Math.abs(v);
                 });
             });
-            
+
             const te_net = te_plus - te_moins;
 
             document.getElementById('annuel-total-epargne-top').innerText = te_net.toFixed(2) + " €";
@@ -951,7 +1016,7 @@
             });
             let topCat = Object.keys(categoriesDepenses).reduce((a, b) => categoriesDepenses[a] > categoriesDepenses[b] ? a : b, "Aucune");
             document.getElementById('wrap-annee').innerText = a;
-            document.getElementById('wrap-content').innerHTML = `<ul><li style="margin-bottom:10px;">🌟 Vous avez épargné un total de <b>${totalEpargne.toFixed(0)}€</b> !</li><li style="margin-bottom:10px;">💸 <b>${maxMoisNom}</b> a été le mois le plus cher en dépenses (${maxMoisDepense.toFixed(0)}€).</li><li style="margin-bottom:10px;">🛒 Votre catégorie reine : <b>${topCat}</b>.</li>${nbRestos > 0 ? `<li style="margin-bottom:10px;">🍽️ Vous avez craqué pour <b>${nbRestos} restos</b> !</li>` : ''}</ul>`;
+            document.getElementById('wrap-content').innerHTML = `<ul><li style="margin-bottom:10px;">🌟 Vous avez épargné un total net de <b>${totalEpargne.toFixed(0)}€</b> !</li><li style="margin-bottom:10px;">💸 <b>${maxMoisNom}</b> a été le mois le plus cher en dépenses (${maxMoisDepense.toFixed(0)}€).</li><li style="margin-bottom:10px;">🛒 Votre catégorie reine : <b>${topCat}</b>.</li>${nbRestos > 0 ? `<li style="margin-bottom:10px;">🍽️ Vous avez craqué pour <b>${nbRestos} restos</b> !</li>` : ''}</ul>`;
             document.getElementById('wrapped-popup').classList.remove('hidden');
             if(document.body.classList.contains('theme-christmas') && typeof window.neigeNoel === 'function') window.neigeNoel();
             else if(typeof confetti === 'function') confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 }, zIndex: 10000 });
