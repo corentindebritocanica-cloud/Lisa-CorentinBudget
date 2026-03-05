@@ -60,52 +60,58 @@
 
         input, select, textarea { font-size: 16px !important; outline: none; background: transparent; color: var(--text-main); }
         input[type="number"] { background: var(--bg-color); }
-        select { appearance: none; -webkit-appearance: none; }
-        option { background-color: var(--card-bg); color: var(--text-main); }
-
-        .search-container input { width: 100%; padding: 12px 15px; border-radius: 12px; border: 1px solid var(--border); background: var(--card-bg); font-size: 1rem; margin-bottom: 15px;}
         
-        .header-title-group { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
-        .header-title-group h1 { font-size: 1.6rem; font-weight: 800; }
-        .header-actions { display: flex; gap: 10px; align-items: center; }
-        .btn-icon { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; }
+        .search-container input { width: 100%; padding: 12px 15px; border-radius: 12px; border: 1px solid var(--border); background: var(--card-bg); font-size: 1rem; margin-bottom: 15px; box-sizing: border-box; }
+        
+        .header-title-group { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; min-width: 0; }
+        .header-title-group h1 { font-size: 1.5rem; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; margin-right: 10px; }
+        .header-actions { display: flex; gap: 10px; align-items: center; flex-shrink: 0; }
+        .btn-icon { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; flex-shrink:0; }
         .btn-icon.danger { background: #FFE5E5; color: var(--danger); border:none; }
         .btn-icon.locked { background: var(--primary-light); border-color: var(--primary); }
         body.dark-mode .btn-icon.danger { background: #4A1515; }
 
-        .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--success); display: inline-block; margin-left: 8px; transition: 0.3s; }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--success); display: inline-block; margin-left: 8px; transition: 0.3s; flex-shrink: 0;}
         .status-dot.offline { background-color: var(--danger); }
         .status-dot.saving { background-color: var(--secondary); animation: pulse 1s infinite; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
-        /* DESIGN REVENUS */
-        .revenus-box { background: var(--card-bg); padding: 15px; border-radius: 16px; display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid var(--border); }
-        .revenus-row { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+        /* REVENUS */
+        .revenus-box { background: var(--card-bg); padding: 15px; border-radius: 16px; display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid var(--border); min-width: 0; }
+        .revenus-row { display: flex; justify-content: space-between; align-items: center; width: 100%; min-width: 0;}
         .revenus-row:not(:last-child) { padding-bottom: 12px; border-bottom: 1px dashed var(--border); }
-        .revenus-box input { width: 110px; text-align: right; border: 1px solid var(--border); padding: 8px; border-radius: 8px; font-weight: bold; color: var(--primary); }
+        .revenus-row strong { font-size: 0.85rem; flex: 1; padding-right: 10px; line-height: 1.3; }
+        .revenus-box input { width: 95px; text-align: right; border: 1px solid var(--border); padding: 8px; border-radius: 8px; font-weight: bold; color: var(--primary); flex-shrink: 0; }
         .revenus-box input[readonly] { background: transparent; border: none; color: var(--text-muted); }
 
-        .card { background-color: var(--card-bg); border-radius: 16px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); margin-bottom: 20px; }
+        .card { background-color: var(--card-bg); border-radius: 16px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); margin-bottom: 20px; min-width: 0; }
         .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--border); cursor: pointer; }
-        .card-header h3 { font-size: 1.1rem; font-weight: 700; user-select: none; }
+        .card-header h3 { font-size: 1.05rem; font-weight: 700; user-select: none; }
         .card-header::after { content: '▼'; font-size: 0.8rem; color: var(--text-muted); transition: 0.3s; }
         .card-header.collapsed::after { transform: rotate(-90deg); }
         .section-content { overflow: hidden; transition: max-height 0.3s ease-out; }
         .section-content.collapsed { max-height: 0 !important; }
 
-        .item-row { display: flex; align-items: center; background: var(--card-bg); padding: 15px 0; border-bottom: 1px solid var(--border); touch-action: none; }
+        .item-row { display: flex; align-items: center; background: var(--card-bg); padding: 12px 0; border-bottom: 1px solid var(--border); touch-action: none; min-width: 0; }
         .item-row:last-child { border-bottom: none; }
-        .drag-handle { padding: 10px 15px 10px 5px; color: var(--text-muted); cursor: grab; font-size: 1.4rem; user-select: none; }
-        .item-content { flex: 1; display: flex; flex-direction: column; gap: 8px; }
-        .item-top { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
-        .item-bottom { display: flex; gap: 10px; }
-        .item-top textarea { flex: 1; border: none; font-weight: 600; padding:0; resize: none; min-height: 24px; overflow:hidden; }
-        .item-top input[type="number"] { width: 85px; text-align: right; border: none; font-weight: 700; padding: 8px; border-radius: 8px; }
-        .item-bottom input[type="date"], .item-bottom select { flex: 1; background: var(--bg-color); border: none; font-size: 0.85rem; padding: 6px 10px; border-radius: 6px; }
-        .btn-delete { color: var(--danger); background: none; border: none; font-size: 1.3rem; padding-left: 10px; }
+        .drag-handle { padding: 10px 10px 10px 0; color: var(--text-muted); cursor: grab; font-size: 1.2rem; user-select: none; flex-shrink: 0;}
+        .item-content { flex: 1; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+        .item-top { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; min-width: 0; }
+        .item-bottom { display: flex; gap: 8px; min-width: 0; }
+        .item-top textarea { flex: 1; border: none; font-weight: 600; padding:0; resize: none; min-height: 24px; overflow:hidden; min-width: 0; }
+        .item-top input[type="number"] { width: 75px; text-align: right; border: none; font-weight: 700; padding: 6px; border-radius: 8px; flex-shrink: 0; background: var(--bg-color);}
+        
+        .item-bottom input[type="date"], .item-bottom select { 
+            flex: 1; background: var(--bg-color); border: none; font-size: 0.8rem; 
+            padding: 6px 8px; border-radius: 6px; min-width: 0; 
+            text-overflow: ellipsis; white-space: nowrap; overflow: hidden; 
+        }
+        .item-top select { min-width: 0; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; font-size:0.9rem !important; }
+        
+        .btn-delete { color: var(--danger); background: none; border: none; font-size: 1.3rem; padding-left: 10px; flex-shrink: 0;}
 
-        .summary-card { background: linear-gradient(135deg, var(--primary), var(--info)); color: white; text-align: center; border-radius: 16px; padding: 25px 20px; position: relative; }
-        .total-amount { font-size: 3rem; font-weight: 800; margin: 5px 0; letter-spacing: -1px; }
+        .summary-card { background: linear-gradient(135deg, var(--primary), var(--info)); color: white; text-align: center; border-radius: 16px; padding: 20px 15px; position: relative; }
+        .total-amount { font-size: 2.6rem; font-weight: 800; margin: 5px 0; letter-spacing: -1px; }
         .sub-text { font-size: 0.85rem; opacity: 0.9; margin-top: 5px; }
         .comparison { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 0.8rem; font-weight: bold; margin-top: 10px; background: rgba(255,255,255,0.2); }
         .comp-good { color: #D4EDDA; text-shadow: 0 1px 2px rgba(0,0,0,0.1); } .comp-bad { color: #FFE5E5; text-shadow: 0 1px 2px rgba(0,0,0,0.1); }
@@ -117,16 +123,6 @@
 
         .cat-item { display: flex; align-items: center; background: var(--bg-color); padding: 10px 15px; border-radius: 12px; margin-bottom: 8px; border: 1px solid var(--border); }
         .drag-handle-cat { cursor: grab; font-size: 1.2rem; margin-right: 15px; color: var(--text-muted); }
-
-        /* TOAST SARCASME */
-        #sarcasm-toast { 
-            position: fixed; top: -200px; left: 50%; transform: translateX(-50%); 
-            background: #1C1C1E; color: #FFFFFF; padding: 25px 30px; border-radius: 20px; font-weight: 700; 
-            display: flex; align-items: center; gap: 20px; transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-            z-index: 2000; box-shadow: 0 15px 40px rgba(0,0,0,0.5); width: 92%; max-width: 500px; border-left: 8px solid var(--danger); pointer-events: none;
-        }
-        #sarcasm-toast.show { top: 40px; }
-        body.dark-mode #sarcasm-toast { background: #FFFFFF; color: #000000; box-shadow: 0 15px 40px rgba(255,255,255,0.2); }
 
         /* TOAST ANNULER */
         #toast { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 12px 20px; border-radius: 20px; font-weight: 600; display: flex; align-items: center; gap: 15px; transition: bottom 0.3s ease; z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
@@ -272,6 +268,13 @@
                     </div>
                 </div>
                 
+                <div class="revenus-box" style="margin-bottom:0;">
+                    <div style="display:flex; justify-content:space-between;">
+                        <strong>✈️ Total Épargne</strong>
+                        <h3 style="color:var(--info);" id="annuel-total-epargne-bottom">0 €</h3>
+                    </div>
+                </div>
+                
                 <div class="revenus-box" id="bloc-annuel-provisions">
                     </div>
             </div>
@@ -339,11 +342,6 @@
         </div>
     </main>
 
-    <div id="sarcasm-toast">
-        <div class="sarcasm-icon">🕴️</div>
-        <div class="sarcasm-text" id="sarcasm-text-content">Je vous juge.</div>
-    </div>
-
     <div id="toast"><span id="toast-msg">Ligne supprimée</span><button id="btn-undo" onclick="window.annulerSuppression()">Annuler</button></div>
 
     <div id="offline-popup" class="overlay-popup hidden">
@@ -392,24 +390,7 @@
         let anneesOuvertes = new Set();
         let suppressionEnAttente = null;
         let toastTimeout = null;
-        let sarcasmTimeout = null;
         let firstLoad = true;
-
-        const blagues = {
-            nouveauMois: "Un nouveau mois ! Prêt à prendre de nouvelles mauvaises décisions ?|On efface tout et on recommence à se ruiner.|Nouveau mois, nouveau découvert. C'est la tradition.|30 jours pour prouver que vous savez gérer votre argent. J'en doute.|C'est reparti pour un tour de manège financier terrifiant.|Allez, ce mois-ci on essaie de ne pas pleurer en regardant son compte.|Préparez-vous psychologiquement, le capitalisme ne dort jamais.".split('|'),
-            resto: "Encore au resto ? Vos artères et votre banquier pleurent en chœur.|Le serveur va finir par vous compter comme personne à charge.|Ce soir c'est caviar ou juste un manque de self-control ?|Votre estomac a un meilleur train de vie que vous.|Le livreur Uber Eats a mis votre adresse en favori.|On dit que l'appétit vient en mangeant, la ruine aussi.|Le TPE du restaurant a fait une danse de la joie à votre approche.|Un jour, votre estomac fera banqueroute.|Vous appelez ça un brunch, j'appelle ça un suicide financier.|L'hospice vous donnera de la soupe gratuite.|Vous confondez 'se faire plaisir' et 'nourrir un régiment'.|Cuisiner, c'est pour les pauvres. Oh, attendez... vous l'êtes bientôt.|Ce repas vous a coûté l'équivalent du PIB d'un petit pays.|Le doggy bag est obligatoire à ce niveau, c'est pour la semaine.|Payer 25€ pour une salade. Le QI est en chute libre.|Si la gourmandise est un péché, votre compte est déjà en enfer.|Chaque fois que vous touchez un menu, le CAC 40 grimpe de deux points.".split('|'),
-            courses: "Vous savez qu'un paquet de riz coûte 1€, n'est-ce pas ?|Les actionnaires de Carrefour vous remercient.|Encore des courses ? On prépare la fin du monde ?|Le PDG de Leclerc s'est acheté une Ferrari grâce à vous.|L'industrie agroalimentaire va vous couler une statue en beurre.|Ce n'est pas parce que le chariot a des roulettes qu'il faut le remplir.|Vous êtes la cible marketing parfaite. Littéralement un pigeon en or.|Acheter bio pour mourir ruiné. Beau choix.|Votre caddie déborde, votre compte se vide. L'équilibre naturel.|Vous allez devoir payer vos courses en chèques-vacances.|La caissière connaît mieux votre code PIN que vous.|Mangez bien, le stress des huissiers vous fera brûler des calories.|Vous devriez sponsoriser des vaches laitières, ce serait plus direct.|Le caddie pèse plus lourd que vos regrets dans la vie.".split('|'),
-            loisirs: "Encore un truc qui va prendre la poussière.|Amazon devrait vous décerner le titre d'Employé du Mois.|Le capitalisme vous remercie pour votre noble sacrifice.|Vous venez d'acheter un aller simple pour la culpabilité de minuit.|C'est incroyable de payer si cher pour un truc si moche.|Si vous achetiez des neurones à la place, vous seriez prix Nobel.|Payer pour s'amuser, c'est triste. L'ennui, c'est gratuit.|La thérapie par le shopping, c'est boire de l'eau de mer quand on a soif.|Acheter, jeter, pleurer. Le grand cycle de votre vie.|Vous savez que Vinted a été créé pour les gens comme vous ?|Le capitalisme sourit, la planète pleure, votre banquier aiguise un couteau.|Ce n'est pas parce que 'vous le valez bien' qu'il fallait l'acheter.|Un 'achat plaisir'. Le nom de code pour 'regret matinal'.".split('|'),
-            pauvre: "Reste à vivre < 200€. Avez-vous pensé à vendre un rein ?|Vous êtes à une panne de réveil d'être SDF.|Votre banquier a imprimé votre relevé juste pour rire à la machine à café.|Il vous reste plus de jours dans le mois que d'euros sur le compte.|On ne dit plus 'fin de mois difficile', on dit 'jeûne intermittent'.|Votre compte ressemble à un oignon : le regarder fait pleurer.|200€. C'est exactement le prix d'une belle tente d'occasion.|La pauvreté vous va si bien au teint, ça creuse les joues.|Le mois dure 30 jours, pas 12. Juste pour info.|À ce stade, même la banque du Monopoly refuserait le crédit.|Il est temps d'apprendre à photosynthétiser pour vous nourrir.|Votre carte bleue vous supplie de la laisser tranquille. Achevez-la.".split('|'),
-            epargneZero: "Épargne : 0€. Votre plan de retraite c'est l'effondrement de la civilisation ?|Vous épargnez tellement peu que même votre cochon tirelire fait une dépression.|Le précepte 'L'argent ne fait pas le bonheur', vous l'avez pris à la lettre.|Même les écureuils mettent plus de noisettes de côté que vous.|Votre filet de sécurité ressemble furieusement à une passoire.|Zéro. Un chiffre rond, parfait pour symboliser le désespoir.|Travailler jusqu'à 85 ans, ça maintient en forme après tout !|Le vide sidéral de vos économies donne le vertige.|Avec cette épargne, vous pourrez vous acheter une demi-baguette en 2040.|Vous êtes le cauchemar des conseillers en patrimoine.|La cigale ayant chanté tout l'été... se retrouve en PLS cet hiver.|0€. C'est propre, c'est net, c'est tragique.|Vous êtes en mode survie, niveau expert.".split('|'),
-            charges: "Vous travaillez juste pour loger vos meubles et chauffer le vide.|Vu la facture d'eau, vous prenez des douches au champagne ?|Vos charges fixes sont tellement hautes qu'elles ont le mal des montagnes.|Chaque 1er du mois, un banquier gagne ses ailes d'ange de l'enfer.|Vous êtes le meilleur employé de votre propriétaire. Félicitations.|Loyer, EDF, assurances... C'est un racket en bande organisée.|C'est beau la vie d'adulte : payer 1500€ juste pour le droit d'exister.|Les impôts et EDF vous envoient des bisous (et leurs huissiers).|C'est l'heure de la saignée mensuelle ! Sortez le chéquier.|Regardez votre salaire fondre comme neige au soleil... C'est beau la nature.|'Salaire reçu' -> 'Salaire volatilisé'. Magie noire ou charges fixes ?".split('|'),
-            riche: "Oh, on a mis de l'argent de côté ? L'extrême gauche vous observe.|Quel étalage de richesse indécent. Préparez-vous à être guillotinés.|Vous avez vaincu le capitalisme. En devenant le capitalisme.|L'indécence a un nom. Et cest votre solde bancaire actuel.|Vous faites honte à la classe ouvrière. C'est magnifique.|Attention, avec cette épargne, on va vous demander d'adopter un rond-point.|Ça épargne ! On prépare sa fuite fiscale aux Bahamas ?|Ouh là, un excédent budgétaire ! L'État va le récupérer de force.|Vous épargnez ? C'est le début du capitalisme sauvage chez vous.|Trop de reste à vivre. Vous manquez d'imagination pour dépenser.|Belle épargne. Karl Marx fait des saltos dans sa tombe.|Vous avez trop d'argent. Je peux vous envoyer mon RIB ?".split('|'),
-            sante: "Tomber malade est un luxe que votre compte désapprouve.|La Sécu rembourse 70%. Votre banquier pleure pour les 30% restants.|À ce prix, le Doliprane a intérêt à guérir votre découvert.|Faites du sport, un arrêt cardiaque coûte trop cher en frais de succession.|Le dentiste s'est acheté un jacuzzi grâce à votre carie.|Une mutuelle, c'est payer pour avoir le droit de payer.|Le psy prend 60€ de l'heure pour vous écouter pleurer sur vos dettes.|J'espère que c'est une maladie rare pour justifier une facture pareille.|Allez cueillir des herbes dans la forêt, ça fera des économies.|Le scanner a révélé un vide absolu. Sur le compte ou dans le crâne ?|La facture du kiné fait plus mal que votre tendinite.".split('|'),
-            vacances: "Payer 1000€ pour attraper des coups de soleil.|Un vol low-cost qui finit à 250€ avec les bagages.|Vous fuyez vos problèmes ? Ils seront là au retour avec des agios.|Le prix de ce péage finance le yacht du PDG de Vinci.|Airbnb : payer pour faire le ménage dans le lit d'un inconnu.|Des vacances ? Le chômage technique de votre bon sens.|La location de ski a coûté le prix de la montagne entière.|Le supplément bagage. La taxe sur l'imprévoyance.|Mettre un an à économiser pour flamber en 6 jours.|Félicitations, vous venez d'acheter du sable à prix d'or.|Le loueur de voiture a vu 'Pigeon' écrit sur votre front.|Votre Reste à vivre part en RTT ce mois-ci.|La taxe de séjour, ou se faire racketter pour dormir ailleurs.".split('|'),
-            travaux: "Leroy Merlin : on y va pour une ampoule, on sort avec 250€ de matériel.|Acheter des outils de pro pour faire un trou de travers dans le placo.|Le plombier a facturé 150€ pour tourner une vis.|Le meuble en kit : perdre son argent ET sa patience.|Le DIY coûte plus cher qu'un artisan au final.|Des coussins à 40€ pièce. Vous posez vos fesses sur de l'or ?|Un tournevis c'est utile. Le rayon complet, c'est une thérapie.|Le papier peint est à fleurs, le budget dans les choux.|Le devis a été rédigé par un braqueur de banque.|La décoration d'intérieur coûte cher pour impressionner des invités qui s'en fichent.|Valérie Damidot désapprouverait cette dépense. Moi aussi.|Votre maison vaut 1000€ de plus, votre compte vaut 1000€ de moins.|La plomberie lâche, le banquier se marre.|Les travaux ne sont jamais finis. Et vos dettes non plus.".split('|'),
-            logement: "Votre propriétaire se paye une retraite dorée sur votre dos.|Vous chauffez l'appartement ou vous recréez le climat de Dubaï ?|Le compteur Linky va décoller du mur à cette vitesse.|Mettez un pull. EDF n'est pas votre Sugar Daddy.|Loyer acquitté : le droit de dormir sous un toit. Quel luxe.|Les impôts fonciers... Payer pour posséder chez soi.|Orange, Free, SFR : le triangle des Bermudes du pouvoir d'achat.|Éteignez la lumière, vous n'avez plus les moyens d'y voir clair.|Le loyer : le péage mensuel de l'existence urbaine.|Payer 40€ pour qu'Internet coupe à chaque film. L'arnaque du siècle.|Prendre un bain coûte le prix d'un litre d'essence. Arrêtez de vous laver.|Le crédit immo sur 25 ans. Autant signer un pacte avec le Diable.|Faites du feu dans le salon avec les restes Ikea. Ça chauffe.|La régularisation de charges. Les mots les plus terrifiants de la langue française.".split('|'),
-            assurances_vehicules: "Le plein d'essence coûte plus cher que la voiture.|Les assurances : payer toute sa vie pour s'entendre dire 'pas couvert'.|Le garagiste a juste regardé le moteur : 150€.|La SNCF vous remercie pour ce retard de 3 heures financé par vos soins.|L'assurance auto : 800€/an pour une franchise de 500€. Génies.|Un pneu crevé = la fin de vos économies.|Le contrôle technique. La roulette russe automobile.|Prenez le vélo. C'est écolo et ça sauve le compte.|Une voiture est un trou noir financier sur 4 roues.|L'assurance vie... L'art de parier contre sa propre existence.|Votre assureur est le preneur de paris de Vegas en cravate.|Assurer un iPhone à 1200€. Le monde moderne a perdu la tête.|Le garagiste sourit quand il vous voit. Très mauvais signe.|L'expert a décidé que c'était de votre faute. Surprenant.|Votre banquier vous conseille de passer à la trottinette (non électrique).".split('|')
-        };
 
         // --- THEME & NOEL ---
         window.toggleDarkMode = function() {
@@ -472,7 +453,6 @@
                     if(typeof m.revenus_add === 'undefined') m.revenus_add = 0; 
                 });
 
-                // Tri chronologique rigoureux des mois 
                 const nomsMois = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
                 donnees.sort((a,b) => {
                     if(a.annee !== b.annee) return a.annee - b.annee;
@@ -483,7 +463,6 @@
                 
                 if (firstLoad) {
                     rafraichirVueActuelle();
-                    setTimeout(() => window.evaluerSarcasmeGlobal("load"), 1000);
                     firstLoad = false;
                 }
             } else { 
@@ -497,7 +476,6 @@
                 if(conf.categories) categories = conf.categories;
                 if(conf.corbeille) corbeille = conf.corbeille;
                 
-                // MIGRATION ANCIEN OBJECTIF VERS NOUVEAU SYSTEME MULTIPLE
                 if(conf.objectifsProvisions) {
                     objectifsProvisions = conf.objectifsProvisions;
                 } else if(conf.objectifAssurance) {
@@ -575,17 +553,20 @@
         }
 
         // --- CALCULS ET VUE MENSUELLE ---
-        window.calculerResteAVivre = function(moisData) {
-            const tc = (moisData.charges || []).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
-            const td = (moisData.depenses || []).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
-            const te = (moisData.epargne || []).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
-            const tprov = (moisData.provisions || []).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
-            
-            const idx = donnees.findIndex(item => item.id === moisData.id);
-            let report = 0;
-            if(idx > 0) report = window.calculerResteAVivre(donnees[idx-1]);
-
-            return report + (parseFloat(moisData.revenus)||0) + (parseFloat(moisData.revenus_add)||0) - tc - td - te - tprov;
+        
+        // Nouvelle fonction linéaire pour calculer le solde reporté d'un mois spécifique avec précision absolue.
+        window.calculerSoldeReporte = function(cibleIdx) {
+            let solde = 0;
+            for (let i = 0; i < cibleIdx; i++) {
+                const m = donnees[i];
+                const tc = (Array.isArray(m.charges)?m.charges:[]).reduce((s,item)=>s+(parseFloat(item.montant)||0),0);
+                const td = (Array.isArray(m.depenses)?m.depenses:[]).reduce((s,item)=>s+(parseFloat(item.montant)||0),0);
+                const te = (Array.isArray(m.epargne)?m.epargne:[]).reduce((s,item)=>s+(parseFloat(item.montant)||0),0);
+                const tprov = (Array.isArray(m.provisions)?m.provisions:[]).reduce((s,item)=>s+(parseFloat(item.montant)||0),0);
+                const rev = (parseFloat(m.revenus)||0) + (parseFloat(m.revenus_add)||0);
+                solde += (rev - tc - td - te - tprov);
+            }
+            return solde;
         }
 
         window.rendreInterface = function() {
@@ -593,6 +574,7 @@
             const mois = donnees.find(m => m.id === moisActifId);
             if (!mois) return;
 
+            // NETTOYAGE COMPLET DES VUES POUR ÉVITER LES BUGS D'AFFICHAGE LORS DU CHANGEMENT DE MOIS
             document.getElementById('conteneur-charges').innerHTML = '';
             document.getElementById('conteneur-depenses').innerHTML = '';
             document.getElementById('conteneur-epargne').innerHTML = '';
@@ -601,11 +583,6 @@
             document.getElementById('titre-mois').innerText = mois.nom;
             document.getElementById('revenus').value = mois.revenus || 0;
             document.getElementById('revenus_add').value = mois.revenus_add || 0;
-            
-            const idx = donnees.findIndex(m => m.id === moisActifId);
-            let soldePrecedent = 0;
-            if(idx > 0) soldePrecedent = window.calculerResteAVivre(donnees[idx-1]);
-            document.getElementById('solde_reporte').value = soldePrecedent.toFixed(2);
 
             const wrapper = document.getElementById('mois-content-wrapper');
             const btnLock = document.getElementById('btn-lock');
@@ -624,6 +601,8 @@
             window.rendreLignes('conteneur-depenses', Array.isArray(mois.depenses) ? mois.depenses : [], 'depenses');
             window.rendreLignes('conteneur-epargne', Array.isArray(mois.epargne) ? mois.epargne : [], 'epargne');
             window.rendreLignes('conteneur-provisions', Array.isArray(mois.provisions) ? mois.provisions : [], 'provisions');
+            
+            // Calcul du budget déclenché à la fin
             window.calculerBudget();
         }
 
@@ -677,24 +656,6 @@
             item[champ] = (champ === 'montant') ? parseFloat(val) || 0 : val;
             window.sauvegarderDonnees();
             window.calculerBudget(); 
-            
-            try {
-                if((champ === 'montant' || champ === 'categorie') && parseFloat(item.montant) > 0 && item.categorie) {
-                    const cat = item.categorie.toLowerCase();
-                    if(type === 'epargne') window.afficherSarcasme('riche');
-                    else if(type === 'provisions' || cat.includes('assurance') || cat.includes('auto')) window.afficherSarcasme('assurances_vehicules');
-                    else if(type === 'depenses' || type === 'charges') {
-                        if(cat.includes('resto') || cat.includes('restaurant')) window.afficherSarcasme('resto');
-                        else if(cat.includes('course')) window.afficherSarcasme('courses');
-                        else if(cat.includes('santé') || cat.includes('sante')) window.afficherSarcasme('sante');
-                        else if(cat.includes('vacance')) window.afficherSarcasme('vacances');
-                        else if(cat.includes('travaux') || cat.includes('brico')) window.afficherSarcasme('travaux');
-                        else if(cat.includes('loyer') || cat.includes('électricité') || cat.includes('eau') || cat.includes('internet')) window.afficherSarcasme('logement');
-                        else if(cat.includes('loisirs') || cat.includes('autre')) window.afficherSarcasme('loisirs');
-                    }
-                    window.evaluerSarcasmeGlobal("calc");
-                }
-            } catch (e) {}
         }
 
         window.majRevenuField = function(champ, val) {
@@ -732,13 +693,20 @@
         }
 
         window.calculerBudget = function() {
-            const m = donnees.find(m => m.id === moisActifId); if(!m) return;
+            // Index du mois en cours
+            const idxMoisActuel = donnees.findIndex(d => d.id === moisActifId);
+            const m = donnees[idxMoisActuel]; 
+            if(!m) return;
+            
+            // Calcul dynamique du solde reporté
+            const report = window.calculerSoldeReporte(idxMoisActuel);
+            document.getElementById('solde_reporte').value = report.toFixed(2);
+
             const tc = (Array.isArray(m.charges)?m.charges:[]).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
             const td = (Array.isArray(m.depenses)?m.depenses:[]).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
             const te = (Array.isArray(m.epargne)?m.epargne:[]).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
             const tprov = (Array.isArray(m.provisions)?m.provisions:[]).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
             
-            const report = parseFloat(document.getElementById('solde_reporte').value) || 0;
             const totalRevenus = report + (parseFloat(m.revenus)||0) + (parseFloat(m.revenus_add)||0);
             const r = totalRevenus - tc - td - te - tprov;
             
@@ -749,7 +717,6 @@
             document.getElementById('reste-a-vivre').innerText = r.toFixed(2) + " €";
             
             const compEl = document.getElementById('comparaison-n1');
-            const idxMoisActuel = donnees.findIndex(d => d.id === moisActifId);
             if(idxMoisActuel > 0) {
                 const mPrec = donnees[idxMoisActuel - 1];
                 const depPrec = (Array.isArray(mPrec.depenses)?mPrec.depenses:[]).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
@@ -848,7 +815,6 @@
             };
             donnees.push(nouveau); moisActifId = nouveau.id; 
             window.sauvegarderDonnees(); window.changerVue('mensuelle');
-            setTimeout(() => window.afficherSarcasme('nouveauMois'), 600);
         }
 
         window.creerMoisManuel = function() {
@@ -899,8 +865,10 @@
             document.getElementById('annuel-total-epargne-top').innerText = te.toFixed(2) + " €";
             document.getElementById('annuel-total-depense-top').innerText = (tc+td).toFixed(2) + " €";
             document.getElementById('annuel-moyenne-depense').innerText = ((tc+td) / (mois.length||1)).toFixed(2) + " €";
+            
             document.getElementById('annuel-total-charges').innerText = tc.toFixed(2) + " €";
             document.getElementById('annuel-total-depenses').innerText = td.toFixed(2) + " €";
+            document.getElementById('annuel-total-epargne-bottom').innerText = te.toFixed(2) + " €";
 
             let htmlProvisions = `
                 <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
