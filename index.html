@@ -202,6 +202,7 @@
                         <div class="progress-container"><div class="progress-header"><span>🏠 Charges Fixes</span><span id="pct-charges-m">0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--danger);" id="bar-charges-m"></div></div></div>
                         <div class="progress-container"><div class="progress-header"><span>🛒 Dépenses</span><span id="pct-depenses-m">0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--secondary);" id="bar-depenses-m"></div></div></div>
                         <div class="progress-container"><div class="progress-header"><span>✈️ Épargne</span><span id="pct-epargne-m">0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--info);" id="bar-epargne-m"></div></div></div>
+                        
                         <div class="progress-container"><div class="progress-header"><span>🛡️ Assurances</span><span id="pct-assurances-m">0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--warn);" id="bar-assurances-m"></div></div></div>
                         
                         <div class="progress-container"><div class="progress-header"><span>✅ Reste</span><span id="pct-reste-m">0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--success);" id="bar-reste-m"></div></div></div>
@@ -351,7 +352,6 @@
         let toastTimeout = null;
         let sarcasmTimeout = null;
 
-        // ---- LE GÉNÉRATEUR DE SARCASME (Méga base de données compressée) ----
         const blagues = {
             resto: "Encore au resto ? Vos artères et votre banquier pleurent en chœur.|Le serveur va finir par vous compter comme personne à charge.|Ce soir c'est caviar ou juste un manque de self-control ?|Votre estomac a un meilleur train de vie que vous.|Le livreur Uber Eats a mis votre adresse en favori.|On dit que l'appétit vient en mangeant, la ruine aussi.|Le TPE du restaurant a fait une danse de la joie à votre approche.|Un jour, votre estomac fera banqueroute.|Vous appelez ça un brunch, j'appelle ça un suicide financier.|L'hospice vous donnera de la soupe gratuite, ne vous inquiétez pas.|Vous confondez 'se faire plaisir' et 'nourrir un régiment'.|Cuisiner, c'est pour les pauvres. Oh, attendez... vous l'êtes bientôt.|La rumeur dit que vous êtes responsable du réchauffement climatique agricole.|Ce repas vous a coûté l'équivalent du PIB d'un petit pays.|Le doggy bag est obligatoire à ce niveau, c'est pour la semaine.|On vous a reconnu. Vous financez le caviar du chef étoilé.|Payer 25€ pour une salade. Le QI est en chute libre.|La faim recule dans le monde, mais votre banquier fait des cauchemars.|Si la gourmandise est un péché, votre compte est déjà en enfer.|Chaque fois que vous touchez un menu, le CAC 40 grimpe de deux points.".split('|'),
             courses: "Vous savez qu'un paquet de riz coûte 1€, n'est-ce pas ?|Les actionnaires de Carrefour vous remercient.|Encore des courses ? On prépare la fin du monde ?|Le PDG de Leclerc s'est acheté une Ferrari grâce à vous.|Votre frigo sert juste à décorer la cuisine ?|L'industrie agroalimentaire va vous couler une statue en beurre.|Ce n'est pas parce que le chariot a des roulettes qu'il faut le remplir.|Vous êtes la cible marketing parfaite. Littéralement un pigeon en or.|Acheter bio pour mourir ruiné. Beau choix.|Votre caddie déborde, votre compte se vide. L'équilibre naturel.|Vous allez devoir payer vos courses en chèques-vacances.|Soutenir la grande distribution c'est bien, mais pensez à survivre.|La caissière connaît mieux votre code PIN que vous.|Mangez bien, le stress des huissiers vous fera brûler des calories.|Vous ruinez votre budget avec des plats préparés.|Vous devriez sponsoriser des vaches laitières, ce serait plus direct.|Votre tube digestif est la zone la plus luxueuse de votre corps.|Le caddie pèse plus lourd que vos regrets dans la vie.".split('|'),
@@ -362,13 +362,12 @@
             riche: "Oh, on a mis de l'argent de côté ? L'extrême gauche vous observe.|N'oubliez pas que l'argent ne fait pas le bonheur. Donnez-le moi.|Quel étalage de richesse indécent. Préparez-vous à être guillotinés.|Vous avez vaincu le capitalisme. En devenant le capitalisme.|L'indécence a un nom. Et c'est votre solde bancaire actuel.|Vous faites honte à la classe ouvrière. C'est magnifique.|Attention, avec cette épargne, on va vous demander d'adopter un rond-point.|Vous avez tellement de marge, on se croirait chez un ministre.|Ça épargne ! On prépare sa fuite fiscale aux Bahamas ?|Vous allez finir par voter à droite avec ce comportement.|Ouh là, un excédent budgétaire ! L'État va le récupérer de force.|Vous épargnez ? C'est le début du capitalisme sauvage chez vous.|Trop de reste à vivre. Vous manquez d'imagination pour dépenser.|Vous êtes en train de devenir ce que vous détestiez : des riches.|Belle épargne. Karl Marx fait des saltos dans sa tombe.|Oups, votre compte déborde. Attention à l'indigestion monétaire.|Vous avez trop d'argent. Je peux vous envoyer mon RIB ?|C'est une insulte à tous ceux à découvert le 2 du mois. Félicitations.|L'épargne monte. Vous devenez officiellement des rentiers détestables.|Bravo. Le président serait fier de votre « pognon de dingue ».".split('|'),
             sante: "Tomber malade est un luxe que votre compte désapprouve.|La Sécu rembourse 70%. Votre banquier pleure pour les 30% restants.|À ce prix, le Doliprane a intérêt à guérir votre découvert.|Faites du sport, un arrêt cardiaque coûte trop cher en frais de succession.|Le dentiste s'est acheté un jacuzzi grâce à votre carie.|Une mutuelle, c'est payer pour avoir le droit de payer.|Le rire est gratuit, profitez-en. Le reste vous ruine.|Vous payez pour rester en vie. Le capitalisme dans toute sa splendeur.|La santé n'a pas de prix, mais son coût donne la nausée.|Vous ruinez le trou de la Sécu et le vôtre en même temps.|Avez-vous pensé à la médecine douce ? Ne pas être malade, par exemple.|Vos dents vont bien, mais votre solde a besoin d'une couronne.|Le psy prend 60€ de l'heure pour vous écouter pleurer sur vos dettes.|J'espère que c'est une maladie rare pour justifier une facture pareille.|Allez cueillir des herbes dans la forêt, ça fera des économies.|Le scanner a révélé un vide absolu. Sur le compte ou dans le crâne ?|On devrait vous perfuser avec de l'argent liquide, ça irait plus vite.|C'est une pharmacie ou une bijouterie de luxe ?|Investissez dans des pommes, c'est moins cher que le médecin.|La facture du kiné fait plus mal que votre tendinite.".split('|'),
             vacances: "Payer 1000€ pour attraper des coups de soleil.|Un vol low-cost qui finit à 250€ avec les bagages.|Vous fuyez vos problèmes ? Ils seront là au retour avec des agios.|Le prix de ce péage finance le yacht du PDG de Vinci.|Airbnb : payer pour faire le ménage dans le lit d'un inconnu.|Des vacances ? Le chômage technique de votre bon sens.|La location de ski a coûté le prix de la montagne entière.|Le supplément bagage. La taxe sur l'imprévoyance.|Mettre un an à économiser pour flamber en 6 jours.|L'empreinte carbone de ce voyage est aussi désastreuse que votre budget.|Un cocktail sur la plage à 15€. Vous buvez vos larmes parfumées coco.|Vous savez que la vue sur le parking depuis l'hôtel ne vaut pas ce prix ?|Félicitations, vous venez d'acheter du sable à prix d'or.|Le loueur de voiture a vu 'Pigeon' écrit sur votre front.|Votre Reste à vivre part en RTT ce mois-ci.|Paris-Dubaï ou Paris-Dèche ? Vous êtes sur la deuxième ligne.|L'amende pour excès de vitesse, le souvenir surprise de vos vacances.|Le Club Med vous remercie pour la construction de sa nouvelle piscine.|Ce n'est plus un road trip, c'est un braquage à l'envers.|La taxe de séjour, ou se faire racketter pour dormir ailleurs.".split('|'),
-            travaux: "Leroy Merlin : on y va pour une ampoule, on sort avec 250€ de matériel.|Acheter des outils de pro pour faire un trou de travers dans le placo.|Le plombier a facturé 150€ pour tourner une vis.|Le meuble en kit : perdre son argent ET sa patience.|Le DIY coûte plus cher qu'un artisan au final.|Des coussins à 40€ pièce. Vous posez vos fesses sur de l'or ?|Castorama est devenu votre résidence secondaire, et elle coûte cher.|Un tournevis c'est utile. Le rayon complet, c'est une thérapie.|Le papier peint est à fleurs, le budget dans les choux.|Le devis a été rédigé par un braqueur de banque.|C'est pour la maison ou vous préparez un bunker ?|La décoration d'intérieur coûte cher pour impressionner des invités qui s'en fichent.|Valérie Damidot désapprouverait cette dépense. Moi aussi.|Votre maison vaut 1000€ de plus, votre compte vaut 1000€ de moins.|Un nouveau canapé pour mieux s'affaler et pleurer sur ses factures.|Vous avez acheté de la colle forte. Pratique pour réparer votre compte.|La plomberie lâche, le banquier se marre.|L'isolation vous fera économiser 10€ par an. Belle opération.|Le pot de peinture doit être composé de licorne mixée à ce prix.|Les travaux ne sont jamais finis. Et vos dettes non plus.".split('|'),
+            travaux: "Leroy Merlin : on y va pour une ampoule, on sort avec 250€ de matériel.|Acheter des outils de pro pour faire un trou de travers dans le placo.|Le plombier a facturé 150€ pour tourner une vis.|Le meuble en kit : perdre son argent ET sa patience.|Le DIY coûte plus cher qu'un artisan au final.|Des coussins à 40€ pièce. Vous posez vos fesses sur de l'or ?|Castorama est devenu votre résidence secondaire, et elle coûte cher.|Un tournevis cest utile. Le rayon complet, c'est une thérapie.|Le papier peint est à fleurs, le budget dans les choux.|Le devis a été rédigé par un braqueur de banque.|C'est pour la maison ou vous préparez un bunker ?|La décoration d'intérieur coûte cher pour impressionner des invités qui s'en fichent.|Valérie Damidot désapprouverait cette dépense. Moi aussi.|Votre maison vaut 1000€ de plus, votre compte vaut 1000€ de moins.|Un nouveau canapé pour mieux s'affaler et pleurer sur ses factures.|Vous avez acheté de la colle forte. Pratique pour réparer votre compte.|La plomberie lâche, le banquier se marre.|L'isolation vous fera économiser 10€ par an. Belle opération.|Le pot de peinture doit être composé de licorne mixée à ce prix.|Les travaux ne sont jamais finis. Et vos dettes non plus.".split('|'),
             logement: "Votre propriétaire se paye une retraite dorée sur votre dos.|Vous chauffez l'appartement ou vous recréez le climat de Dubaï ?|Le compteur Linky va décoller du mur à cette vitesse.|Mettez un pull. EDF n'est pas votre Sugar Daddy.|Loyer acquitté : le droit de dormir sous un toit. Quel luxe.|Les impôts fonciers... Payer pour posséder chez soi.|La facture de chauffage est là. L'hiver vient, votre découvert aussi.|Orange, Free, SFR : le triangle des Bermudes du pouvoir d'achat.|Éteignez la lumière, vous n'avez plus les moyens d'y voir clair.|Le loyer : le péage mensuel de l'existence urbaine.|Payer 40€ pour qu'Internet coupe à chaque film. L'arnaque du siècle.|Prendre un bain coûte le prix d'un litre d'essence. Arrêtez de vous laver.|Si vous débranchiez la box, vous feriez des économies et auriez une vie.|Le banquier valide le loyer en essuyant une larme de compassion.|Le crédit immo sur 25 ans. Autant signer un pacte avec le Diable.|Abonnement fibre 1 Giga. Dommage que votre compte soit à 1 Octet.|Engie vient de s'acheter un nouveau gratte-ciel en voyant votre facture.|Faites du feu dans le salon avec les restes Ikea. Ça chauffe.|Rembourser un crédit pour un bien qui prendra feu. La joie de la propriété.|La régularisation de charges. Les mots les plus terrifiants de la langue française.".split('|'),
             assurances_vehicules: "Le plein d'essence coûte plus cher que la voiture.|Les assurances : payer toute sa vie pour s'entendre dire 'pas couvert'.|Le garagiste a juste regardé le moteur : 150€.|La SNCF vous remercie pour ce retard de 3 heures financé par vos soins.|L'assurance auto : 800€/an pour une franchise de 500€. Génies.|Un pneu crevé = la fin de vos économies.|Le contrôle technique. La roulette russe automobile.|Prenez le vélo. C'est écolo et ça sauve le compte.|Chaque feu rouge coûte 20 centimes. Ne freinez plus.|Une voiture est un trou noir financier sur 4 roues.|L'assurance vie... L'art de parier contre sa propre existence.|Votre assureur est le preneur de paris de Vegas en cravate.|La carte grise, cette invention pour taxer du plastique.|Assurer un iPhone à 1200€. Le monde moderne a perdu la tête.|Le garagiste sourit quand il vous voit. Très mauvais signe.|Macron a parlé. L'essence augmente. Votre ulcère aussi.|Les essuie-glaces à 40€... Ils essuient vos larmes aussi ?|L'expert a décidé que c'était de votre faute. Surprenant.|Passer le permis coûte cher, rouler coûte cher. Reste la marche.|Votre banquier vous conseille de passer à la trottinette (non électrique).".split('|')
         };
 
         window.afficherSarcasme = function(category) {
-            const now = Date.now();
             const list = blagues[category];
             if(!list) return;
             const quote = list[Math.floor(Math.random() * list.length)];
@@ -379,7 +378,7 @@
             clearTimeout(sarcasmTimeout);
             toast.classList.add('show');
             
-            // Disparaît au bout de 3 secondes EXACTEMENT (non cliquable)
+            // Disparaît au bout de 3 secondes EXACTEMENT
             sarcasmTimeout = setTimeout(() => { toast.classList.remove('show'); }, 3000);
         }
 
@@ -399,7 +398,6 @@
             if(mode === "calc") { if(r < 200 && r > -1000) window.afficherSarcasme('pauvre'); }
         }
 
-        // --- THEME MAGIQUE DE NOËL ---
         function checkChristmas() {
             const isDecember = new Date().getMonth() === 11;
             if(isDecember) { document.body.classList.add('theme-christmas'); document.getElementById('theme-icon').innerText = '🎅'; }
@@ -599,7 +597,6 @@
             item[champ] = (champ === 'montant') ? parseFloat(val) || 0 : val;
             window.sauvegarderDonnees();
             
-            // DÉCLENCHEUR SARCASME
             if(champ === 'montant' || champ === 'categorie') {
                 const amt = parseFloat(item.montant);
                 if(amt > 0) {
@@ -623,13 +620,31 @@
 
         window.majRevenus = function(val) { donnees.find(m => m.id === moisActifId).revenus = parseFloat(val) || 0; window.sauvegarderDonnees(); window.calculerBudget(); }
         
+        // CORRECTION DU BUG D'AJOUT + CATEGORIES PAR DEFAUT
         window.ajouterLigne = function(type) { 
-            donnees.find(m => m.id === moisActifId)[type].unshift({ id: Math.random().toString(36).substr(2,9), date:"", libelle:"", categorie: categories[0], montant:0 }); 
+            const mois = donnees.find(m => m.id === moisActifId);
+            if(!mois) return;
+            if(!mois[type]) mois[type] = []; // Sécurité pour les anciens mois
+
+            // Choix de la catégorie par défaut selon le type
+            let catDefaut = categories[0];
+            if(type === 'epargne') {
+                catDefaut = categories.find(c => c.toLowerCase().includes("vacance")) || categories[0];
+            } else if(type === 'assurances') {
+                catDefaut = categories.find(c => c.toLowerCase().includes("assurance")) || categories[0];
+            }
+
+            mois[type].unshift({ id: Math.random().toString(36).substr(2,9), date:"", libelle:"", categorie: catDefaut, montant:0 }); 
+            
             if(type === 'epargne' || type === 'assurances') {
-                if(document.body.classList.contains('theme-christmas')) window.neigeNoel();
-                else confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+                if(document.body.classList.contains('theme-christmas')) {
+                    if(typeof window.neigeNoel === 'function') window.neigeNoel();
+                } else {
+                    if(typeof confetti === 'function') confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+                }
             }
             window.sauvegarderDonnees(); 
+            window.rendreInterface(); // FORCE LE RAFRAÎCHISSEMENT IMMÉDIAT
         }
 
         window.demanderSuppression = function(type, id) {
@@ -683,7 +698,6 @@
             const d = donnees[donnees.length-1];
             const noms = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
             let idx = noms.indexOf(d.nom.split(' ')[0]) + 1; let an = d.annee; if(idx > 11) { idx = 0; an++; }
-            // On copie les charges ET les assurances pour le mois suivant
             const nouveau = { 
                 id: Date.now(), nom: noms[idx]+" "+an, annee: an, revenus: d.revenus, 
                 charges: d.charges.map(c=>({...c, id:Math.random().toString(36).substr(2,9)})), 
@@ -820,7 +834,6 @@
             }; reader.readAsText(file);
         });
 
-        // EventListeners pour cacher les alertes réseau
         window.addEventListener('offline', () => { updateSyncDot('offline'); document.getElementById('offline-popup').classList.remove('hidden'); });
         window.addEventListener('online', () => { updateSyncDot('online'); document.getElementById('offline-popup').classList.add('hidden'); });
     </script>
