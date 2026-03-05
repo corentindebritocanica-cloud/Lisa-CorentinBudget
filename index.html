@@ -445,11 +445,8 @@
                     m.charges = Array.isArray(m.charges) ? m.charges : (m.charges ? Object.values(m.charges) : []);
                     m.depenses = Array.isArray(m.depenses) ? m.depenses : (m.depenses ? Object.values(m.depenses) : []);
                     m.epargne = Array.isArray(m.epargne) ? m.epargne : (m.epargne ? Object.values(m.epargne) : []);
-                    
-                    // Migration Assurances -> Provisions
                     m.provisions = Array.isArray(m.provisions) ? m.provisions : (Array.isArray(m.assurances) ? m.assurances : (m.assurances ? Object.values(m.assurances) : []));
                     delete m.assurances;
-                    
                     if(typeof m.revenus_add === 'undefined') m.revenus_add = 0; 
                 });
 
@@ -552,9 +549,7 @@
             mois.locked = !mois.locked; window.sauvegarderDonnees(); window.rendreInterface();
         }
 
-        // --- CALCULS ET VUE MENSUELLE ---
-        
-        // Nouvelle fonction linéaire pour calculer le solde reporté d'un mois spécifique avec précision absolue.
+        // --- CALCUL DU SOLDE REPORTE (ITERATIF ABSOLU) ---
         window.calculerSoldeReporte = function(cibleIdx) {
             let solde = 0;
             for (let i = 0; i < cibleIdx; i++) {
@@ -569,20 +564,24 @@
             return solde;
         }
 
+        // --- VUE MENSUELLE ---
         window.rendreInterface = function() {
-            window.rendreMenu();
             const mois = donnees.find(m => m.id === moisActifId);
             if (!mois) return;
 
-            // NETTOYAGE COMPLET DES VUES POUR ÉVITER LES BUGS D'AFFICHAGE LORS DU CHANGEMENT DE MOIS
-            document.getElementById('conteneur-charges').innerHTML = '';
-            document.getElementById('conteneur-depenses').innerHTML = '';
-            document.getElementById('conteneur-epargne').innerHTML = '';
-            document.getElementById('conteneur-provisions').innerHTML = '';
+            // NETTOYAGE COMPLET DES DOM ELEMENTS POUR ÉVITER TOUT CHEVAUCHEMENT VISUEL
+            ['conteneur-charges', 'conteneur-depenses', 'conteneur-epargne', 'conteneur-provisions'].forEach(id => {
+                const el = document.getElementById(id);
+                if(el) el.innerHTML = '';
+            });
             
             document.getElementById('titre-mois').innerText = mois.nom;
             document.getElementById('revenus').value = mois.revenus || 0;
             document.getElementById('revenus_add').value = mois.revenus_add || 0;
+            
+            const idx = donnees.findIndex(m => m.id === moisActifId);
+            const soldePrecedent = window.calculerSoldeReporte(idx);
+            document.getElementById('solde_reporte').value = soldePrecedent.toFixed(2);
 
             const wrapper = document.getElementById('mois-content-wrapper');
             const btnLock = document.getElementById('btn-lock');
@@ -602,8 +601,8 @@
             window.rendreLignes('conteneur-epargne', Array.isArray(mois.epargne) ? mois.epargne : [], 'epargne');
             window.rendreLignes('conteneur-provisions', Array.isArray(mois.provisions) ? mois.provisions : [], 'provisions');
             
-            // Calcul du budget déclenché à la fin
             window.calculerBudget();
+            window.rendreMenu();
         }
 
         window.autoResize = function(el) { el.style.height = '24px'; el.style.height = (el.scrollHeight) + 'px'; }
@@ -693,12 +692,10 @@
         }
 
         window.calculerBudget = function() {
-            // Index du mois en cours
             const idxMoisActuel = donnees.findIndex(d => d.id === moisActifId);
             const m = donnees[idxMoisActuel]; 
             if(!m) return;
-            
-            // Calcul dynamique du solde reporté
+
             const report = window.calculerSoldeReporte(idxMoisActuel);
             document.getElementById('solde_reporte').value = report.toFixed(2);
 
@@ -865,7 +862,6 @@
             document.getElementById('annuel-total-epargne-top').innerText = te.toFixed(2) + " €";
             document.getElementById('annuel-total-depense-top').innerText = (tc+td).toFixed(2) + " €";
             document.getElementById('annuel-moyenne-depense').innerText = ((tc+td) / (mois.length||1)).toFixed(2) + " €";
-            
             document.getElementById('annuel-total-charges').innerText = tc.toFixed(2) + " €";
             document.getElementById('annuel-total-depenses').innerText = td.toFixed(2) + " €";
             document.getElementById('annuel-total-epargne-bottom').innerText = te.toFixed(2) + " €";
