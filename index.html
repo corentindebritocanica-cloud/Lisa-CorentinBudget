@@ -126,17 +126,13 @@
             transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
             z-index: 2000; box-shadow: 0 15px 40px rgba(0,0,0,0.5); 
             width: 92%; max-width: 500px; border-left: 8px solid var(--danger); 
-            pointer-events: none; /* Ignore les clics, ne se ferme pas si on clique ailleurs */
+            pointer-events: none; /* Ignore les clics */
         }
         #sarcasm-toast.show { top: 40px; }
         .sarcasm-icon { font-size: 2.5rem; flex-shrink: 0; }
         .sarcasm-text { font-size: 1.15rem; line-height: 1.5; text-wrap: pretty;}
         
-        /* INVERSION MODE SOMBRE POUR LA POPUP (Blanc sur Noir) */
-        body.dark-mode #sarcasm-toast { 
-            background: #FFFFFF; color: #000000; 
-            box-shadow: 0 15px 40px rgba(255,255,255,0.2);
-        }
+        body.dark-mode #sarcasm-toast { background: #FFFFFF; color: #000000; box-shadow: 0 15px 40px rgba(255,255,255,0.2); }
 
         #toast { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 12px 20px; border-radius: 20px; font-weight: 600; display: flex; align-items: center; gap: 15px; transition: bottom 0.3s ease; z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
         #toast.show { bottom: 25px; }
@@ -202,9 +198,7 @@
                         <div class="progress-container"><div class="progress-header"><span>🏠 Charges Fixes</span><span id="pct-charges-m">0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--danger);" id="bar-charges-m"></div></div></div>
                         <div class="progress-container"><div class="progress-header"><span>🛒 Dépenses</span><span id="pct-depenses-m">0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--secondary);" id="bar-depenses-m"></div></div></div>
                         <div class="progress-container"><div class="progress-header"><span>✈️ Épargne</span><span id="pct-epargne-m">0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--info);" id="bar-epargne-m"></div></div></div>
-                        
                         <div class="progress-container"><div class="progress-header"><span>🛡️ Assurances</span><span id="pct-assurances-m">0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--warn);" id="bar-assurances-m"></div></div></div>
-                        
                         <div class="progress-container"><div class="progress-header"><span>✅ Reste</span><span id="pct-reste-m">0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--success);" id="bar-reste-m"></div></div></div>
                     </div>
                 </div>
@@ -378,20 +372,19 @@
             clearTimeout(sarcasmTimeout);
             toast.classList.add('show');
             
-            // Disparaît au bout de 3 secondes EXACTEMENT
             sarcasmTimeout = setTimeout(() => { toast.classList.remove('show'); }, 3000);
         }
 
         let hasShownLoadSarcasm = false;
         window.evaluerSarcasmeGlobal = function(mode="calc") {
             const m = donnees.find(m => m.id === moisActifId); if(!m) return;
-            const tc = m.charges.reduce((s,i)=>s+i.montant,0), td = m.depenses.reduce((s,i)=>s+i.montant,0), te = m.epargne.reduce((s,i)=>s+i.montant,0), tass = (m.assurances||[]).reduce((s,i)=>s+i.montant,0);
+            const tc = (m.charges||[]).reduce((s,i)=>s+i.montant,0), td = (m.depenses||[]).reduce((s,i)=>s+i.montant,0), te = (m.epargne||[]).reduce((s,i)=>s+i.montant,0), tass = (m.assurances||[]).reduce((s,i)=>s+i.montant,0);
             const r = m.revenus - tc - td - te - tass;
             
             if(mode === "load" && !hasShownLoadSarcasm) {
                 hasShownLoadSarcasm = true;
                 const jour = new Date().getDate();
-                if(te === 0 && m.epargne.length === 0) { setTimeout(()=>window.afficherSarcasme('epargneZero'), 1500); return; }
+                if(te === 0 && (m.epargne||[]).length === 0) { setTimeout(()=>window.afficherSarcasme('epargneZero'), 1500); return; }
                 if(jour <= 10 && tc > 0) { setTimeout(()=>window.afficherSarcasme('charges'), 1500); return; }
                 if(r > 200) { setTimeout(()=>window.afficherSarcasme('riche'), 1500); return; }
             }
@@ -411,12 +404,20 @@
             }());
         }
 
-        // CHARGEMENT DONNÉES
+        // CHARGEMENT DONNÉES - SÉCURITÉ FIREBASE RENFORCÉE
         onValue(budgetRef, (snapshot) => {
             if (snapshot.exists()) {
-                donnees = snapshot.val();
+                let rawData = snapshot.val();
+                
+                // Si Firebase a converti le tableau en objet après des suppressions, on le remet en tableau
+                if (!Array.isArray(rawData)) {
+                    rawData = Object.values(rawData);
+                }
+                donnees = rawData;
+                
                 donnees.forEach(m => {
                     if(!m.annee) m.annee = m.nom.match(/\d{4}/) ? parseInt(m.nom.match(/\d{4}/)[0]) : new Date().getFullYear();
+                    // On s'assure que les listes existent bien, même si elles sont vides
                     m.charges = m.charges || []; m.depenses = m.depenses || []; m.epargne = m.epargne || []; m.assurances = m.assurances || [];
                 });
                 if (!moisActifId && donnees.length > 0) moisActifId = donnees[donnees.length - 1].id;
@@ -549,15 +550,21 @@
                 document.getElementById('jours-restants').innerText = `${lastDay - today.getDate()} jours restants ce mois`;
             } else { document.getElementById('jours-restants').innerText = "Mois clôturé"; }
 
-            window.rendreLignes('conteneur-charges', mois.charges, 'charges');
-            window.rendreLignes('conteneur-depenses', mois.depenses, 'depenses');
-            window.rendreLignes('conteneur-epargne', mois.epargne, 'epargne');
+            // Sécurité anti-crash : on s'assure que les tableaux existent bien avant de les dessiner
+            window.rendreLignes('conteneur-charges', mois.charges || [], 'charges');
+            window.rendreLignes('conteneur-depenses', mois.depenses || [], 'depenses');
+            window.rendreLignes('conteneur-epargne', mois.epargne || [], 'epargne');
             window.rendreLignes('conteneur-assurances', mois.assurances || [], 'assurances');
             window.calculerBudget();
         }
 
         window.rendreLignes = function(idConteneur, tableau, type) {
-            const conteneur = document.getElementById(idConteneur); conteneur.innerHTML = '';
+            const conteneur = document.getElementById(idConteneur); 
+            if(!conteneur) return;
+            conteneur.innerHTML = '';
+            
+            if(!tableau) tableau = [];
+            
             tableau.filter(item => (item.libelle||'').toLowerCase().includes(termeRecherche)).forEach((item) => {
                 const row = document.createElement('div'); row.className = 'item-row'; row.dataset.id = item.id;
                 let html = (type === 'depenses' || type === 'charges' || type === 'assurances') ? 
@@ -571,12 +578,14 @@
 
             if (conteneur._sortable) conteneur._sortable.destroy(); 
             const mois = donnees.find(m => m.id === moisActifId);
-            if(!mois.locked) {
+            
+            // Sécurité si Sortable n'a pas eu le temps de charger via internet
+            if(!mois.locked && typeof Sortable !== 'undefined') {
                 conteneur._sortable = new Sortable(conteneur, { 
                     handle: '.drag-handle', animation: 150, delay: 150, delayOnTouchOnly: true, fallbackOnBody: true,
                     onEnd: () => {
                         const ids = Array.from(conteneur.children).map(r => r.dataset.id);
-                        mois[type] = ids.map(id => mois[type].find(i => i.id === id));
+                        mois[type] = ids.map(id => (mois[type]||[]).find(i => i.id === id));
                         window.sauvegarderDonnees();
                     }
                 });
@@ -587,7 +596,8 @@
 
         window.majValeur = function(type, id, champ, val) {
             const mois = donnees.find(m => m.id === moisActifId);
-            const item = mois[type].find(i => i.id === id);
+            const item = (mois[type]||[]).find(i => i.id === id);
+            if(!item) return;
             
             if(champ === 'libelle' && type === 'depenses' && regexSupermarche.test(val)) {
                 item.categorie = categories.find(c => c.includes("Courses")) || categories[0];
@@ -620,18 +630,22 @@
 
         window.majRevenus = function(val) { donnees.find(m => m.id === moisActifId).revenus = parseFloat(val) || 0; window.sauvegarderDonnees(); window.calculerBudget(); }
         
-        // CORRECTION DU BUG D'AJOUT + CATEGORIES PAR DEFAUT
+        // --- LE BOUTON D'AJOUT EST TOTALEMENT SÉCURISÉ ICI ---
         window.ajouterLigne = function(type) { 
             const mois = donnees.find(m => m.id === moisActifId);
             if(!mois) return;
-            if(!mois[type]) mois[type] = []; // Sécurité pour les anciens mois
+            
+            // Si la liste n'existe pas, on la crée
+            if(!mois[type]) mois[type] = []; 
+            
+            // On s'assure qu'on a bien des catégories
+            let catDefaut = (categories && categories.length > 0) ? categories[0] : "Autre";
 
-            // Choix de la catégorie par défaut selon le type
-            let catDefaut = categories[0];
-            if(type === 'epargne') {
-                catDefaut = categories.find(c => c.toLowerCase().includes("vacance")) || categories[0];
-            } else if(type === 'assurances') {
-                catDefaut = categories.find(c => c.toLowerCase().includes("assurance")) || categories[0];
+            // Sélections intelligentes selon le type
+            if(type === 'epargne' && categories) {
+                catDefaut = categories.find(c => c.toLowerCase().includes("vacance")) || catDefaut;
+            } else if(type === 'assurances' && categories) {
+                catDefaut = categories.find(c => c.toLowerCase().includes("assurance")) || catDefaut;
             }
 
             mois[type].unshift({ id: Math.random().toString(36).substr(2,9), date:"", libelle:"", categorie: catDefaut, montant:0 }); 
@@ -643,13 +657,14 @@
                     if(typeof confetti === 'function') confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
                 }
             }
+            
             window.sauvegarderDonnees(); 
-            window.rendreInterface(); // FORCE LE RAFRAÎCHISSEMENT IMMÉDIAT
+            window.rendreInterface(); // Force l'interface à redessiner instantanément !
         }
 
         window.demanderSuppression = function(type, id) {
             const mois = donnees.find(m => m.id === moisActifId);
-            const index = mois[type].findIndex(i => i.id === id);
+            const index = (mois[type]||[]).findIndex(i => i.id === id);
             if(index > -1) {
                 const item = mois[type][index];
                 suppressionEnAttente = { type: type, item: item, moisId: moisActifId, index: index };
@@ -666,14 +681,20 @@
                         window.sauvegarderConfig(); suppressionEnAttente = null;
                     }
                 }, 5000);
+                window.rendreInterface();
             }
         }
 
         window.annulerSuppression = function() {
             if(suppressionEnAttente) {
                 const mois = donnees.find(m => m.id === suppressionEnAttente.moisId);
-                if(mois) { mois[suppressionEnAttente.type].splice(suppressionEnAttente.index, 0, suppressionEnAttente.item); window.sauvegarderDonnees(); }
+                if(mois) { 
+                    if(!mois[suppressionEnAttente.type]) mois[suppressionEnAttente.type] = [];
+                    mois[suppressionEnAttente.type].splice(suppressionEnAttente.index, 0, suppressionEnAttente.item); 
+                    window.sauvegarderDonnees(); 
+                }
                 document.getElementById('toast').classList.remove('show'); clearTimeout(toastTimeout); suppressionEnAttente = null;
+                window.rendreInterface();
             }
         }
 
@@ -681,6 +702,7 @@
             const item = corbeille[index]; const mois = donnees.find(m => m.id === moisActifId);
             if(mois) {
                 let typeCible = item.typeOriginal || 'depenses';
+                if(!mois[typeCible]) mois[typeCible] = [];
                 delete item.typeOriginal; delete item.dateSuppr;
                 mois[typeCible].unshift(item); corbeille.splice(index, 1);
                 window.sauvegarderDonnees(); window.sauvegarderConfig(); window.rendreInterface(); 
@@ -700,9 +722,9 @@
             let idx = noms.indexOf(d.nom.split(' ')[0]) + 1; let an = d.annee; if(idx > 11) { idx = 0; an++; }
             const nouveau = { 
                 id: Date.now(), nom: noms[idx]+" "+an, annee: an, revenus: d.revenus, 
-                charges: d.charges.map(c=>({...c, id:Math.random().toString(36).substr(2,9)})), 
+                charges: (d.charges||[]).map(c=>({...c, id:Math.random().toString(36).substr(2,9)})), 
                 depenses:[], 
-                epargne: d.epargne.map(e=>({...e, id:Math.random().toString(36).substr(2,9)})), 
+                epargne: (d.epargne||[]).map(e=>({...e, id:Math.random().toString(36).substr(2,9)})), 
                 assurances: (d.assurances||[]).map(a=>({...a, id:Math.random().toString(36).substr(2,9)})),
                 locked: false 
             };
@@ -711,7 +733,7 @@
 
         window.calculerBudget = function() {
             const m = donnees.find(m => m.id === moisActifId); if(!m) return;
-            const tc = m.charges.reduce((s,i)=>s+i.montant,0), td = m.depenses.reduce((s,i)=>s+i.montant,0), te = m.epargne.reduce((s,i)=>s+i.montant,0), tass = (m.assurances||[]).reduce((s,i)=>s+i.montant,0);
+            const tc = (m.charges||[]).reduce((s,i)=>s+i.montant,0), td = (m.depenses||[]).reduce((s,i)=>s+i.montant,0), te = (m.epargne||[]).reduce((s,i)=>s+i.montant,0), tass = (m.assurances||[]).reduce((s,i)=>s+i.montant,0);
             const r = m.revenus - tc - td - te - tass;
             
             document.getElementById('total-charges').innerText = tc.toFixed(2);
@@ -724,7 +746,7 @@
             const idxMoisActuel = donnees.findIndex(d => d.id === moisActifId);
             if(idxMoisActuel > 0) {
                 const mPrec = donnees[idxMoisActuel - 1];
-                const depPrec = mPrec.depenses.reduce((s,i)=>s+i.montant,0);
+                const depPrec = (mPrec.depenses||[]).reduce((s,i)=>s+i.montant,0);
                 const diff = td - depPrec;
                 compEl.style.display = 'inline-block';
                 if(diff > 0) { compEl.innerText = `↗ +${diff.toFixed(0)}€ de dépenses / mois préc.`; compEl.className = 'comparison comp-bad'; }
@@ -750,8 +772,8 @@
             const val = document.getElementById('select-annee').value; if(!val) return;
             const a = parseInt(val); let tc=0, td=0, te=0, tass=0;
             donnees.filter(m=>m.annee===a).forEach(m=>{
-                tc += m.charges.reduce((s,i)=>s+i.montant,0); td += m.depenses.reduce((s,i)=>s+i.montant,0); 
-                te += m.epargne.reduce((s,i)=>s+i.montant,0); tass += (m.assurances||[]).reduce((s,i)=>s+i.montant,0);
+                tc += (m.charges||[]).reduce((s,i)=>s+i.montant,0); td += (m.depenses||[]).reduce((s,i)=>s+i.montant,0); 
+                te += (m.epargne||[]).reduce((s,i)=>s+i.montant,0); tass += (m.assurances||[]).reduce((s,i)=>s+i.montant,0);
             });
             document.getElementById('annuel-total-epargne-top').innerText = te.toFixed(2) + " €";
             document.getElementById('annuel-total-depense-top').innerText = (tc+td).toFixed(2) + " €";
@@ -770,8 +792,8 @@
 
             moisAnnee.forEach(m => {
                 let depenseDuMois = 0;
-                m.epargne.forEach(e => totalEpargne += e.montant);
-                m.depenses.forEach(d => {
+                (m.epargne||[]).forEach(e => totalEpargne += e.montant);
+                (m.depenses||[]).forEach(d => {
                     depenseDuMois += d.montant; totalDepenses += d.montant;
                     if((d.categorie||'').includes('Restaurant')) nbRestos++;
                     categoriesDepenses[d.categorie] = (categoriesDepenses[d.categorie] || 0) + d.montant;
