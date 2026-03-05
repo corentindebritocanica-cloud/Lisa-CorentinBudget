@@ -389,7 +389,8 @@
                 clearTimeout(sarcasmTimeout);
                 toast.classList.add('show');
                 
-                sarcasmTimeout = setTimeout(() => { toast.classList.remove('show'); }, 3000);
+                // Modification ici : on passe de 3000 à 5000 millisecondes (5 secondes)
+                sarcasmTimeout = setTimeout(() => { toast.classList.remove('show'); }, 5000);
             } catch(e) { console.error("Erreur UI sarcasme", e); }
         }
 
