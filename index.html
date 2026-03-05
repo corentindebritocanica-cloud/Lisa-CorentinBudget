@@ -7,25 +7,22 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#F2F2F7" id="meta-theme-color">
     <link rel="manifest" href="manifest.json">
-    <title>Budget L&C</title>
     <link rel="apple-touch-icon" href="icone.png">
+    <title>Budget L&C</title>
     
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
         :root {
-            /* Couleurs modifiables via JS */
-            --primary: #007AFF; 
-            --primary-light: #E1F0FF;
+            --primary: #007AFF; --primary-light: #E1F0FF;
             --secondary: #FF9500; --danger: #FF3B30; --success: #34C759; --info: #AF52DE;
             --bg-color: #F2F2F7; --card-bg: #FFFFFF; --text-main: #1C1C1E; --text-muted: #8E8E93; --border: #E5E5EA;
         }
 
         body.dark-mode {
             color-scheme: dark;
-            --primary-light: #003366;
-            --secondary: #FF9F0A; --danger: #FF453A; --success: #30D158; --info: #BF5AF2;
+            --primary-light: #003366; --secondary: #FF9F0A; --danger: #FF453A; --success: #30D158; --info: #BF5AF2;
             --bg-color: #000000; --card-bg: #1C1C1E; --text-main: #FFFFFF; --text-muted: #EBEBF599; --border: #38383A;
         }
 
@@ -36,6 +33,10 @@
         body.dark-mode.theme-green { --primary-light: #124D20; }
         body.theme-rose { --primary: #FF2D55; --primary-light: #FFE5EA; }
         body.dark-mode.theme-rose { --primary-light: #660B1C; }
+        
+        /* Thème Magique Noël (Activé dynamiquement) */
+        body.theme-christmas { --primary: #D42426; --primary-light: #F8D7DA; --success: #1E5631; --info: #D42426; }
+        body.dark-mode.theme-christmas { --primary: #FF453A; --primary-light: #4A1515; --success: #2E8B57; }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; transition: background-color 0.3s, color 0.3s; }
         body { background-color: var(--bg-color); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
@@ -75,7 +76,6 @@
         .header-title-group { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
         .header-title-group h1 { font-size: 1.6rem; font-weight: 800; }
         
-        /* Cadenas & Suppression */
         .header-actions { display: flex; gap: 10px; align-items: center; }
         .btn-icon { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; }
         .btn-icon.danger { background: #FFE5E5; color: var(--danger); border:none; }
@@ -104,8 +104,6 @@
         .item-content { flex: 1; display: flex; flex-direction: column; gap: 8px; }
         .item-top { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
         .item-bottom { display: flex; gap: 10px; }
-        
-        /* Textarea pour Note détaillée */
         .item-top textarea { flex: 1; border: none; font-weight: 600; padding:0; resize: none; min-height: 24px; overflow:hidden; }
         .item-top input[type="number"] { width: 85px; text-align: right; border: none; font-weight: 700; padding: 8px; border-radius: 8px; }
         .item-bottom input[type="date"], .item-bottom select { flex: 1; background: var(--bg-color); border: none; font-size: 0.85rem; padding: 6px 10px; border-radius: 6px; }
@@ -115,34 +113,33 @@
         .total-amount { font-size: 3rem; font-weight: 800; margin: 5px 0; letter-spacing: -1px; }
         .sub-text { font-size: 0.85rem; opacity: 0.9; margin-top: 5px; }
         .comparison { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 0.8rem; font-weight: bold; margin-top: 10px; background: rgba(255,255,255,0.2); }
-        .comp-good { color: #D4EDDA; text-shadow: 0 1px 2px rgba(0,0,0,0.1); } 
-        .comp-bad { color: #FFE5E5; text-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        .comp-good { color: #D4EDDA; text-shadow: 0 1px 2px rgba(0,0,0,0.1); } .comp-bad { color: #FFE5E5; text-shadow: 0 1px 2px rgba(0,0,0,0.1); }
 
         .progress-container { margin-bottom: 12px; }
         .progress-header { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; margin-bottom: 5px; }
         .progress-track { background: var(--border); border-radius: 10px; height: 10px; overflow: hidden; }
         .progress-fill { height: 100%; transition: width 0.5s ease; background: var(--primary); }
 
-        /* TOAST NOTIFICATION (Undo) */
-        #toast { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 12px 20px; border-radius: 20px; font-weight: 600; display: flex; align-items: center; gap: 15px; transition: bottom 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        /* SARCASME NOTIFICATION */
+        #sarcasm-toast { position: fixed; top: -150px; left: 50%; transform: translateX(-50%); background: #1C1C1E; color: #FFFFFF; padding: 15px 25px; border-radius: 16px; font-weight: 600; display: flex; align-items: center; gap: 15px; transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 2000; box-shadow: 0 10px 30px rgba(0,0,0,0.4); width: 90%; max-width: 400px; border-left: 5px solid var(--danger); }
+        #sarcasm-toast.show { top: 30px; }
+        .sarcasm-icon { font-size: 1.8rem; }
+        .sarcasm-text { font-size: 0.9rem; line-height: 1.4; }
+
+        /* TOAST UNDO */
+        #toast { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 12px 20px; border-radius: 20px; font-weight: 600; display: flex; align-items: center; gap: 15px; transition: bottom 0.3s ease; z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
         #toast.show { bottom: 25px; }
         #btn-undo { background: var(--secondary); color: white; border: none; padding: 6px 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
 
-        /* POPUP HORS-LIGNE & BILAN */
         .overlay-popup { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 9999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(3px); }
         .popup-box { background: var(--card-bg); padding: 30px; border-radius: 20px; text-align: center; max-width: 85%; width:400px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto;}
 
-        /* VUE ADMIN */
         .admin-section { background: var(--card-bg); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--border); }
         .cat-tag { display: inline-block; padding: 6px 12px; background: var(--bg-color); border-radius: 15px; margin: 4px; font-size: 0.9rem; }
         .btn-small { padding: 6px 12px; border-radius: 8px; border: none; background: var(--bg-color); color: var(--text-main); font-weight: 600; cursor:pointer;}
-        
-        /* Selecteur de couleur */
         .color-selector { display: flex; gap: 10px; margin-top: 10px; }
         .color-circle { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
         .color-circle.active { border-color: var(--text-main); transform: scale(1.1); }
-
-        /* Mode Clôturé (Verrouillé) */
         .locked-mode .drag-handle { display: none; }
         .locked-mode .btn-delete { display: none; }
         .locked-mode .btn-add { display: none; }
@@ -171,10 +168,8 @@
     </nav>
 
     <main class="main-content">
-        
         <div id="vue-mensuelle">
-            <div class="search-container"><input type="text" id="search-bar" placeholder="🔍 Rechercher (ex: Auchan)..." oninput="window.filtrerRecherche()"></div>
-            
+            <div class="search-container"><input type="text" id="search-bar" placeholder="🔍 Rechercher..." oninput="window.filtrerRecherche()"></div>
             <div class="header-title-group">
                 <h1 id="titre-mois">Chargement...</h1>
                 <div class="header-actions">
@@ -183,11 +178,8 @@
                 </div>
             </div>
 
-            <div id="mois-content-wrapper"> <div class="revenus-box">
-                    <strong>Revenus communs</strong>
-                    <input type="number" id="revenus" value="0" onchange="window.majRevenus(this.value)">
-                </div>
-
+            <div id="mois-content-wrapper">
+                <div class="revenus-box"><strong>Revenus communs</strong><input type="number" id="revenus" value="0" onchange="window.majRevenus(this.value)"></div>
                 <div class="card summary-card">
                     <h3>Reste à vivre</h3>
                     <div class="total-amount" id="reste-a-vivre">0 €</div>
@@ -262,7 +254,7 @@
 
             <div class="admin-section">
                 <h3>📧 Sauvegarde Automatique & Manuelle</h3>
-                <p style="font-size: 0.9rem; color: var(--text-muted); margin: 10px 0;">Le dimanche à minuit, un e-mail est envoyé automatiquement. Vous pouvez forcer l'envoi ici :</p>
+                <p style="font-size: 0.9rem; color: var(--text-muted); margin: 10px 0;">Le dimanche à minuit, un e-mail est envoyé automatiquement.</p>
                 <button class="btn-action" style="background:#5856D6;" onclick="window.envoyerSauvegardeMail(this)">✉️ Envoyer fichier .json par mail</button>
             </div>
 
@@ -286,13 +278,14 @@
                 <input type="file" id="import-json" accept=".json" style="margin-top:5px; font-size: 0.9rem !important;">
             </div>
         </div>
-
     </main>
 
-    <div id="toast">
-        <span id="toast-msg">Ligne supprimée</span>
-        <button id="btn-undo" onclick="window.annulerSuppression()">Annuler</button>
+    <div id="sarcasm-toast">
+        <div class="sarcasm-icon">🕴️</div>
+        <div class="sarcasm-text" id="sarcasm-text-content">Je vous juge.</div>
     </div>
+
+    <div id="toast"><span id="toast-msg">Ligne supprimée</span><button id="btn-undo" onclick="window.annulerSuppression()">Annuler</button></div>
 
     <div id="offline-popup" class="overlay-popup hidden">
         <div class="popup-box">
@@ -339,15 +332,90 @@
         let suppressionEnAttente = null;
         let toastTimeout = null;
 
+        // ---- LE GÉNÉRATEUR DE SARCASME (Banquier IA) ----
+        const blagues = {
+            resto: [
+                "Encore au resto ? Vos artères et votre banquier pleurent en chœur.", "Le serveur va finir par vous compter comme personne à charge.", "Ce soir c'est caviar ou juste un manque de self-control ?", "Votre estomac a un meilleur train de vie que vous.", "Le livreur Uber Eats a mis votre adresse en favori.", "On dit que l'appétit vient en mangeant, la ruine aussi.", "Vous devriez sponsoriser des vaches laitières, ce serait plus direct.", "Le TPE du restaurant a fait une danse de la joie à votre approche.", "C'est votre carte bancaire ou votre balance qui va craquer en premier ?", "Un jour, votre estomac fera banqueroute.", "Vous appelez ça un brunch, j'appelle ça un suicide financier.", "L'hospice vous donnera de la soupe gratuite, ne vous inquiétez pas.", "Vous confondez 'se faire plaisir' et 'nourrir un régiment'."
+            ],
+            courses: [
+                "Vous savez qu'un paquet de riz coûte 1€, n'est-ce pas ?", "Les actionnaires de Carrefour vous remercient.", "Encore des courses ? On prépare la fin du monde ?", "Le PDG de Leclerc s'est acheté une Ferrari grâce à vous.", "Votre frigo sert juste à décorer la cuisine ?", "L'industrie agroalimentaire réfléchit à vous couler une statue en beurre.", "Ce n'est pas parce que le chariot a des roulettes qu'il faut le remplir à ras bord.", "Vous êtes la cible marketing parfaite. Littéralement un pigeon en or.", "Acheter bio pour mourir ruiné et en bonne santé. Beau choix.", "Votre caddie déborde, votre compte se vide. L'équilibre naturel.", "Bientôt, vous allez devoir payer vos courses en chèques-vacances.", "C'est bien de soutenir la grande distribution, mais pensez à votre survie."
+            ],
+            loisirs: [
+                "Encore un truc qui va prendre la poussière plus vite que vos ambitions.", "Amazon devrait vous décerner le titre d'Employé du Mois.", "Le capitalisme vous remercie pour votre noble sacrifice.", "Acheter pour oublier qu'on est pauvre... pour finir plus pauvre.", "Vous venez d'acheter un aller simple pour la culpabilité de minuit.", "C'est incroyable de payer si cher pour un truc si moche.", "Si vous achetiez des neurones à la place, vous seriez prix Nobel.", "Payer pour s'amuser, c'est triste. L'ennui, c'est gratuit.", "Le bouton 'Valider le panier' est votre pire ennemi.", "La thérapie par le shopping, c'est boire de l'eau de mer quand on a soif.", "Ce loisir a l'air sympa. Presque autant que de pouvoir manger à sa faim.", "Une dépense 'Autre'. Le trou noir de la comptabilité personnelle."
+            ],
+            pauvre: [
+                "Reste à vivre < 200€. Avez-vous pensé à vendre un rein ?", "Vous êtes à une panne de réveil d'être SDF.", "Votre banquier a imprimé votre relevé juste pour rire à la machine à café.", "Il vous reste plus de jours dans le mois que d'euros sur le compte.", "On ne dit plus 'fin de mois difficile', on dit 'jeûne intermittent forcé'.", "Le vide intersidéral s'approche de votre compte courant.", "Votre compte ressemble à un oignon : le regarder donne envie de pleurer.", "Faites appel à la générosité publique. Une cagnotte Leetchi ?", "200€. C'est exactement le prix d'une belle tente d'occasion.", "La pauvreté vous va si bien au teint, ça creuse les joues."
+            ],
+            epargneZero: [
+                "Épargne : 0€. Votre plan de retraite c'est l'effondrement de la civilisation ?", "Vous épargnez tellement peu que même votre cochon tirelire fait une dépression.", "Le précepte 'L'argent ne fait pas le bonheur', vous l'avez pris à la lettre.", "Même les écureuils mettent plus de noisettes de côté que vous.", "Votre filet de sécurité ressemble furieusement à une passoire.", "Zéro. Un chiffre rond, parfait pour symboliser le désespoir.", "Travailler jusqu'à 85 ans, ça maintient en forme après tout !", "Le vide sidéral de vos économies donne le vertige."
+            ],
+            charges: [
+                "Vous travaillez juste pour loger vos meubles et chauffer le vide.", "Vu la facture d'eau, vous prenez des douches au champagne ?", "Vos charges fixes sont tellement hautes qu'elles ont le mal des montagnes.", "Le 5 du mois, l'âge d'or est déjà terminé. Retour à la réalité.", "Chaque 1er du mois, un banquier gagne ses ailes d'ange de l'enfer.", "Les factures pleuvent. Ouvrez le grand parapluie de l'angoisse.", "Vous êtes le meilleur employé de votre propriétaire. Félicitations."
+            ],
+            riche: [
+                "Oh, on a mis de l'argent de côté ? L'extrême gauche vous observe.", "N'oubliez pas que l'argent ne fait pas le bonheur. Donnez-le moi.", "Quel étalage de richesse indécent. Préparez-vous à être guillotinés.", "Vous avez vaincu le capitalisme. En devenant le capitalisme.", "L'indécence a un nom. Et c'est votre solde bancaire actuel.", "Vous faites honte à la classe ouvrière. C'est magnifique.", "Attention, avec cette épargne, on va vous demander d'adopter un rond-point."
+            ]
+        };
+
+        let lastSarcasmTime = 0;
+        let hasShownLoadSarcasm = false;
+
+        window.afficherSarcasme = function(category) {
+            const now = Date.now();
+            if(now - lastSarcasmTime < 5000) return; // Anti-spam 5 secondes
+            
+            const list = blagues[category];
+            if(!list) return;
+            const quote = list[Math.floor(Math.random() * list.length)];
+            
+            const toast = document.getElementById('sarcasm-toast');
+            document.getElementById('sarcasm-text-content').innerText = quote;
+            toast.classList.add('show');
+            lastSarcasmTime = now;
+            
+            setTimeout(() => { toast.classList.remove('show'); }, 6000);
+        }
+
+        window.evaluerSarcasmeGlobal = function(mode="calc") {
+            const m = donnees.find(m => m.id === moisActifId); if(!m) return;
+            const tc = m.charges.reduce((s,i)=>s+i.montant,0), td = m.depenses.reduce((s,i)=>s+i.montant,0), te = m.epargne.reduce((s,i)=>s+i.montant,0);
+            const r = m.revenus - tc - td - te;
+            
+            if(mode === "load" && !hasShownLoadSarcasm) {
+                hasShownLoadSarcasm = true;
+                const jour = new Date().getDate();
+                
+                if(te === 0 && m.epargne.length === 0) { setTimeout(()=>window.afficherSarcasme('epargneZero'), 1500); return; }
+                if(jour <= 10 && tc > 0) { setTimeout(()=>window.afficherSarcasme('charges'), 1500); return; }
+                if(r > 200) { setTimeout(()=>window.afficherSarcasme('riche'), 1500); return; }
+            }
+            
+            if(mode === "calc") {
+                if(r < 200 && r > -1000) window.afficherSarcasme('pauvre');
+            }
+        }
+
+        // --- THEME MAGIQUE DE NOËL ---
+        function checkChristmas() {
+            const isDecember = new Date().getMonth() === 11; // 11 = Décembre
+            if(isDecember) {
+                document.body.classList.add('theme-christmas');
+                document.getElementById('theme-icon').innerText = '🎅';
+            }
+        }
+        
+        window.neigeNoel = function() {
+            var duration = 3 * 1000; var end = Date.now() + duration;
+            (function frame() {
+                confetti({ particleCount: 3, startVelocity: 0, ticks: 200, origin: { x: Math.random(), y: Math.random() - 0.2 }, colors: ['#ffffff'], shapes: ['circle'], gravity: Math.random() * 0.4 + 0.4, scalar: Math.random() * 0.6 + 0.4, drift: Math.random() * 0.8 - 0.4, zIndex: 10000 });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+        }
+
+
         // DÉTECTION HORS-LIGNE
-        window.addEventListener('offline', () => {
-            updateSyncDot('offline');
-            document.getElementById('offline-popup').classList.remove('hidden');
-        });
-        window.addEventListener('online', () => {
-            updateSyncDot('online');
-            document.getElementById('offline-popup').classList.add('hidden');
-        });
+        window.addEventListener('offline', () => { updateSyncDot('offline'); document.getElementById('offline-popup').classList.remove('hidden'); });
+        window.addEventListener('online', () => { updateSyncDot('online'); document.getElementById('offline-popup').classList.add('hidden'); });
 
         function updateSyncDot(state) {
             const dot = document.getElementById('sync-dot');
@@ -365,6 +433,7 @@
                 });
                 if (!moisActifId && donnees.length > 0) moisActifId = donnees[donnees.length - 1].id;
                 rafraichirVueActuelle();
+                setTimeout(() => window.evaluerSarcasmeGlobal("load"), 1000);
             } else { window.initDefaut(); }
         });
 
@@ -409,7 +478,8 @@
         window.toggleDarkMode = function() {
             document.body.classList.toggle('dark-mode');
             const isDark = document.body.classList.contains('dark-mode');
-            document.getElementById('theme-icon').innerText = isDark ? '🌙' : '☀️';
+            const isChristmas = document.body.classList.contains('theme-christmas');
+            document.getElementById('theme-icon').innerText = isChristmas ? '🎅' : (isDark ? '🌙' : '☀️');
             document.getElementById('meta-theme-color').content = isDark ? '#000000' : '#F2F2F7';
             localStorage.setItem('darkModeLC', isDark);
             MAJSelecteursCouleur();
@@ -432,12 +502,12 @@
             else if(currentTheme === 'theme-rose') circles[3].classList.add('active');
         }
 
-        // Initialisation Theme
         if(localStorage.getItem('darkModeLC') === 'true') window.toggleDarkMode();
         if(localStorage.getItem('themeColorLC')) window.changerCouleur(localStorage.getItem('themeColorLC'));
         else MAJSelecteursCouleur();
+        
+        checkChristmas(); // Check Noël
 
-        // --- SECTIONS RETRACTABLES ---
         window.toggleSection = function(id, headerEl) {
             const content = document.getElementById(id);
             content.classList.toggle('collapsed');
@@ -470,7 +540,6 @@
             });
         }
 
-        // --- CADENAS MOIS ---
         window.toggleLockMois = function() {
             const mois = donnees.find(m => m.id === moisActifId);
             mois.locked = !mois.locked;
@@ -478,11 +547,7 @@
             window.rendreInterface();
         }
 
-        // Auto-Resize Textarea
-        window.autoResize = function(el) {
-            el.style.height = '24px'; // Reset
-            el.style.height = (el.scrollHeight) + 'px';
-        }
+        window.autoResize = function(el) { el.style.height = '24px'; el.style.height = (el.scrollHeight) + 'px'; }
 
         window.rendreInterface = function() {
             window.rendreMenu();
@@ -492,29 +557,18 @@
             document.getElementById('titre-mois').innerText = mois.nom;
             document.getElementById('revenus').value = mois.revenus || 0;
             
-            // Gestion Verrouillage
             const wrapper = document.getElementById('mois-content-wrapper');
             const btnLock = document.getElementById('btn-lock');
-            if(mois.locked) {
-                wrapper.classList.add('locked-mode');
-                btnLock.classList.add('locked');
-                btnLock.innerText = '🔒';
-            } else {
-                wrapper.classList.remove('locked-mode');
-                btnLock.classList.remove('locked');
-                btnLock.innerText = '🔓';
-            }
+            if(mois.locked) { wrapper.classList.add('locked-mode'); btnLock.classList.add('locked'); btnLock.innerText = '🔒'; } 
+            else { wrapper.classList.remove('locked-mode'); btnLock.classList.remove('locked'); btnLock.innerText = '🔓'; }
             
-            // Jours restants
             const [nomMois, anneeStr] = mois.nom.split(' ');
             const moisIndex = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"].indexOf(nomMois);
             const today = new Date();
             if(today.getFullYear() === parseInt(anneeStr) && today.getMonth() === moisIndex) {
                 const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
                 document.getElementById('jours-restants').innerText = `${lastDay - today.getDate()} jours restants ce mois`;
-            } else {
-                document.getElementById('jours-restants').innerText = "Mois clôturé";
-            }
+            } else { document.getElementById('jours-restants').innerText = "Mois clôturé"; }
 
             window.rendreLignes('conteneur-charges', mois.charges, 'charges');
             window.rendreLignes('conteneur-depenses', mois.depenses, 'depenses');
@@ -532,7 +586,6 @@
                     `<div class="item-top"><select onchange="window.majValeur('${type}','${item.id}','categorie',this.value)" style="flex:1; background:none; border:none; font-weight:600;">${categories.map(c=>`<option value="${c}" ${c===item.categorie?'selected':''}>${c}</option>`).join('')}</select><input type="number" value="${item.montant}" onchange="window.majValeur('${type}','${item.id}','montant',this.value)"></div>`;
                 row.innerHTML = `<div class="drag-handle">☰</div><div class="item-content">${html}</div><button class="btn-delete" onclick="window.demanderSuppression('${type}','${item.id}')">✕</button>`;
                 conteneur.appendChild(row);
-                // Init taille textarea
                 const ta = row.querySelector('textarea'); if(ta) window.autoResize(ta);
             });
 
@@ -550,7 +603,6 @@
             }
         }
 
-        // --- INTELLIGENCE AUTO-CATÉGORISATION ---
         const regexSupermarche = /leclerc|lecler|carrefour|carefour|auchan|intermarch|super\s*u|lidl|aldi|frais|cora|casino|netto/i;
 
         window.majValeur = function(type, id, champ, val) {
@@ -564,17 +616,35 @@
             
             item[champ] = (champ === 'montant') ? parseFloat(val) || 0 : val;
             window.sauvegarderDonnees();
+            
+            // DÉCLENCHEUR SARCASME
+            if(champ === 'montant' || champ === 'categorie') {
+                const amt = parseFloat(item.montant);
+                if(amt > 0) {
+                    if(type === 'epargne') { window.afficherSarcasme('riche'); }
+                    else if(type === 'depenses') {
+                        const cat = item.categorie || '';
+                        if(cat.includes('Restaurant')) window.afficherSarcasme('resto');
+                        else if(cat.includes('Courses')) window.afficherSarcasme('courses');
+                        else if(cat.includes('Loisirs') || cat.includes('Autre')) window.afficherSarcasme('loisirs');
+                    }
+                    window.evaluerSarcasmeGlobal("calc");
+                }
+            }
+            window.calculerBudget();
         }
 
-        window.majRevenus = function(val) { donnees.find(m => m.id === moisActifId).revenus = parseFloat(val) || 0; window.sauvegarderDonnees(); }
+        window.majRevenus = function(val) { donnees.find(m => m.id === moisActifId).revenus = parseFloat(val) || 0; window.sauvegarderDonnees(); window.calculerBudget(); }
         
         window.ajouterLigne = function(type) { 
             donnees.find(m => m.id === moisActifId)[type].unshift({ id: Math.random().toString(36).substr(2,9), date:"", libelle:"", categorie: categories[0], montant:0 }); 
-            if(type === 'epargne') confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+            if(type === 'epargne') {
+                if(document.body.classList.contains('theme-christmas')) window.neigeNoel();
+                else confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+            }
             window.sauvegarderDonnees(); 
         }
 
-        // --- CORBEILLE ET UNDO ---
         window.demanderSuppression = function(type, id) {
             const mois = donnees.find(m => m.id === moisActifId);
             const index = mois[type].findIndex(i => i.id === id);
@@ -621,9 +691,7 @@
         }
 
         window.viderCorbeille = function() {
-            if(confirm("Vider définitivement TOUTE la corbeille ? Action irréversible.")) {
-                corbeille = []; window.sauvegarderConfig(); window.rendreAdmin();
-            }
+            if(confirm("Vider définitivement TOUTE la corbeille ? Action irréversible.")) { corbeille = []; window.sauvegarderConfig(); window.rendreAdmin(); }
         }
 
         window.supprimerMoisActif = function() { if(confirm("Supprimer ce mois DEFINITIVEMENT ?")) { donnees = donnees.filter(m => m.id !== moisActifId); moisActifId = donnees.length ? donnees[donnees.length-1].id : null; window.sauvegarderDonnees(); } }
@@ -647,7 +715,6 @@
             document.getElementById('total-epargne').innerText = te.toFixed(2);
             document.getElementById('reste-a-vivre').innerText = r.toFixed(2) + " €";
             
-            // Comparaison N-1
             const compEl = document.getElementById('comparaison-n1');
             const idxMoisActuel = donnees.findIndex(d => d.id === moisActifId);
             if(idxMoisActuel > 0) {
@@ -666,7 +733,6 @@
             document.getElementById(`bar-reste-m`).style.width = (r>0?r/t*100:0)+'%'; document.getElementById(`pct-reste-m`).innerText = Math.round(r>0?r/t*100:0)+'%';
         }
 
-        // --- ONGLET ANNUEL & WRAPPED ---
         window.preparerFiltreAnnuel = function() {
             const s = document.getElementById('select-annee'); s.innerHTML = '';
             const ans = [...new Set(donnees.map(m=>m.annee))].sort((a,b)=>b-a);
@@ -719,18 +785,17 @@
             `;
             
             document.getElementById('wrapped-popup').classList.remove('hidden');
-            confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 }, zIndex: 10000 });
+            if(document.body.classList.contains('theme-christmas')) window.neigeNoel();
+            else confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 }, zIndex: 10000 });
         }
 
-        // --- ONGLET ADMIN ---
         window.rendreAdmin = function() {
             const catDiv = document.getElementById('admin-categories');
             catDiv.innerHTML = categories.map((c, i) => `<span class="cat-tag">${c} <button style="border:none;background:none;color:red;cursor:pointer;" onclick="window.supprimerCategorie(${i})">✕</button></span>`).join('');
             
             const corbDiv = document.getElementById('admin-corbeille');
-            if(corbeille.length === 0) {
-                corbDiv.innerHTML = "<p style='color:var(--text-muted);font-size:0.9rem;'>Corbeille vide.</p>";
-            } else {
+            if(corbeille.length === 0) { corbDiv.innerHTML = "<p style='color:var(--text-muted);font-size:0.9rem;'>Corbeille vide.</p>"; } 
+            else {
                 let html = `<button class="btn-action bg-danger" style="padding:10px; font-size:0.9rem; margin-bottom:15px;" onclick="window.viderCorbeille()">🗑️ Vider la corbeille</button>`;
                 const creerLigneHTML = (c, index) => {
                     let badge = c.typeOriginal === 'charges' ? '🏠 Fixe' : (c.typeOriginal === 'epargne' ? '✈️ Épargne' : '🛒 Dépense');
@@ -740,18 +805,9 @@
                                 <button class="btn-small bg-primary" style="color:white; font-size:0.8rem;" onclick="window.restaurerCorbeille(${index})">Restaurer</button>
                             </div>`;
                 };
-
                 html += corbeille.slice(0, 3).map((c, i) => creerLigneHTML(c, i)).join('');
-
                 if(corbeille.length > 3) {
-                    html += `
-                        <div class="card-header collapsed" style="margin-top:15px; cursor:pointer;" onclick="window.toggleSection('corbeille-plus', this)">
-                            <h3 style="font-size:0.9rem; color:var(--text-muted);">Voir les ${corbeille.length - 3} autres suppressions</h3>
-                        </div>
-                        <div id="corbeille-plus" class="section-content collapsed">
-                            ${corbeille.slice(3).map((c, i) => creerLigneHTML(c, i + 3)).join('')}
-                        </div>
-                    `;
+                    html += `<div class="card-header collapsed" style="margin-top:15px; cursor:pointer;" onclick="window.toggleSection('corbeille-plus', this)"><h3 style="font-size:0.9rem; color:var(--text-muted);">Voir les ${corbeille.length - 3} autres suppressions</h3></div><div id="corbeille-plus" class="section-content collapsed">${corbeille.slice(3).map((c, i) => creerLigneHTML(c, i + 3)).join('')}</div>`;
                 }
                 corbDiv.innerHTML = html;
             }
@@ -780,4 +836,3 @@
     </script>
 </body>
 </html>
-
