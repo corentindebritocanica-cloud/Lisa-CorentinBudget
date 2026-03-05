@@ -70,6 +70,10 @@
         .revenus-box input { width: 110px; text-align: right; border: 1px solid var(--border); padding: 8px; border-radius: 8px; font-weight: bold; color: var(--primary); background: var(--bg-color); }
 
         /* LIGNES ET DRAG */
+        .card { background-color: var(--card-bg); border-radius: 16px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); margin-bottom: 20px; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+        .card-header h3 { font-size: 1.1rem; font-weight: 700; }
+
         .item-row { display: flex; align-items: center; background: var(--card-bg); padding: 15px 0; border-bottom: 1px solid var(--border); touch-action: none; }
         .item-row:last-child { border-bottom: none; }
         .drag-handle { padding: 10px 20px 10px 10px; color: #C7C7CC; cursor: grab; font-size: 1.6rem; user-select: none; }
@@ -128,7 +132,7 @@
         
         <div id="vue-mensuelle">
             <div class="search-container">
-                <input type="text" id="search-bar" placeholder="🔍 Rechercher..." oninput="window.filtrerRecherche()">
+                <input type="text" id="search-bar" placeholder="🔍 Rechercher (ex: Ikea)..." oninput="window.filtrerRecherche()">
             </div>
 
             <div class="header-title-group">
@@ -171,7 +175,6 @@
             <div class="card">
                 <div class="card-header">
                     <h3>🏠 Charges Fixes (<span id="total-charges">0</span> €)</h3>
-                    <button class="btn-sort" onclick="window.trierMontant('charges')">Trier ↓</button>
                 </div>
                 <div id="conteneur-charges"></div>
                 <button class="btn-add" onclick="window.ajouterLigne('charges')">+ Nouvelle charge</button>
@@ -180,7 +183,6 @@
             <div class="card">
                 <div class="card-header">
                     <h3>🛒 Dépenses (<span id="total-depenses">0</span> €)</h3>
-                    <button class="btn-sort" onclick="window.trierMontant('depenses')">Trier ↓</button>
                 </div>
                 <div id="conteneur-depenses"></div>
                 <button class="btn-add" onclick="window.ajouterLigne('depenses')">+ Nouvelle dépense</button>
@@ -189,7 +191,6 @@
             <div class="card">
                 <div class="card-header">
                     <h3>✈️ Projets (<span id="total-epargne">0</span> €)</h3>
-                    <button class="btn-sort" onclick="window.trierMontant('epargne')">Trier ↓</button>
                 </div>
                 <div id="conteneur-epargne"></div>
                 <button class="btn-add" onclick="window.ajouterLigne('epargne')">+ Nouvelle épargne</button>
@@ -362,11 +363,17 @@
                 conteneur.appendChild(row);
             });
 
-            new Sortable(conteneur, { 
+            // Destruction propre de l'ancienne instance Sortable pour éviter le bug iPhone
+            if (conteneur._sortable) {
+                conteneur._sortable.destroy();
+            }
+            
+            conteneur._sortable = new Sortable(conteneur, { 
                 handle: '.drag-handle', 
                 animation: 150,
                 delay: 150, 
                 delayOnTouchOnly: true,
+                fallbackOnBody: true, // Fix principal pour les bugs de drag iPhone bloqués
                 onEnd: () => {
                     const ids = Array.from(conteneur.children).map(r => r.dataset.id);
                     const mois = donnees.find(m => m.id === moisActifId);
@@ -388,7 +395,6 @@
         window.ajouterLigne = function(type) { donnees.find(m => m.id === moisActifId)[type].push({ id: Math.random().toString(36).substr(2,9), date:"", libelle:"", categorie: categories[0], montant:0 }); window.sauvegarderDonnees(); }
         window.supprimerLigne = function(type, id) { const mois = donnees.find(m => m.id === moisActifId); mois[type] = mois[type].filter(i => i.id !== id); window.sauvegarderDonnees(); }
         window.supprimerMoisActif = function() { if(confirm("Supprimer ce mois ?")) { donnees = donnees.filter(m => m.id !== moisActifId); moisActifId = donnees.length ? donnees[donnees.length-1].id : null; window.sauvegarderDonnees(); } }
-        window.trierMontant = function(type) { donnees.find(m => m.id === moisActifId)[type].sort((a,b) => b.montant - a.montant); window.sauvegarderDonnees(); }
         window.filtrerRecherche = function() { termeRecherche = document.getElementById('search-bar').value.toLowerCase(); window.rendreInterface(); }
         
         window.creerMoisSuivant = function() {
