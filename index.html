@@ -68,7 +68,6 @@
         .header-actions { display: flex; gap: 10px; align-items: center; flex-shrink: 0; }
         .btn-icon { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; flex-shrink:0; }
         .btn-icon.danger { background: #FFE5E5; color: var(--danger); border:none; }
-        .btn-icon.locked { background: var(--primary-light); border-color: var(--primary); }
         body.dark-mode .btn-icon.danger { background: #4A1515; }
 
         .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--success); display: inline-block; margin-left: 8px; transition: 0.3s; flex-shrink: 0;}
@@ -138,8 +137,6 @@
         .color-selector { display: flex; gap: 10px; margin-top: 10px; }
         .color-circle { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
         .color-circle.active { border-color: var(--text-main); transform: scale(1.1); }
-        .locked-mode .drag-handle, .locked-mode .btn-delete, .locked-mode .btn-add { display: none; }
-        .locked-mode input, .locked-mode select, .locked-mode textarea { pointer-events: none; opacity: 0.8; }
 
         @media (min-width: 768px) { body { flex-direction: row; } .top-nav { width: 280px; height: 100vh; position: sticky; display: flex; flex-direction: column; padding: 20px; overflow-y: auto; } }
     </style>
@@ -169,7 +166,6 @@
             <div class="header-title-group">
                 <h1 id="titre-mois">Chargement...</h1>
                 <div class="header-actions">
-                    <button id="btn-lock" class="btn-icon" onclick="window.toggleLockMois()" title="Verrouiller le mois">🔓</button>
                     <button class="btn-icon danger" onclick="window.supprimerMoisActif()" title="Supprimer le mois">🗑️</button>
                 </div>
             </div>
@@ -492,7 +488,7 @@
         window.sauvegarderConfig = function() { set(configRef, { categories, corbeille, objectifsProvisions }); }
 
         window.initDefaut = function() {
-            donnees = [{ id: Date.now(), nom: "Mars 2026", annee: 2026, revenus: 4500, revenus_add: 0, charges: [], depenses: [], epargne: [], provisions: [], locked: false }];
+            donnees = [{ id: Date.now(), nom: "Mars 2026", annee: 2026, revenus: 4500, revenus_add: 0, charges: [], depenses: [], epargne: [], provisions: [] }];
             moisActifId = donnees[0].id; window.sauvegarderDonnees();
             rafraichirVueActuelle();
         }
@@ -536,17 +532,12 @@
                 const sublist = yearDiv.querySelector('.month-sublist');
                 [...groupes[annee]].reverse().forEach(m => {
                     const pill = document.createElement('div'); pill.className = `month-pill ${m.id === moisActifId ? 'active' : ''}`;
-                    pill.innerText = m.nom.split(' ')[0] + (m.locked ? ' 🔒' : '');
+                    pill.innerText = m.nom.split(' ')[0];
                     pill.onclick = () => { moisActifId = m.id; anneesOuvertes.clear(); window.rendreInterface(); };
                     sublist.appendChild(pill);
                 });
                 liste.appendChild(yearDiv);
             });
-        }
-
-        window.toggleLockMois = function() {
-            const mois = donnees.find(m => m.id === moisActifId);
-            mois.locked = !mois.locked; window.sauvegarderDonnees(); window.rendreInterface();
         }
 
         // --- CALCUL DU SOLDE REPORTE (ITERATIF ABSOLU) ---
@@ -566,14 +557,14 @@
 
         // --- VUE MENSUELLE ---
         window.rendreInterface = function() {
+            window.rendreMenu();
             const mois = donnees.find(m => m.id === moisActifId);
             if (!mois) return;
 
-            // NETTOYAGE COMPLET DES DOM ELEMENTS POUR ÉVITER TOUT CHEVAUCHEMENT VISUEL
-            ['conteneur-charges', 'conteneur-depenses', 'conteneur-epargne', 'conteneur-provisions'].forEach(id => {
-                const el = document.getElementById(id);
-                if(el) el.innerHTML = '';
-            });
+            document.getElementById('conteneur-charges').innerHTML = '';
+            document.getElementById('conteneur-depenses').innerHTML = '';
+            document.getElementById('conteneur-epargne').innerHTML = '';
+            document.getElementById('conteneur-provisions').innerHTML = '';
             
             document.getElementById('titre-mois').innerText = mois.nom;
             document.getElementById('revenus').value = mois.revenus || 0;
@@ -582,11 +573,6 @@
             const idx = donnees.findIndex(m => m.id === moisActifId);
             const soldePrecedent = window.calculerSoldeReporte(idx);
             document.getElementById('solde_reporte').value = soldePrecedent.toFixed(2);
-
-            const wrapper = document.getElementById('mois-content-wrapper');
-            const btnLock = document.getElementById('btn-lock');
-            if(mois.locked) { wrapper.classList.add('locked-mode'); btnLock.classList.add('locked'); btnLock.innerText = '🔒'; } 
-            else { wrapper.classList.remove('locked-mode'); btnLock.classList.remove('locked'); btnLock.innerText = '🔓'; }
             
             const [nomMois, anneeStr] = mois.nom.split(' ');
             const moisIndex = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"].indexOf(nomMois);
@@ -602,7 +588,6 @@
             window.rendreLignes('conteneur-provisions', Array.isArray(mois.provisions) ? mois.provisions : [], 'provisions');
             
             window.calculerBudget();
-            window.rendreMenu();
         }
 
         window.autoResize = function(el) { el.style.height = '24px'; el.style.height = (el.scrollHeight) + 'px'; }
@@ -628,7 +613,7 @@
             if (conteneur._sortable) conteneur._sortable.destroy(); 
             const mois = donnees.find(m => m.id === moisActifId);
             
-            if(!mois.locked && typeof Sortable !== 'undefined') {
+            if(typeof Sortable !== 'undefined') {
                 conteneur._sortable = new Sortable(conteneur, { 
                     handle: '.drag-handle', animation: 150, delay: 150, delayOnTouchOnly: true, fallbackOnBody: true,
                     onEnd: () => {
@@ -807,8 +792,7 @@
                 charges: (Array.isArray(d.charges)?d.charges:[]).map(c=>({...c, id:Math.random().toString(36).substr(2,9)})), 
                 depenses:[], 
                 epargne: (Array.isArray(d.epargne)?d.epargne:[]).map(e=>({...e, id:Math.random().toString(36).substr(2,9)})), 
-                provisions: (Array.isArray(d.provisions)?d.provisions:[]).map(a=>({...a, id:Math.random().toString(36).substr(2,9)})),
-                locked: false 
+                provisions: (Array.isArray(d.provisions)?d.provisions:[]).map(a=>({...a, id:Math.random().toString(36).substr(2,9)}))
             };
             donnees.push(nouveau); moisActifId = nouveau.id; 
             window.sauvegarderDonnees(); window.changerVue('mensuelle');
@@ -826,7 +810,7 @@
             let lastRevenus = 0;
             if(donnees.length > 0) lastRevenus = donnees[donnees.length-1].revenus;
             
-            donnees.push({ id: Date.now() + Math.random(), nom: nomMois, annee: an, revenus: lastRevenus, revenus_add: 0, charges: [], depenses:[], epargne: [], provisions: [], locked: false });
+            donnees.push({ id: Date.now() + Math.random(), nom: nomMois, annee: an, revenus: lastRevenus, revenus_add: 0, charges: [], depenses:[], epargne: [], provisions: [] });
             donnees.sort((a,b) => {
                 const n = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
                 if(a.annee !== b.annee) return a.annee - b.annee;
