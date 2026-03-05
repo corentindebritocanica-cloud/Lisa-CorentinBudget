@@ -14,17 +14,27 @@
 
     <style>
         :root {
-            /* Variables Thème Clair */
-            --primary: #007AFF; --secondary: #FF9500; --danger: #FF3B30; --success: #34C759; --info: #AF52DE;
+            /* Couleurs modifiables via JS */
+            --primary: #007AFF; 
+            --primary-light: #E1F0FF;
+            --secondary: #FF9500; --danger: #FF3B30; --success: #34C759; --info: #AF52DE;
             --bg-color: #F2F2F7; --card-bg: #FFFFFF; --text-main: #1C1C1E; --text-muted: #8E8E93; --border: #E5E5EA;
         }
 
-        /* Variables Thème Sombre */
         body.dark-mode {
-            color-scheme: dark; /* Force les éléments natifs (select, date) en mode sombre */
-            --primary: #0A84FF; --secondary: #FF9F0A; --danger: #FF453A; --success: #30D158; --info: #BF5AF2;
+            color-scheme: dark;
+            --primary-light: #003366;
+            --secondary: #FF9F0A; --danger: #FF453A; --success: #30D158; --info: #BF5AF2;
             --bg-color: #000000; --card-bg: #1C1C1E; --text-main: #FFFFFF; --text-muted: #EBEBF599; --border: #38383A;
         }
+
+        /* Thèmes de couleur */
+        body.theme-purple { --primary: #AF52DE; --primary-light: #F2E6FA; }
+        body.dark-mode.theme-purple { --primary-light: #4A1B6B; }
+        body.theme-green { --primary: #34C759; --primary-light: #E6F8EA; }
+        body.dark-mode.theme-green { --primary-light: #124D20; }
+        body.theme-rose { --primary: #FF2D55; --primary-light: #FFE5EA; }
+        body.dark-mode.theme-rose { --primary-light: #660B1C; }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; transition: background-color 0.3s, color 0.3s; }
         body { background-color: var(--bg-color); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
@@ -46,8 +56,7 @@
         .month-sublist { display: flex; flex-direction: column; gap: 4px; padding: 8px; }
         .month-sublist.hidden { display: none; }
         .month-pill { padding: 12px; background: var(--card-bg); border-radius: 8px; font-weight: 600; font-size: 0.9rem; cursor: pointer; border: 1px solid var(--border); }
-        .month-pill.active { background: #E1F0FF; color: #007AFF; border-color: #007AFF; }
-        body.dark-mode .month-pill.active { background: #003366; color: #0A84FF; border-color: #0A84FF; }
+        .month-pill.active { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
 
         .btn-action { padding: 14px; color: white; border-radius: 12px; font-weight: 700; font-size: 1rem; cursor: pointer; border: none; width: 100%; margin-bottom: 10px; }
         .bg-primary { background: var(--primary); } .bg-danger { background: var(--danger); }
@@ -55,8 +64,7 @@
         .main-content { flex: 1; padding: 15px; max-width: 1000px; margin: 0 auto; width: 100%; }
         .hidden { display: none !important; }
 
-        /* INPUTS */
-        input, select { font-size: 16px !important; outline: none; background: transparent; color: var(--text-main); }
+        input, select, textarea { font-size: 16px !important; outline: none; background: transparent; color: var(--text-main); }
         input[type="number"] { background: var(--bg-color); }
         select { appearance: none; -webkit-appearance: none; }
         option { background-color: var(--card-bg); color: var(--text-main); }
@@ -65,6 +73,14 @@
         
         .header-title-group { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
         .header-title-group h1 { font-size: 1.6rem; font-weight: 800; }
+        
+        /* Cadenas & Suppression */
+        .header-actions { display: flex; gap: 10px; align-items: center; }
+        .btn-icon { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; }
+        .btn-icon.danger { background: #FFE5E5; color: var(--danger); border:none; }
+        .btn-icon.locked { background: var(--primary-light); border-color: var(--primary); }
+        body.dark-mode .btn-icon.danger { background: #4A1515; }
+
         .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--success); display: inline-block; margin-left: 8px; transition: 0.3s; }
         .status-dot.offline { background-color: var(--danger); }
         .status-dot.saving { background-color: var(--secondary); animation: pulse 1s infinite; }
@@ -73,7 +89,6 @@
         .revenus-box { background: var(--card-bg); padding: 15px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
         .revenus-box input { width: 110px; text-align: right; border: 1px solid var(--border); padding: 8px; border-radius: 8px; font-weight: bold; color: var(--primary); }
 
-        /* CARTES & ACCORDÉON SECTIONS */
         .card { background-color: var(--card-bg); border-radius: 16px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); margin-bottom: 20px; }
         .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--border); cursor: pointer; }
         .card-header h3 { font-size: 1.1rem; font-weight: 700; user-select: none; }
@@ -86,37 +101,51 @@
         .item-row:last-child { border-bottom: none; }
         .drag-handle { padding: 10px 15px 10px 5px; color: var(--text-muted); cursor: grab; font-size: 1.4rem; user-select: none; }
         .item-content { flex: 1; display: flex; flex-direction: column; gap: 8px; }
-        .item-top { display: flex; justify-content: space-between; gap: 10px; }
+        .item-top { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
         .item-bottom { display: flex; gap: 10px; }
-        .item-top input[type="text"] { flex: 1; border: none; font-weight: 600; padding:0; }
+        
+        /* Textarea pour Note détaillée */
+        .item-top textarea { flex: 1; border: none; font-weight: 600; padding:0; resize: none; min-height: 24px; overflow:hidden; }
         .item-top input[type="number"] { width: 85px; text-align: right; border: none; font-weight: 700; padding: 8px; border-radius: 8px; }
         .item-bottom input[type="date"], .item-bottom select { flex: 1; background: var(--bg-color); border: none; font-size: 0.85rem; padding: 6px 10px; border-radius: 6px; }
         .btn-delete { color: var(--danger); background: none; border: none; font-size: 1.3rem; padding-left: 10px; }
 
-        .summary-card { background: linear-gradient(135deg, #007AFF, #5AC8FA); color: white; text-align: center; border-radius: 16px; padding: 25px 20px; position: relative; }
+        .summary-card { background: linear-gradient(135deg, var(--primary), var(--info)); color: white; text-align: center; border-radius: 16px; padding: 25px 20px; position: relative; }
         .total-amount { font-size: 3rem; font-weight: 800; margin: 5px 0; letter-spacing: -1px; }
         .sub-text { font-size: 0.85rem; opacity: 0.9; margin-top: 5px; }
         .comparison { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 0.8rem; font-weight: bold; margin-top: 10px; background: rgba(255,255,255,0.2); }
-        .comp-good { color: #D4EDDA; } .comp-bad { color: #F8D7DA; }
+        .comp-good { color: #D4EDDA; text-shadow: 0 1px 2px rgba(0,0,0,0.1); } 
+        .comp-bad { color: #FFE5E5; text-shadow: 0 1px 2px rgba(0,0,0,0.1); }
 
         .progress-container { margin-bottom: 12px; }
         .progress-header { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; margin-bottom: 5px; }
         .progress-track { background: var(--border); border-radius: 10px; height: 10px; overflow: hidden; }
-        .progress-fill { height: 100%; transition: width 0.5s ease; }
+        .progress-fill { height: 100%; transition: width 0.5s ease; background: var(--primary); }
 
         /* TOAST NOTIFICATION (Undo) */
         #toast { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 12px 20px; border-radius: 20px; font-weight: 600; display: flex; align-items: center; gap: 15px; transition: bottom 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
         #toast.show { bottom: 25px; }
         #btn-undo { background: var(--secondary); color: white; border: none; padding: 6px 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
 
-        /* POPUP HORS-LIGNE */
-        #offline-popup { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 9999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(3px); }
-        .offline-box { background: var(--card-bg); padding: 30px; border-radius: 20px; text-align: center; max-width: 85%; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        /* POPUP HORS-LIGNE & BILAN */
+        .overlay-popup { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 9999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(3px); }
+        .popup-box { background: var(--card-bg); padding: 30px; border-radius: 20px; text-align: center; max-width: 85%; width:400px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto;}
 
         /* VUE ADMIN */
         .admin-section { background: var(--card-bg); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--border); }
         .cat-tag { display: inline-block; padding: 6px 12px; background: var(--bg-color); border-radius: 15px; margin: 4px; font-size: 0.9rem; }
-        .btn-small { padding: 6px 12px; border-radius: 8px; border: none; background: var(--bg-color); color: var(--text-main); font-weight: 600; }
+        .btn-small { padding: 6px 12px; border-radius: 8px; border: none; background: var(--bg-color); color: var(--text-main); font-weight: 600; cursor:pointer;}
+        
+        /* Selecteur de couleur */
+        .color-selector { display: flex; gap: 10px; margin-top: 10px; }
+        .color-circle { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
+        .color-circle.active { border-color: var(--text-main); transform: scale(1.1); }
+
+        /* Mode Clôturé (Verrouillé) */
+        .locked-mode .drag-handle { display: none; }
+        .locked-mode .btn-delete { display: none; }
+        .locked-mode .btn-add { display: none; }
+        .locked-mode input, .locked-mode select, .locked-mode textarea { pointer-events: none; opacity: 0.8; }
 
         @media (min-width: 768px) { body { flex-direction: row; } .top-nav { width: 280px; height: 100vh; position: sticky; border-right: 1px solid var(--border); border-bottom: none; display: flex; flex-direction: column; padding: 20px; overflow-y: auto; } }
     </style>
@@ -147,46 +176,51 @@
             
             <div class="header-title-group">
                 <h1 id="titre-mois">Chargement...</h1>
-            </div>
-
-            <div class="revenus-box">
-                <strong>Revenus communs</strong>
-                <input type="number" id="revenus" value="0" onchange="window.majRevenus(this.value)">
-            </div>
-
-            <div class="card summary-card">
-                <h3>Reste à vivre</h3>
-                <div class="total-amount" id="reste-a-vivre">0 €</div>
-                <div class="sub-text" id="jours-restants">-- jours restants ce mois</div>
-                <div class="comparison" id="comparaison-n1" style="display:none;"></div>
-            </div>
-
-            <div class="card">
-                <div class="card-header" onclick="window.toggleSection('repartition-m', this)"><h3>📊 Répartition</h3></div>
-                <div id="repartition-m" class="section-content" style="max-height: 500px;">
-                    <div class="progress-container"><div class="progress-header"><span>🏠 Charges Fixes</span><span id="pct-charges-m">0%</span></div><div class="progress-track"><div class="progress-fill bg-danger" id="bar-charges-m"></div></div></div>
-                    <div class="progress-container"><div class="progress-header"><span>🛒 Dépenses</span><span id="pct-depenses-m">0%</span></div><div class="progress-track"><div class="progress-fill bg-secondary" id="bar-depenses-m"></div></div></div>
-                    <div class="progress-container"><div class="progress-header"><span>✈️ Épargne</span><span id="pct-epargne-m">0%</span></div><div class="progress-track"><div class="progress-fill bg-info" id="bar-epargne-m"></div></div></div>
-                    <div class="progress-container"><div class="progress-header"><span>✅ Reste</span><span id="pct-reste-m">0%</span></div><div class="progress-track"><div class="progress-fill bg-success" id="bar-reste-m"></div></div></div>
+                <div class="header-actions">
+                    <button id="btn-lock" class="btn-icon" onclick="window.toggleLockMois()" title="Verrouiller le mois">🔓</button>
+                    <button class="btn-icon danger" onclick="window.supprimerMoisActif()" title="Supprimer le mois">🗑️</button>
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-header" onclick="window.toggleSection('conteneur-charges', this)"><h3>🏠 Charges Fixes (<span id="total-charges">0</span> €)</h3></div>
-                <div id="conteneur-charges" class="section-content" style="max-height: 2000px;"></div>
-                <button class="btn-action bg-primary" onclick="window.ajouterLigne('charges')">+ Nouvelle charge</button>
-            </div>
+            <div id="mois-content-wrapper"> <div class="revenus-box">
+                    <strong>Revenus communs</strong>
+                    <input type="number" id="revenus" value="0" onchange="window.majRevenus(this.value)">
+                </div>
 
-            <div class="card">
-                <div class="card-header" onclick="window.toggleSection('conteneur-depenses', this)"><h3>🛒 Dépenses (<span id="total-depenses">0</span> €)</h3></div>
-                <div id="conteneur-depenses" class="section-content" style="max-height: 5000px;"></div>
-                <button class="btn-action bg-primary" onclick="window.ajouterLigne('depenses')">+ Nouvelle dépense</button>
-            </div>
+                <div class="card summary-card">
+                    <h3>Reste à vivre</h3>
+                    <div class="total-amount" id="reste-a-vivre">0 €</div>
+                    <div class="sub-text" id="jours-restants">-- jours restants ce mois</div>
+                    <div class="comparison" id="comparaison-n1" style="display:none;"></div>
+                </div>
 
-            <div class="card">
-                <div class="card-header" onclick="window.toggleSection('conteneur-epargne', this)"><h3>✈️ Projets (<span id="total-epargne">0</span> €)</h3></div>
-                <div id="conteneur-epargne" class="section-content" style="max-height: 2000px;"></div>
-                <button class="btn-action bg-primary" onclick="window.ajouterLigne('epargne')">+ Nouvelle épargne</button>
+                <div class="card">
+                    <div class="card-header" onclick="window.toggleSection('repartition-m', this)"><h3>📊 Répartition</h3></div>
+                    <div id="repartition-m" class="section-content" style="max-height: 500px;">
+                        <div class="progress-container"><div class="progress-header"><span>🏠 Charges Fixes</span><span id="pct-charges-m">0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--danger);" id="bar-charges-m"></div></div></div>
+                        <div class="progress-container"><div class="progress-header"><span>🛒 Dépenses</span><span id="pct-depenses-m">0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--secondary);" id="bar-depenses-m"></div></div></div>
+                        <div class="progress-container"><div class="progress-header"><span>✈️ Épargne</span><span id="pct-epargne-m">0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--info);" id="bar-epargne-m"></div></div></div>
+                        <div class="progress-container"><div class="progress-header"><span>✅ Reste</span><span id="pct-reste-m">0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--success);" id="bar-reste-m"></div></div></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header" onclick="window.toggleSection('conteneur-charges', this)"><h3>🏠 Charges Fixes (<span id="total-charges">0</span> €)</h3></div>
+                    <div id="conteneur-charges" class="section-content" style="max-height: 2000px;"></div>
+                    <button class="btn-action bg-primary btn-add" onclick="window.ajouterLigne('charges')">+ Nouvelle charge</button>
+                </div>
+
+                <div class="card">
+                    <div class="card-header" onclick="window.toggleSection('conteneur-depenses', this)"><h3>🛒 Dépenses (<span id="total-depenses">0</span> €)</h3></div>
+                    <div id="conteneur-depenses" class="section-content" style="max-height: 5000px;"></div>
+                    <button class="btn-action bg-primary btn-add" onclick="window.ajouterLigne('depenses')">+ Nouvelle dépense</button>
+                </div>
+
+                <div class="card">
+                    <div class="card-header" onclick="window.toggleSection('conteneur-epargne', this)"><h3>✈️ Projets (<span id="total-epargne">0</span> €)</h3></div>
+                    <div id="conteneur-epargne" class="section-content" style="max-height: 2000px;"></div>
+                    <button class="btn-action bg-primary btn-add" onclick="window.ajouterLigne('epargne')">+ Nouvelle épargne</button>
+                </div>
             </div>
         </div>
 
@@ -195,14 +229,17 @@
                 <h1>Bilan Annuel</h1>
                 <div class="select-annee-wrapper"><select id="select-annee" onchange="window.rendreVueAnnuelle()"></select></div>
             </div>
-            <div class="card summary-card" style="background: linear-gradient(135deg, #AF52DE, #5E5CE6);">
+            <div class="card summary-card" style="background: linear-gradient(135deg, var(--primary), var(--info));">
                 <h3>Total Épargné</h3>
                 <div class="total-amount" id="annuel-total-epargne-top">0 €</div>
                 <div style="background: rgba(255,255,255,0.2); padding: 12px; border-radius: 10px; margin-top: 10px;">
                     <span>Total Dépensé : </span><strong id="annuel-total-depense-top">0 €</strong>
                 </div>
             </div>
-            <div style="display: grid; gap: 15px;">
+            
+            <button class="btn-action" style="background: linear-gradient(90deg, #FF9500, #FF2D55);" onclick="window.genererWrapped()">🎁 Voir mon Bilan de l'année</button>
+
+            <div style="display: grid; gap: 15px; margin-top:20px;">
                 <div class="revenus-box"><strong>🏠 Charges</strong><h3 style="color:var(--danger);" id="annuel-total-charges">0 €</h3></div>
                 <div class="revenus-box"><strong>🛒 Dépenses</strong><h3 style="color:var(--secondary);" id="annuel-total-depenses">0 €</h3></div>
                 <div class="revenus-box"><strong>✈️ Épargne</strong><h3 style="color:var(--info);" id="annuel-total-epargne">0 €</h3></div>
@@ -211,6 +248,16 @@
 
         <div id="vue-admin" class="hidden">
             <h1 style="margin-bottom: 20px;">Paramètres</h1>
+
+            <div class="admin-section">
+                <h3>🎨 Thème de l'application</h3>
+                <div class="color-selector">
+                    <div class="color-circle" style="background:#007AFF;" onclick="window.changerCouleur('default')"></div>
+                    <div class="color-circle" style="background:#AF52DE;" onclick="window.changerCouleur('theme-purple')"></div>
+                    <div class="color-circle" style="background:#34C759;" onclick="window.changerCouleur('theme-green')"></div>
+                    <div class="color-circle" style="background:#FF2D55;" onclick="window.changerCouleur('theme-rose')"></div>
+                </div>
+            </div>
 
             <div class="admin-section">
                 <h3>📧 Sauvegarde Automatique & Manuelle</h3>
@@ -233,9 +280,8 @@
             </div>
 
             <div class="admin-section">
-                <h3 style="color: var(--danger);">⚠️ Zone de Danger</h3>
-                <button class="btn-action bg-danger" onclick="window.supprimerMoisActif()">🗑️ Supprimer le mois actuel</button>
-                <p style="font-size: 0.85rem; margin-top:15px; font-weight:bold;">Restaurer une sauvegarde (.json)</p>
+                <h3 style="color: var(--danger);">⚠️ Restauration Manuelle</h3>
+                <p style="font-size: 0.85rem; margin-top:5px; font-weight:bold;">Écraser les données actuelles avec un .json</p>
                 <input type="file" id="import-json" accept=".json" style="margin-top:5px; font-size: 0.9rem !important;">
             </div>
         </div>
@@ -247,12 +293,20 @@
         <button id="btn-undo" onclick="window.annulerSuppression()">Annuler</button>
     </div>
 
-    <div id="offline-popup" class="hidden">
-        <div class="offline-box">
+    <div id="offline-popup" class="overlay-popup hidden">
+        <div class="popup-box">
             <h2 style="color:var(--danger); margin-bottom:15px; font-size:2rem;">⚠️</h2>
             <h3 style="margin-bottom:10px;">Connexion Perdue</h3>
             <p style="color:var(--text-muted); font-size:0.95rem; line-height:1.4;">Vous n'avez plus de réseau internet.<br><strong style="color:var(--text-main);">Aucune donnée ne sera sauvegardée</strong> tant que la connexion ne sera pas rétablie.</p>
             <button class="btn-action bg-primary" style="margin-top:20px; width:auto; padding:10px 25px;" onclick="document.getElementById('offline-popup').classList.add('hidden')">J'ai compris</button>
+        </div>
+    </div>
+
+    <div id="wrapped-popup" class="overlay-popup hidden">
+        <div class="popup-box" style="background: linear-gradient(135deg, var(--card-bg), var(--primary-light));">
+            <h2 style="font-size:2rem; margin-bottom:10px;">🎁 Bilan <span id="wrap-annee"></span></h2>
+            <div id="wrap-content" style="font-size:1.1rem; line-height:1.8; text-align:left; margin:20px 0;"></div>
+            <button class="btn-action bg-primary" onclick="document.getElementById('wrapped-popup').classList.add('hidden')">Super !</button>
         </div>
     </div>
 
@@ -281,12 +335,10 @@
         let moisActifId = null;
         let termeRecherche = "";
         let anneesOuvertes = new Set();
-        
-        // Variables pour le Undo (Annuler)
         let suppressionEnAttente = null;
         let toastTimeout = null;
 
-        // DÉTECTION HORS-LIGNE (ALERTE SEULEMENT)
+        // DÉTECTION HORS-LIGNE
         window.addEventListener('offline', () => {
             updateSyncDot('offline');
             document.getElementById('offline-popup').classList.remove('hidden');
@@ -326,13 +378,12 @@
 
         window.sauvegarderDonnees = function() {
             updateSyncDot('saving');
-            // Sauvegarde UNIQUEMENT vers Firebase. Pas de mode local.
-            set(budgetRef, donnees).then(() => setTimeout(() => updateSyncDot('online'), 500)).catch(e => console.log("Erreur de sauvegarde", e));
+            set(budgetRef, donnees).then(() => setTimeout(() => updateSyncDot('online'), 500)).catch(e => console.log("Erreur", e));
         }
         window.sauvegarderConfig = function() { set(configRef, { categories, corbeille: corbeille }); }
 
         window.initDefaut = function() {
-            donnees = [{ id: Date.now(), nom: "Mars 2026", annee: 2026, revenus: 4500, charges: [], depenses: [], epargne: [] }];
+            donnees = [{ id: Date.now(), nom: "Mars 2026", annee: 2026, revenus: 4500, charges: [], depenses: [], epargne: [], locked: false }];
             moisActifId = donnees[0].id; window.sauvegarderDonnees();
         }
 
@@ -353,15 +404,37 @@
             else window.rendreInterface();
         }
 
-        // --- THEME SOMBRE ---
+        // --- GESTION DES THEMES & COULEURS ---
         window.toggleDarkMode = function() {
             document.body.classList.toggle('dark-mode');
             const isDark = document.body.classList.contains('dark-mode');
             document.getElementById('theme-icon').innerText = isDark ? '🌙' : '☀️';
             document.getElementById('meta-theme-color').content = isDark ? '#000000' : '#F2F2F7';
             localStorage.setItem('darkModeLC', isDark);
+            MAJSelecteursCouleur();
         }
+        
+        window.changerCouleur = function(themeClass) {
+            document.body.classList.remove('theme-purple', 'theme-green', 'theme-rose');
+            if(themeClass !== 'default') document.body.classList.add(themeClass);
+            localStorage.setItem('themeColorLC', themeClass);
+            MAJSelecteursCouleur();
+        }
+
+        function MAJSelecteursCouleur() {
+            const currentTheme = localStorage.getItem('themeColorLC') || 'default';
+            const circles = document.querySelectorAll('.color-circle');
+            circles.forEach(c => c.classList.remove('active'));
+            if(currentTheme === 'default') circles[0].classList.add('active');
+            else if(currentTheme === 'theme-purple') circles[1].classList.add('active');
+            else if(currentTheme === 'theme-green') circles[2].classList.add('active');
+            else if(currentTheme === 'theme-rose') circles[3].classList.add('active');
+        }
+
+        // Initialisation Theme
         if(localStorage.getItem('darkModeLC') === 'true') window.toggleDarkMode();
+        if(localStorage.getItem('themeColorLC')) window.changerCouleur(localStorage.getItem('themeColorLC'));
+        else MAJSelecteursCouleur();
 
         // --- SECTIONS RETRACTABLES ---
         window.toggleSection = function(id, headerEl) {
@@ -388,7 +461,7 @@
                 const sublist = yearDiv.querySelector('.month-sublist');
                 [...groupes[annee]].reverse().forEach(m => {
                     const pill = document.createElement('div'); pill.className = `month-pill ${m.id === moisActifId ? 'active' : ''}`;
-                    pill.innerText = m.nom.split(' ')[0];
+                    pill.innerText = m.nom.split(' ')[0] + (m.locked ? ' 🔒' : '');
                     pill.onclick = () => { moisActifId = m.id; anneesOuvertes.clear(); window.rendreInterface(); };
                     sublist.appendChild(pill);
                 });
@@ -396,12 +469,40 @@
             });
         }
 
+        // --- CADENAS MOIS ---
+        window.toggleLockMois = function() {
+            const mois = donnees.find(m => m.id === moisActifId);
+            mois.locked = !mois.locked;
+            window.sauvegarderDonnees();
+            window.rendreInterface();
+        }
+
+        // Auto-Resize Textarea
+        window.autoResize = function(el) {
+            el.style.height = '24px'; // Reset
+            el.style.height = (el.scrollHeight) + 'px';
+        }
+
         window.rendreInterface = function() {
             window.rendreMenu();
             const mois = donnees.find(m => m.id === moisActifId);
             if (!mois) return;
+            
             document.getElementById('titre-mois').innerText = mois.nom;
             document.getElementById('revenus').value = mois.revenus || 0;
+            
+            // Gestion Verrouillage
+            const wrapper = document.getElementById('mois-content-wrapper');
+            const btnLock = document.getElementById('btn-lock');
+            if(mois.locked) {
+                wrapper.classList.add('locked-mode');
+                btnLock.classList.add('locked');
+                btnLock.innerText = '🔒';
+            } else {
+                wrapper.classList.remove('locked-mode');
+                btnLock.classList.remove('locked');
+                btnLock.innerText = '🔓';
+            }
             
             // Jours restants
             const [nomMois, anneeStr] = mois.nom.split(' ');
@@ -422,26 +523,30 @@
 
         window.rendreLignes = function(idConteneur, tableau, type) {
             const conteneur = document.getElementById(idConteneur); conteneur.innerHTML = '';
-            tableau.filter(item => item.libelle.toLowerCase().includes(termeRecherche)).forEach((item) => {
+            tableau.filter(item => (item.libelle||'').toLowerCase().includes(termeRecherche)).forEach((item) => {
                 const row = document.createElement('div'); row.className = 'item-row'; row.dataset.id = item.id;
-                let html = (type === 'depenses') ? 
-                    `<div class="item-top"><input type="text" value="${item.libelle}" placeholder="Achat..." onchange="window.majValeur('${type}','${item.id}','libelle',this.value)"><input type="number" value="${item.montant}" onchange="window.majValeur('${type}','${item.id}','montant',this.value)"></div>
+                let html = (type === 'depenses' || type === 'charges') ? 
+                    `<div class="item-top"><textarea placeholder="Achat ou note détaillée..." oninput="window.autoResize(this)" onchange="window.majValeur('${type}','${item.id}','libelle',this.value)">${item.libelle||''}</textarea><input type="number" value="${item.montant}" onchange="window.majValeur('${type}','${item.id}','montant',this.value)"></div>
                      <div class="item-bottom"><input type="date" value="${item.date}" onchange="window.majValeur('${type}','${item.id}','date',this.value)"><select id="sel-${item.id}" onchange="window.majValeur('${type}','${item.id}','categorie',this.value)">${categories.map(c=>`<option value="${c}" ${c===item.categorie?'selected':''}>${c}</option>`).join('')}</select></div>` :
                     `<div class="item-top"><select onchange="window.majValeur('${type}','${item.id}','categorie',this.value)" style="flex:1; background:none; border:none; font-weight:600;">${categories.map(c=>`<option value="${c}" ${c===item.categorie?'selected':''}>${c}</option>`).join('')}</select><input type="number" value="${item.montant}" onchange="window.majValeur('${type}','${item.id}','montant',this.value)"></div>`;
                 row.innerHTML = `<div class="drag-handle">☰</div><div class="item-content">${html}</div><button class="btn-delete" onclick="window.demanderSuppression('${type}','${item.id}')">✕</button>`;
                 conteneur.appendChild(row);
+                // Init taille textarea
+                const ta = row.querySelector('textarea'); if(ta) window.autoResize(ta);
             });
 
             if (conteneur._sortable) conteneur._sortable.destroy(); 
-            conteneur._sortable = new Sortable(conteneur, { 
-                handle: '.drag-handle', animation: 150, delay: 150, delayOnTouchOnly: true, fallbackOnBody: true,
-                onEnd: () => {
-                    const ids = Array.from(conteneur.children).map(r => r.dataset.id);
-                    const mois = donnees.find(m => m.id === moisActifId);
-                    mois[type] = ids.map(id => mois[type].find(i => i.id === id));
-                    window.sauvegarderDonnees();
-                }
-            });
+            const mois = donnees.find(m => m.id === moisActifId);
+            if(!mois.locked) {
+                conteneur._sortable = new Sortable(conteneur, { 
+                    handle: '.drag-handle', animation: 150, delay: 150, delayOnTouchOnly: true, fallbackOnBody: true,
+                    onEnd: () => {
+                        const ids = Array.from(conteneur.children).map(r => r.dataset.id);
+                        mois[type] = ids.map(id => mois[type].find(i => i.id === id));
+                        window.sauvegarderDonnees();
+                    }
+                });
+            }
         }
 
         // --- INTELLIGENCE AUTO-CATÉGORISATION ---
@@ -451,7 +556,6 @@
             const mois = donnees.find(m => m.id === moisActifId);
             const item = mois[type].find(i => i.id === id);
             
-            // Auto-catégorisation Courses
             if(champ === 'libelle' && type === 'depenses' && regexSupermarche.test(val)) {
                 item.categorie = categories.find(c => c.includes("Courses")) || categories[0];
                 const sel = document.getElementById(`sel-${id}`); if(sel) sel.value = item.categorie;
@@ -465,7 +569,7 @@
         
         window.ajouterLigne = function(type) { 
             donnees.find(m => m.id === moisActifId)[type].unshift({ id: Math.random().toString(36).substr(2,9), date:"", libelle:"", categorie: categories[0], montant:0 }); 
-            if(type === 'epargne') confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } }); // Confettis
+            if(type === 'epargne') confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
             window.sauvegarderDonnees(); 
         }
 
@@ -480,8 +584,7 @@
                 mois[type].splice(index, 1);
                 window.sauvegarderDonnees();
                 
-                const toast = document.getElementById('toast');
-                toast.classList.add('show');
+                const toast = document.getElementById('toast'); toast.classList.add('show');
                 clearTimeout(toastTimeout);
                 
                 toastTimeout = setTimeout(() => {
@@ -489,11 +592,7 @@
                     if(suppressionEnAttente) {
                         const dateActuelle = new Date();
                         const dateFormat = dateActuelle.toLocaleDateString('fr-FR') + ' à ' + dateActuelle.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'});
-                        corbeille.unshift({
-                            ...suppressionEnAttente.item, 
-                            typeOriginal: suppressionEnAttente.type, 
-                            dateSuppr: dateFormat
-                        });
+                        corbeille.unshift({ ...suppressionEnAttente.item, typeOriginal: suppressionEnAttente.type, dateSuppr: dateFormat });
                         window.sauvegarderConfig();
                         suppressionEnAttente = null;
                     }
@@ -504,13 +603,8 @@
         window.annulerSuppression = function() {
             if(suppressionEnAttente) {
                 const mois = donnees.find(m => m.id === suppressionEnAttente.moisId);
-                if(mois) {
-                    mois[suppressionEnAttente.type].splice(suppressionEnAttente.index, 0, suppressionEnAttente.item);
-                    window.sauvegarderDonnees();
-                }
-                document.getElementById('toast').classList.remove('show');
-                clearTimeout(toastTimeout);
-                suppressionEnAttente = null;
+                if(mois) { mois[suppressionEnAttente.type].splice(suppressionEnAttente.index, 0, suppressionEnAttente.item); window.sauvegarderDonnees(); }
+                document.getElementById('toast').classList.remove('show'); clearTimeout(toastTimeout); suppressionEnAttente = null;
             }
         }
 
@@ -519,26 +613,15 @@
             const mois = donnees.find(m => m.id === moisActifId);
             if(mois) {
                 let typeCible = item.typeOriginal || 'depenses';
-                if (!item.typeOriginal && item.libelle === undefined) typeCible = 'charges'; 
-                
-                delete item.typeOriginal;
-                delete item.dateSuppr;
-
-                mois[typeCible].unshift(item);
-                corbeille.splice(index, 1);
-                
-                window.sauvegarderDonnees();
-                window.sauvegarderConfig();
-                alert("Élément restauré avec succès !");
-                window.rendreInterface(); 
+                delete item.typeOriginal; delete item.dateSuppr;
+                mois[typeCible].unshift(item); corbeille.splice(index, 1);
+                window.sauvegarderDonnees(); window.sauvegarderConfig(); window.rendreInterface(); 
             }
         }
 
         window.viderCorbeille = function() {
             if(confirm("Vider définitivement TOUTE la corbeille ? Action irréversible.")) {
-                corbeille = [];
-                window.sauvegarderConfig();
-                window.rendreAdmin();
+                corbeille = []; window.sauvegarderConfig(); window.rendreAdmin();
             }
         }
 
@@ -548,9 +631,8 @@
         window.creerMoisSuivant = function() {
             const d = donnees[donnees.length-1];
             const noms = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
-            let idx = noms.indexOf(d.nom.split(' ')[0]) + 1;
-            let an = d.annee; if(idx > 11) { idx = 0; an++; }
-            const nouveau = { id: Date.now(), nom: noms[idx]+" "+an, annee: an, revenus: d.revenus, charges: d.charges.map(c=>({...c, id:Math.random().toString(36).substr(2,9)})), depenses:[], epargne: d.epargne.map(e=>({...e, id:Math.random().toString(36).substr(2,9)})) };
+            let idx = noms.indexOf(d.nom.split(' ')[0]) + 1; let an = d.annee; if(idx > 11) { idx = 0; an++; }
+            const nouveau = { id: Date.now(), nom: noms[idx]+" "+an, annee: an, revenus: d.revenus, charges: d.charges.map(c=>({...c, id:Math.random().toString(36).substr(2,9)})), depenses:[], epargne: d.epargne.map(e=>({...e, id:Math.random().toString(36).substr(2,9)})), locked: false };
             donnees.push(nouveau); moisActifId = nouveau.id; window.sauvegarderDonnees(); window.changerVue('mensuelle');
         }
 
@@ -583,7 +665,7 @@
             document.getElementById(`bar-reste-m`).style.width = (r>0?r/t*100:0)+'%'; document.getElementById(`pct-reste-m`).innerText = Math.round(r>0?r/t*100:0)+'%';
         }
 
-        // --- ONGLET ANNUEL ---
+        // --- ONGLET ANNUEL & WRAPPED ---
         window.preparerFiltreAnnuel = function() {
             const s = document.getElementById('select-annee'); s.innerHTML = '';
             const ans = [...new Set(donnees.map(m=>m.annee))].sort((a,b)=>b-a);
@@ -602,26 +684,53 @@
             document.getElementById('annuel-total-charges').innerText = tc.toFixed(2) + " €";
             document.getElementById('annuel-total-depenses').innerText = td.toFixed(2) + " €";
             document.getElementById('annuel-total-epargne').innerText = te.toFixed(2) + " €";
+        }
+
+        window.genererWrapped = function() {
+            const a = parseInt(document.getElementById('select-annee').value);
+            const moisAnnee = donnees.filter(m=>m.annee===a);
+            if(moisAnnee.length === 0) return;
+
+            let totalEpargne = 0; let totalDepenses = 0; let nbRestos = 0; let maxMoisNom = ""; let maxMoisDepense = 0;
+            let categoriesDepenses = {};
+
+            moisAnnee.forEach(m => {
+                let depenseDuMois = 0;
+                m.epargne.forEach(e => totalEpargne += e.montant);
+                m.depenses.forEach(d => {
+                    depenseDuMois += d.montant; totalDepenses += d.montant;
+                    if((d.categorie||'').includes('Restaurant')) nbRestos++;
+                    categoriesDepenses[d.categorie] = (categoriesDepenses[d.categorie] || 0) + d.montant;
+                });
+                if(depenseDuMois > maxMoisDepense) { maxMoisDepense = depenseDuMois; maxMoisNom = m.nom; }
+            });
+
+            let topCat = Object.keys(categoriesDepenses).reduce((a, b) => categoriesDepenses[a] > categoriesDepenses[b] ? a : b, "Aucune");
+
+            document.getElementById('wrap-annee').innerText = a;
+            document.getElementById('wrap-content').innerHTML = `
+                <ul>
+                    <li style="margin-bottom:10px;">🌟 Vous avez épargné un total de <b>${totalEpargne.toFixed(0)}€</b> !</li>
+                    <li style="margin-bottom:10px;">💸 <b>${maxMoisNom}</b> a été le mois le plus cher en dépenses (${maxMoisDepense.toFixed(0)}€).</li>
+                    <li style="margin-bottom:10px;">🛒 Votre catégorie reine : <b>${topCat}</b>.</li>
+                    ${nbRestos > 0 ? `<li style="margin-bottom:10px;">🍽️ Vous avez craqué pour <b>${nbRestos} restos</b> !</li>` : ''}
+                </ul>
+            `;
             
-            let t = tc+td+te; if(t===0) return;
-            document.getElementById(`bar-charges-a`).style.width = (tc/t*100)+'%'; document.getElementById(`pct-charges-a`).innerText = Math.round(tc/t*100)+'%';
-            document.getElementById(`bar-depenses-a`).style.width = (td/t*100)+'%'; document.getElementById(`pct-depenses-a`).innerText = Math.round(td/t*100)+'%';
-            document.getElementById(`bar-epargne-a`).style.width = (te/t*100)+'%'; document.getElementById(`pct-epargne-a`).innerText = Math.round(te/t*100)+'%';
+            document.getElementById('wrapped-popup').classList.remove('hidden');
+            confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 }, zIndex: 10000 });
         }
 
         // --- ONGLET ADMIN ---
         window.rendreAdmin = function() {
-            // Catégories
             const catDiv = document.getElementById('admin-categories');
             catDiv.innerHTML = categories.map((c, i) => `<span class="cat-tag">${c} <button style="border:none;background:none;color:red;cursor:pointer;" onclick="window.supprimerCategorie(${i})">✕</button></span>`).join('');
             
-            // Corbeille améliorée
             const corbDiv = document.getElementById('admin-corbeille');
             if(corbeille.length === 0) {
                 corbDiv.innerHTML = "<p style='color:var(--text-muted);font-size:0.9rem;'>Corbeille vide.</p>";
             } else {
                 let html = `<button class="btn-action bg-danger" style="padding:10px; font-size:0.9rem; margin-bottom:15px;" onclick="window.viderCorbeille()">🗑️ Vider la corbeille</button>`;
-                
                 const creerLigneHTML = (c, index) => {
                     let badge = c.typeOriginal === 'charges' ? '🏠 Fixe' : (c.typeOriginal === 'epargne' ? '✈️ Épargne' : '🛒 Dépense');
                     let dateInfo = c.dateSuppr ? `<br><small style="color:var(--text-muted); font-size:0.75rem;">Supprimé le ${c.dateSuppr}</small>` : '';
@@ -631,10 +740,8 @@
                             </div>`;
                 };
 
-                // Les 3 premiers éléments
                 html += corbeille.slice(0, 3).map((c, i) => creerLigneHTML(c, i)).join('');
 
-                // Les suivants dans un accordéon
                 if(corbeille.length > 3) {
                     html += `
                         <div class="card-header collapsed" style="margin-top:15px; cursor:pointer;" onclick="window.toggleSection('corbeille-plus', this)">
@@ -645,18 +752,13 @@
                         </div>
                     `;
                 }
-
                 corbDiv.innerHTML = html;
             }
         }
 
-        window.ajouterCategorie = function() {
-            const v = document.getElementById('new-cat-input').value;
-            if(v && !categories.includes(v)) { categories.push(v); window.sauvegarderConfig(); document.getElementById('new-cat-input').value = ""; }
-        }
+        window.ajouterCategorie = function() { const v = document.getElementById('new-cat-input').value; if(v && !categories.includes(v)) { categories.push(v); window.sauvegarderConfig(); document.getElementById('new-cat-input').value = ""; } }
         window.supprimerCategorie = function(i) { categories.splice(i, 1); window.sauvegarderConfig(); }
 
-        // --- SCRIPT IMPORT / EXPORT MAIL ---
         window.envoyerSauvegardeMail = function(btn) {
             const originalText = btn.innerText; btn.innerText = "⏳ Envoi..."; btn.disabled = true;
             const urlScript = "https://script.google.com/macros/s/AKfycbwW3w-ScyWzRousgkNA7tdUeifNqB_kr2fXbGH1AqUSduOEdqjegbllEcxkkhVAko3ZIA/exec";
@@ -666,18 +768,14 @@
         };
 
         document.getElementById('import-json').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if(!file) return;
-            const reader = new FileReader();
+            const file = e.target.files[0]; if(!file) return; const reader = new FileReader();
             reader.onload = function(evt) {
                 try {
                     const imported = JSON.parse(evt.target.result);
                     if(confirm("Écraser les données actuelles avec ce fichier ?")) { donnees = imported; moisActifId = donnees[donnees.length-1].id; window.sauvegarderDonnees(); alert("Restauration réussie !"); }
                 } catch(err) { alert("Fichier invalide."); }
-            };
-            reader.readAsText(file);
+            }; reader.readAsText(file);
         });
-
     </script>
 </body>
 </html>
