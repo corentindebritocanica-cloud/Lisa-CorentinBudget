@@ -68,7 +68,6 @@
         .header-actions { display: flex; gap: 10px; align-items: center; flex-shrink: 0; }
         .btn-icon { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; flex-shrink:0; }
         .btn-icon.danger { background: #FFE5E5; color: var(--danger); border:none; }
-        .btn-icon.locked { background: var(--primary-light); border-color: var(--primary); }
         body.dark-mode .btn-icon.danger { background: #4A1515; }
 
         .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--success); display: inline-block; margin-left: 8px; transition: 0.3s; flex-shrink: 0;}
@@ -221,9 +220,13 @@
                 </div>
 
                 <div class="card">
-                    <div class="card-header" onclick="window.toggleSection('conteneur-epargne', this)"><h3>✈️ Projets (<span id="total-epargne">0</span> €)</h3></div>
+                    <div class="card-header" onclick="window.toggleSection('conteneur-epargne', this)"><h3>✈️ Projets / Épargne (<span id="total-epargne">0</span> €)</h3></div>
                     <div id="conteneur-epargne" class="section-content" style="max-height: 2000px;"></div>
-                    <button class="btn-action bg-primary btn-add" onclick="window.ajouterLigne('epargne')">+ Nouvelle épargne</button>
+                    
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn-action bg-primary btn-add" style="flex:1; margin-bottom:0;" onclick="window.ajouterLigne('epargne')">+ Épargner</button>
+                        <button class="btn-action btn-add" style="background:var(--danger); flex:1; margin-bottom:0;" onclick="window.retirerEpargne()">- Utiliser</button>
+                    </div>
                 </div>
                 
                 <div class="card">
@@ -237,7 +240,7 @@
         <div id="vue-annuelle" class="hidden">
             <div class="header-title-group" style="margin-bottom:15px;">
                 <h1>Bilan Annuel</h1>
-                <select id="select-annee" onchange="window.rendreVueAnnuelle()" style="border:1px solid var(--border); padding:8px 12px; border-radius:8px; background:var(--card-bg);"></select>
+                <select id="select-annee" onchange="window.rendreVueAnnuelle()" style="border:1px solid var(--border); padding:8px 12px; border-radius:8px; background:var(--card-bg); font-weight:bold;"></select>
             </div>
             
             <div class="card summary-card">
@@ -268,9 +271,13 @@
                 </div>
                 
                 <div class="revenus-box" style="margin-bottom:0;">
-                    <div style="display:flex; justify-content:space-between;">
-                        <strong>✈️ Total Épargne</strong>
-                        <h3 style="color:var(--info);" id="annuel-total-epargne-bottom">0 €</h3>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <strong>✈️ Bilan Épargne</strong>
+                        <div style="text-align:right;">
+                            <div style="color:var(--success); font-size:0.85rem; font-weight:600;">+ Ajouté: <span id="annuel-epargne-plus">0</span> €</div>
+                            <div style="color:var(--danger); font-size:0.85rem; font-weight:600;">- Utilisé: <span id="annuel-epargne-moins">0</span> €</div>
+                            <h3 style="color:var(--info); margin-top:5px;" id="annuel-total-epargne-bottom">0 €</h3>
+                        </div>
                     </div>
                 </div>
                 
@@ -284,7 +291,7 @@
 
             <div class="admin-section">
                 <h3>🔄 Outils Système</h3>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Forcer la mise à jour de l'application (utile en cas de bug d'affichage).</p>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Forcer la mise à jour de l'application (vide le cache de la page).</p>
                 <button class="btn-action" style="background:var(--secondary);" onclick="window.location.reload(true)">Forcer le rechargement</button>
             </div>
 
@@ -346,7 +353,7 @@
             </div>
 
             <div style="text-align: right; color: var(--text-muted); font-size: 0.85rem; margin-top: 30px; font-weight: bold; padding-bottom: 20px;">
-                Version v1.1
+                Version v1.2
             </div>
 
         </div>
@@ -554,10 +561,10 @@
             });
         }
 
-        // --- CALCUL DU SOLDE REPORTE (ITERATIF ABSOLU CORRIGÉ) ---
+        // --- CALCUL DU SOLDE REPORTE ---
         window.calculerSoldeReporte = function(cibleIdx) {
             let solde = 0;
-            // On boucle depuis le tout premier mois existant (idx 0) jusqu'au mois PRÉCÉDENT le mois ciblé.
+            // On calcule rigoureusement depuis le début de l'historique jusqu'au mois précédent
             for (let i = 0; i < cibleIdx; i++) {
                 const m = donnees[i];
                 const tc = (Array.isArray(m.charges)?m.charges:[]).reduce((s,item)=>s+(parseFloat(item.montant)||0),0);
@@ -567,7 +574,7 @@
                 const rev = (parseFloat(m.revenus)||0) + (parseFloat(m.revenus_add)||0);
                 solde += (rev - tc - td - te - tprov);
             }
-            return solde; // Sera exactement 0 si cibleIdx === 0 (ex: Janvier si c'est le 1er mois de la liste)
+            return solde; // Retourne 0 si c'est le tout premier mois
         }
 
         // --- VUE MENSUELLE ---
@@ -586,7 +593,6 @@
             document.getElementById('revenus').value = mois.revenus || 0;
             document.getElementById('revenus_add').value = mois.revenus_add || 0;
             
-            // Recalcul strict du solde précédent
             const idx = donnees.findIndex(m => m.id === moisActifId);
             const soldePrecedent = window.calculerSoldeReporte(idx);
             document.getElementById('solde_reporte').value = soldePrecedent.toFixed(2);
@@ -618,10 +624,23 @@
             
             tableau.filter(item => (item.libelle||'').toLowerCase().includes(termeRecherche)).forEach((item) => {
                 const row = document.createElement('div'); row.className = 'item-row'; row.dataset.id = item.id;
-                let html = (type === 'depenses' || type === 'charges' || type === 'provisions') ? 
-                    `<div class="item-top"><textarea placeholder="Achat ou note détaillée..." oninput="window.autoResize(this)" onchange="window.majValeur('${type}','${item.id}','libelle',this.value)">${item.libelle||''}</textarea><input type="number" value="${item.montant}" onchange="window.majValeur('${type}','${item.id}','montant',this.value)"></div>
-                     <div class="item-bottom"><input type="date" value="${item.date}" onchange="window.majValeur('${type}','${item.id}','date',this.value)"><select id="sel-${item.id}" onchange="window.majValeur('${type}','${item.id}','categorie',this.value)">${categories.map(c=>`<option value="${c}" ${c===item.categorie?'selected':''}>${c}</option>`).join('')}</select></div>` :
+                
+                // Design Visuel si c'est un "Retrait d'épargne" (Montant négatif ou isRetrait)
+                const isRetrait = item.isRetrait || parseFloat(item.montant) < 0;
+                const colorVal = isRetrait ? 'color:var(--danger);' : '';
+                const mSign = isRetrait ? '<span style="font-weight:bold; color:var(--danger);">-</span> ' : '';
+                const valAffichee = isRetrait ? (item.montant === 0 ? '' : Math.abs(item.montant)) : item.montant;
+
+                let html = (type === 'depenses' || type === 'charges' || type === 'provisions' || type === 'epargne') ? 
+                    `<div class="item-top">
+                        <textarea placeholder="Achat ou note détaillée..." style="${colorVal}" oninput="window.autoResize(this)" onchange="window.majValeur('${type}','${item.id}','libelle',this.value)">${item.libelle||''}</textarea>
+                        <div style="display:flex; align-items:center;">
+                            ${mSign}<input type="number" style="${colorVal}" value="${valAffichee}" onchange="window.majValeur('${type}','${item.id}','montant',this.value)">
+                        </div>
+                     </div>
+                     <div class="item-bottom"><input type="date" value="${item.date||''}" onchange="window.majValeur('${type}','${item.id}','date',this.value)"><select id="sel-${item.id}" onchange="window.majValeur('${type}','${item.id}','categorie',this.value)">${categories.map(c=>`<option value="${c}" ${c===item.categorie?'selected':''}>${c}</option>`).join('')}</select></div>` :
                     `<div class="item-top"><select onchange="window.majValeur('${type}','${item.id}','categorie',this.value)" style="flex:1; background:none; border:none; font-weight:600;">${categories.map(c=>`<option value="${c}" ${c===item.categorie?'selected':''}>${c}</option>`).join('')}</select><input type="number" value="${item.montant}" onchange="window.majValeur('${type}','${item.id}','montant',this.value)"></div>`;
+                
                 row.innerHTML = `<div class="drag-handle">☰</div><div class="item-content">${html}</div><button class="btn-delete" onclick="window.demanderSuppression('${type}','${item.id}')">✕</button>`;
                 conteneur.appendChild(row);
                 const ta = row.querySelector('textarea'); if(ta) window.autoResize(ta);
@@ -654,7 +673,14 @@
                 const sel = document.getElementById(`sel-${id}`); if(sel) sel.value = item.categorie;
             }
             
-            item[champ] = (champ === 'montant') ? parseFloat(val) || 0 : val;
+            if(champ === 'montant') {
+                let num = parseFloat(val) || 0;
+                if(item.isRetrait) num = -Math.abs(num); // Force le montant négatif si c'est un retrait
+                item[champ] = num;
+            } else {
+                item[champ] = val;
+            }
+
             window.sauvegarderDonnees();
             window.calculerBudget(); 
         }
@@ -671,16 +697,12 @@
         window.ajouterLigne = function(type) { 
             const mois = donnees.find(m => m.id === moisActifId);
             if(!mois) return;
-            
             if(!Array.isArray(mois[type])) mois[type] = [];
             
             let catDefaut = (categories && categories.length > 0) ? categories[0] : "Autre";
 
-            if(type === 'epargne' && categories) {
-                catDefaut = categories.find(c => c.toLowerCase().includes("vacance")) || catDefaut;
-            } else if(type === 'provisions' && categories) {
-                catDefaut = categories.find(c => c.toLowerCase().includes("assurance")) || catDefaut;
-            }
+            if(type === 'epargne' && categories) catDefaut = categories.find(c => c.toLowerCase().includes("vacance")) || catDefaut;
+            else if(type === 'provisions' && categories) catDefaut = categories.find(c => c.toLowerCase().includes("assurance")) || catDefaut;
 
             mois[type].unshift({ id: Math.random().toString(36).substr(2,9), date:"", libelle:"", categorie: catDefaut, montant:0 }); 
             
@@ -691,6 +713,21 @@
             
             window.sauvegarderDonnees(); 
             window.rendreInterface(); 
+        }
+
+        window.retirerEpargne = function() {
+            const mois = donnees.find(m => m.id === moisActifId);
+            if(!mois) return;
+            if(!Array.isArray(mois.epargne)) mois.epargne = [];
+            
+            let catDefaut = (categories && categories.length > 0) ? categories[0] : "Autre";
+            catDefaut = categories.find(c => c.toLowerCase().includes("vacance")) || catDefaut;
+            
+            // isRetrait: true force l'affichage en rouge et transforme la valeur en négatif à la sauvegarde
+            mois.epargne.unshift({ id: Math.random().toString(36).substr(2,9), date:"", libelle:"Dépense / Retrait...", categorie: catDefaut, montant: 0, isRetrait: true });
+            
+            window.sauvegarderDonnees();
+            window.rendreInterface();
         }
 
         window.calculerBudget = function() {
@@ -714,24 +751,14 @@
             document.getElementById('total-epargne').innerText = te.toFixed(2);
             document.getElementById('total-provisions').innerText = tprov.toFixed(2);
             document.getElementById('reste-a-vivre').innerText = r.toFixed(2) + " €";
-            
-            const compEl = document.getElementById('comparaison-n1');
-            if(idxMoisActuel > 0) {
-                const mPrec = donnees[idxMoisActuel - 1];
-                const depPrec = (Array.isArray(mPrec.depenses)?mPrec.depenses:[]).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
-                const diff = td - depPrec;
-                compEl.style.display = 'inline-block';
-                if(diff > 0) { compEl.innerText = `↗ +${diff.toFixed(0)}€ de dépenses / mois préc.`; compEl.className = 'comparison comp-bad'; }
-                else { compEl.innerText = `↘ ${diff.toFixed(0)}€ de dépenses / mois préc.`; compEl.className = 'comparison comp-good'; }
-            } else { compEl.style.display = 'none'; }
 
-            let t = tc+td+te+tprov+(r>0?r:0); if(t===0) return;
+            let t = Math.abs(tc) + Math.abs(td) + Math.abs(te) + Math.abs(tprov) + (r>0?r:0); if(t===0) return;
             document.getElementById(`bar-charges-m`).style.width = (tc/t*100)+'%'; 
             document.getElementById(`pct-charges-m`).innerText = Math.round(tc/t*100)+'%';
             document.getElementById(`bar-depenses-m`).style.width = (td/t*100)+'%'; 
             document.getElementById(`pct-depenses-m`).innerText = Math.round(td/t*100)+'%';
-            document.getElementById(`bar-epargne-m`).style.width = (te/t*100)+'%'; 
-            document.getElementById(`pct-epargne-m`).innerText = Math.round(te/t*100)+'%';
+            document.getElementById(`bar-epargne-m`).style.width = (te > 0 ? (te/t*100) : 0)+'%'; 
+            document.getElementById(`pct-epargne-m`).innerText = Math.round(te > 0 ? (te/t*100) : 0)+'%';
             document.getElementById(`bar-provisions-m`).style.width = (tprov/t*100)+'%'; 
             document.getElementById(`pct-provisions-m`).innerText = Math.round(tprov/t*100)+'%';
             document.getElementById(`bar-reste-m`).style.width = (r>0?r/t*100:0)+'%'; 
@@ -804,12 +831,14 @@
             const d = donnees[donnees.length-1];
             const noms = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
             let idx = noms.indexOf(d.nom.split(' ')[0]) + 1; let an = d.annee; if(idx > 11) { idx = 0; an++; }
+            
+            // LA MAGIE : on force le montant des charges fixes copiées à 0.
             const nouveau = { 
                 id: Date.now(), nom: noms[idx]+" "+an, annee: an, revenus: d.revenus, revenus_add: 0,
-                charges: (Array.isArray(d.charges)?d.charges:[]).map(c=>({...c, id:Math.random().toString(36).substr(2,9)})), 
+                charges: (Array.isArray(d.charges)?d.charges:[]).map(c=>({...c, id:Math.random().toString(36).substr(2,9), montant: 0})), 
                 depenses:[], 
-                epargne: (Array.isArray(d.epargne)?d.epargne:[]).map(e=>({...e, id:Math.random().toString(36).substr(2,9)})), 
-                provisions: (Array.isArray(d.provisions)?d.provisions:[]).map(a=>({...a, id:Math.random().toString(36).substr(2,9)}))
+                epargne: [], 
+                provisions: (Array.isArray(d.provisions)?d.provisions:[]).map(a=>({...a, id:Math.random().toString(36).substr(2,9), montant: 0}))
             };
             donnees.push(nouveau); moisActifId = nouveau.id; 
             window.sauvegarderDonnees(); window.changerVue('mensuelle');
@@ -851,22 +880,31 @@
         window.rendreVueAnnuelle = function() {
             const a = parseInt(document.getElementById('select-annee').value);
             const mois = donnees.filter(m => m.annee === a);
-            let tc=0, td=0, te=0, tprovGeneral=0;
+            let tc=0, td=0, te_plus=0, te_moins=0, tprovGeneral=0;
             
             mois.forEach(m => {
                 tc += (Array.isArray(m.charges)?m.charges:[]).reduce((s,i)=>s+(parseFloat(i.montant)||0),0); 
                 td += (Array.isArray(m.depenses)?m.depenses:[]).reduce((s,i)=>s+(parseFloat(i.montant)||0),0); 
-                te += (Array.isArray(m.epargne)?m.epargne:[]).reduce((s,i)=>s+(parseFloat(i.montant)||0),0); 
                 tprovGeneral += (Array.isArray(m.provisions)?m.provisions:[]).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
+                
+                (Array.isArray(m.epargne)?m.epargne:[]).forEach(i => {
+                    let v = parseFloat(i.montant) || 0;
+                    if(v >= 0) te_plus += v; else te_moins += Math.abs(v);
+                });
             });
+            
+            const te_net = te_plus - te_moins;
 
-            document.getElementById('annuel-total-epargne-top').innerText = te.toFixed(2) + " €";
+            document.getElementById('annuel-total-epargne-top').innerText = te_net.toFixed(2) + " €";
             document.getElementById('annuel-total-depense-top').innerText = (tc+td).toFixed(2) + " €";
             document.getElementById('annuel-moyenne-depense').innerText = ((tc+td) / (mois.length||1)).toFixed(2) + " €";
             
             document.getElementById('annuel-total-charges').innerText = tc.toFixed(2) + " €";
             document.getElementById('annuel-total-depenses').innerText = td.toFixed(2) + " €";
-            document.getElementById('annuel-total-epargne-bottom').innerText = te.toFixed(2) + " €";
+            
+            document.getElementById('annuel-epargne-plus').innerText = te_plus.toFixed(2);
+            document.getElementById('annuel-epargne-moins').innerText = te_moins.toFixed(2);
+            document.getElementById('annuel-total-epargne-bottom').innerText = te_net.toFixed(2) + " €";
 
             let htmlProvisions = `
                 <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
