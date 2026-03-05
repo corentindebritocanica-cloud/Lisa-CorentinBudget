@@ -60,7 +60,25 @@
 
         input, select, textarea { font-size: 16px !important; outline: none; background: transparent; color: var(--text-main); }
         input[type="number"] { background: var(--bg-color); }
+        select { appearance: none; -webkit-appearance: none; }
+        option { background-color: var(--card-bg); color: var(--text-main); }
 
+        .search-container input { width: 100%; padding: 12px 15px; border-radius: 12px; border: 1px solid var(--border); background: var(--card-bg); font-size: 1rem; margin-bottom: 15px;}
+        
+        .header-title-group { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
+        .header-title-group h1 { font-size: 1.6rem; font-weight: 800; }
+        .header-actions { display: flex; gap: 10px; align-items: center; }
+        .btn-icon { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; }
+        .btn-icon.danger { background: #FFE5E5; color: var(--danger); border:none; }
+        .btn-icon.locked { background: var(--primary-light); border-color: var(--primary); }
+        body.dark-mode .btn-icon.danger { background: #4A1515; }
+
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--success); display: inline-block; margin-left: 8px; transition: 0.3s; }
+        .status-dot.offline { background-color: var(--danger); }
+        .status-dot.saving { background-color: var(--secondary); animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+
+        /* DESIGN REVENUS */
         .revenus-box { background: var(--card-bg); padding: 15px; border-radius: 16px; display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid var(--border); }
         .revenus-row { display: flex; justify-content: space-between; align-items: center; width: 100%; }
         .revenus-row:not(:last-child) { padding-bottom: 12px; border-bottom: 1px dashed var(--border); }
@@ -69,21 +87,28 @@
 
         .card { background-color: var(--card-bg); border-radius: 16px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); margin-bottom: 20px; }
         .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--border); cursor: pointer; }
-        .card-header h3 { font-size: 1.1rem; font-weight: 700; }
+        .card-header h3 { font-size: 1.1rem; font-weight: 700; user-select: none; }
         .card-header::after { content: '▼'; font-size: 0.8rem; color: var(--text-muted); transition: 0.3s; }
         .card-header.collapsed::after { transform: rotate(-90deg); }
         .section-content { overflow: hidden; transition: max-height 0.3s ease-out; }
         .section-content.collapsed { max-height: 0 !important; }
 
         .item-row { display: flex; align-items: center; background: var(--card-bg); padding: 15px 0; border-bottom: 1px solid var(--border); touch-action: none; }
+        .item-row:last-child { border-bottom: none; }
+        .drag-handle { padding: 10px 15px 10px 5px; color: var(--text-muted); cursor: grab; font-size: 1.4rem; user-select: none; }
         .item-content { flex: 1; display: flex; flex-direction: column; gap: 8px; }
         .item-top { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
+        .item-bottom { display: flex; gap: 10px; }
         .item-top textarea { flex: 1; border: none; font-weight: 600; padding:0; resize: none; min-height: 24px; overflow:hidden; }
         .item-top input[type="number"] { width: 85px; text-align: right; border: none; font-weight: 700; padding: 8px; border-radius: 8px; }
+        .item-bottom input[type="date"], .item-bottom select { flex: 1; background: var(--bg-color); border: none; font-size: 0.85rem; padding: 6px 10px; border-radius: 6px; }
+        .btn-delete { color: var(--danger); background: none; border: none; font-size: 1.3rem; padding-left: 10px; }
 
-        .summary-card { background: linear-gradient(135deg, var(--primary), var(--info)); color: white; text-align: center; border-radius: 16px; padding: 25px 20px; }
+        .summary-card { background: linear-gradient(135deg, var(--primary), var(--info)); color: white; text-align: center; border-radius: 16px; padding: 25px 20px; position: relative; }
         .total-amount { font-size: 3rem; font-weight: 800; margin: 5px 0; letter-spacing: -1px; }
         .sub-text { font-size: 0.85rem; opacity: 0.9; margin-top: 5px; }
+        .comparison { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 0.8rem; font-weight: bold; margin-top: 10px; background: rgba(255,255,255,0.2); }
+        .comp-good { color: #D4EDDA; text-shadow: 0 1px 2px rgba(0,0,0,0.1); } .comp-bad { color: #FFE5E5; text-shadow: 0 1px 2px rgba(0,0,0,0.1); }
 
         .progress-container { margin-bottom: 12px; }
         .progress-header { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; margin-bottom: 5px; }
@@ -93,6 +118,7 @@
         .cat-item { display: flex; align-items: center; background: var(--bg-color); padding: 10px 15px; border-radius: 12px; margin-bottom: 8px; border: 1px solid var(--border); }
         .drag-handle-cat { cursor: grab; font-size: 1.2rem; margin-right: 15px; color: var(--text-muted); }
 
+        /* TOAST SARCASME */
         #sarcasm-toast { 
             position: fixed; top: -200px; left: 50%; transform: translateX(-50%); 
             background: #1C1C1E; color: #FFFFFF; padding: 25px 30px; border-radius: 20px; font-weight: 700; 
@@ -102,13 +128,13 @@
         #sarcasm-toast.show { top: 40px; }
         body.dark-mode #sarcasm-toast { background: #FFFFFF; color: #000000; box-shadow: 0 15px 40px rgba(255,255,255,0.2); }
 
-        .header-title-group { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
-        .header-title-group h1 { font-size: 1.6rem; font-weight: 800; }
-        .header-actions { display: flex; gap: 10px; align-items: center; }
-        .btn-icon { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; }
-        .btn-icon.danger { background: #FFE5E5; color: var(--danger); border:none; }
-        .btn-icon.locked { background: var(--primary-light); border-color: var(--primary); }
-        body.dark-mode .btn-icon.danger { background: #4A1515; }
+        /* TOAST ANNULER */
+        #toast { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 12px 20px; border-radius: 20px; font-weight: 600; display: flex; align-items: center; gap: 15px; transition: bottom 0.3s ease; z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        #toast.show { bottom: 25px; }
+        #btn-undo { background: var(--secondary); color: white; border: none; padding: 6px 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+
+        .overlay-popup { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 9999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(3px); }
+        .popup-box { background: var(--card-bg); padding: 30px; border-radius: 20px; text-align: center; max-width: 85%; width:400px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto;}
 
         .admin-section { background: var(--card-bg); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--border); }
         .btn-small { padding: 6px 12px; border-radius: 8px; border: none; background: var(--bg-color); color: var(--text-main); font-weight: 600; cursor:pointer;}
@@ -116,12 +142,6 @@
         .color-selector { display: flex; gap: 10px; margin-top: 10px; }
         .color-circle { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
         .color-circle.active { border-color: var(--text-main); transform: scale(1.1); }
-
-        #toast { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 12px 20px; border-radius: 20px; font-weight: 600; display: flex; align-items: center; gap: 15px; transition: bottom 0.3s ease; z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-        #toast.show { bottom: 25px; }
-
-        .drag-handle { padding: 10px 15px 10px 5px; color: var(--text-muted); cursor: grab; font-size: 1.4rem; user-select: none; }
-        .btn-delete { color: var(--danger); background: none; border: none; font-size: 1.3rem; padding-left: 10px; }
         .locked-mode .drag-handle, .locked-mode .btn-delete, .locked-mode .btn-add { display: none; }
         .locked-mode input, .locked-mode select, .locked-mode textarea { pointer-events: none; opacity: 0.8; }
 
@@ -132,7 +152,7 @@
 
     <nav class="top-nav">
         <div class="nav-header">
-            <h2>Budget <span id="sync-dot" class="status-dot"></span></h2>
+            <h2>Budget <span id="sync-dot" class="status-dot" title="En ligne & Synchronisé"></span></h2>
             <button class="btn-theme" onclick="window.toggleDarkMode()" id="theme-icon">☀️</button>
         </div>
         <div class="tab-buttons">
@@ -140,21 +160,26 @@
             <button class="btn-tab" id="btn-vue-annuelle" onclick="window.changerVue('annuelle')">Année</button>
             <button class="btn-tab" id="btn-vue-admin" onclick="window.changerVue('admin')">Admin</button>
         </div>
-        <div id="month-list"></div>
-        <button class="btn-action bg-primary" onclick="window.creerMoisSuivant()">+ Démarrer un mois</button>
+        
+        <div id="month-nav-group">
+            <div id="month-list"></div>
+            <button class="btn-action bg-primary" onclick="window.creerMoisSuivant()">+ Démarrer un mois</button>
+        </div>
     </nav>
 
     <main class="main-content">
         <div id="vue-mensuelle">
+            <div class="search-container"><input type="text" id="search-bar" placeholder="🔍 Rechercher..." oninput="window.filtrerRecherche()"></div>
             <div class="header-title-group">
                 <h1 id="titre-mois">Chargement...</h1>
                 <div class="header-actions">
-                    <button id="btn-lock" class="btn-icon" onclick="window.toggleLockMois()">🔓</button>
-                    <button class="btn-icon danger" onclick="window.supprimerMoisActif()">🗑️</button>
+                    <button id="btn-lock" class="btn-icon" onclick="window.toggleLockMois()" title="Verrouiller le mois">🔓</button>
+                    <button class="btn-icon danger" onclick="window.supprimerMoisActif()" title="Supprimer le mois">🗑️</button>
                 </div>
             </div>
 
             <div id="mois-content-wrapper">
+                
                 <div class="revenus-box">
                     <div class="revenus-row">
                         <strong>Solde reporté (mois préc.)</strong>
@@ -166,14 +191,15 @@
                     </div>
                     <div class="revenus-row">
                         <strong>Ajouts en cours de mois</strong>
-                        <input type="number" id="revenus_add" value="0" onchange="window.majRevenuField('revenus_add', this.value)">
+                        <input type="number" id="revenus_add" value="0" placeholder="+ 0" onchange="window.majRevenuField('revenus_add', this.value)">
                     </div>
                 </div>
 
                 <div class="card summary-card">
                     <h3>Reste à vivre</h3>
                     <div class="total-amount" id="reste-a-vivre">0 €</div>
-                    <div id="jours-restants" class="sub-text">-- jours restants</div>
+                    <div class="sub-text" id="jours-restants">-- jours restants ce mois</div>
+                    <div class="comparison" id="comparaison-n1" style="display:none;"></div>
                 </div>
 
                 <div class="card">
@@ -189,22 +215,25 @@
 
                 <div class="card">
                     <div class="card-header" onclick="window.toggleSection('conteneur-charges', this)"><h3>🏠 Charges Fixes (<span id="total-charges">0</span> €)</h3></div>
-                    <div id="conteneur-charges" class="section-content"></div>
+                    <div id="conteneur-charges" class="section-content" style="max-height: 2000px;"></div>
                     <button class="btn-action bg-primary btn-add" onclick="window.ajouterLigne('charges')">+ Nouvelle charge</button>
                 </div>
+
                 <div class="card">
                     <div class="card-header" onclick="window.toggleSection('conteneur-depenses', this)"><h3>🛒 Dépenses (<span id="total-depenses">0</span> €)</h3></div>
-                    <div id="conteneur-depenses" class="section-content"></div>
+                    <div id="conteneur-depenses" class="section-content" style="max-height: 5000px;"></div>
                     <button class="btn-action bg-primary btn-add" onclick="window.ajouterLigne('depenses')">+ Nouvelle dépense</button>
                 </div>
+
                 <div class="card">
                     <div class="card-header" onclick="window.toggleSection('conteneur-epargne', this)"><h3>✈️ Projets (<span id="total-epargne">0</span> €)</h3></div>
-                    <div id="conteneur-epargne" class="section-content"></div>
+                    <div id="conteneur-epargne" class="section-content" style="max-height: 2000px;"></div>
                     <button class="btn-action bg-primary btn-add" onclick="window.ajouterLigne('epargne')">+ Nouvelle épargne</button>
                 </div>
+                
                 <div class="card">
                     <div class="card-header" onclick="window.toggleSection('conteneur-provisions', this)"><h3>🛡️ Provisions (<span id="total-provisions">0</span> €)</h3></div>
-                    <div id="conteneur-provisions" class="section-content"></div>
+                    <div id="conteneur-provisions" class="section-content" style="max-height: 2000px;"></div>
                     <button class="btn-action bg-primary btn-add" onclick="window.ajouterLigne('provisions')">+ Nouvelle provision</button>
                 </div>
             </div>
@@ -226,6 +255,8 @@
                     </div>
                 </div>
             </div>
+            
+            <button class="btn-action" style="background: linear-gradient(90deg, #FF9500, #FF2D55);" onclick="window.genererWrapped()">🎁 Voir mon Bilan de l'année</button>
 
             <div style="display: grid; gap: 15px; margin-top:20px;">
                 <div class="revenus-box" style="margin-bottom:0;">
@@ -288,15 +319,49 @@
                     <div class="color-circle" style="background:#FF2D55;" onclick="window.changerCouleur('theme-rose')"></div>
                 </div>
             </div>
+
+            <div class="admin-section">
+                <h3>📧 Sauvegarde Automatique</h3>
+                <p style="font-size: 0.9rem; color: var(--text-muted); margin: 10px 0;">Le dimanche à minuit, un e-mail est envoyé automatiquement.</p>
+                <button class="btn-action" style="background:#5856D6;" onclick="window.envoyerSauvegardeMail(this)">✉️ Envoyer fichier .json par mail</button>
+            </div>
             
             <div class="admin-section">
-                <h3>🗑️ Corbeille</h3>
+                <h3>🗑️ Corbeille (Lignes supprimées)</h3>
                 <div id="admin-corbeille"></div>
+            </div>
+
+            <div class="admin-section">
+                <h3 style="color: var(--danger);">⚠️ Restauration Manuelle</h3>
+                <p style="font-size: 0.85rem; margin-top:5px; font-weight:bold;">Écraser les données actuelles avec un .json</p>
+                <input type="file" id="import-json" accept=".json" style="margin-top:5px; font-size: 0.9rem !important;">
             </div>
         </div>
     </main>
 
-    <div id="sarcasm-toast"><div class="sarcasm-icon">🕴️</div><div class="sarcasm-text" id="sarcasm-text-content"></div></div>
+    <div id="sarcasm-toast">
+        <div class="sarcasm-icon">🕴️</div>
+        <div class="sarcasm-text" id="sarcasm-text-content">Je vous juge.</div>
+    </div>
+
+    <div id="toast"><span id="toast-msg">Ligne supprimée</span><button id="btn-undo" onclick="window.annulerSuppression()">Annuler</button></div>
+
+    <div id="offline-popup" class="overlay-popup hidden">
+        <div class="popup-box">
+            <h2 style="color:var(--danger); margin-bottom:15px; font-size:2rem;">⚠️</h2>
+            <h3 style="margin-bottom:10px;">Connexion Perdue</h3>
+            <p style="color:var(--text-muted); font-size:0.95rem; line-height:1.4;">Vous n'avez plus de réseau internet.<br><strong style="color:var(--text-main);">Aucune donnée ne sera sauvegardée</strong> tant que la connexion ne sera pas rétablie.</p>
+            <button class="btn-action bg-primary" style="margin-top:20px; width:auto; padding:10px 25px;" onclick="document.getElementById('offline-popup').classList.add('hidden')">J'ai compris</button>
+        </div>
+    </div>
+
+    <div id="wrapped-popup" class="overlay-popup hidden">
+        <div class="popup-box" style="background: linear-gradient(135deg, var(--card-bg), var(--primary-light));">
+            <h2 style="font-size:2rem; margin-bottom:10px;">🎁 Bilan <span id="wrap-annee"></span></h2>
+            <div id="wrap-content" style="font-size:1.1rem; line-height:1.8; text-align:left; margin:20px 0;"></div>
+            <button class="btn-action bg-primary" onclick="document.getElementById('wrapped-popup').classList.add('hidden')">Super !</button>
+        </div>
+    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
@@ -320,26 +385,33 @@
         let donnees = [];
         let categories = ["🏠 Loyer", "⚡ Électricité", "💧 Eau", "🛡️ Assurance", "🌐 Internet", "🛒 Courses", "🍽️ Restaurant", "🎬 Loisirs", "🏥 Santé", "✈️ Vacances", "🛠️ Travaux", "❓ Autre"];
         let corbeille = [];
-        let objectifsProvisions = [{ nom: "Assurance", montant: 600 }]; // Multi-objectifs !
+        let objectifsProvisions = [{ nom: "Assurance", montant: 600 }];
         
         let moisActifId = null;
+        let termeRecherche = "";
         let anneesOuvertes = new Set();
+        let suppressionEnAttente = null;
+        let toastTimeout = null;
         let sarcasmTimeout = null;
+        let firstLoad = true;
 
         const blagues = {
-            nouveauMois: "Un nouveau mois ! Prêt à prendre de nouvelles mauvaises décisions ?|On efface tout et on recommence à se ruiner.|Nouveau mois, nouveau découvert. C'est la tradition.",
-            pauvre: "Reste à vivre < 200€. Avez-vous pensé à vendre un rein ?|Il vous reste plus de jours dans le mois que d'euros sur le compte.",
-            riche: "Oh, on a mis de l'argent de côté ? L'extrême gauche vous observe.",
-            resto: "Encore au resto ? Vos artères et votre banquier pleurent en chœur.",
-            courses: "Le PDG de Leclerc s'est acheté une Ferrari grâce à vous.",
-            logement: "Mettez un pull. EDF n'est pas votre Sugar Daddy.",
-            vacances: "Payer 1000€ pour attraper des coups de soleil.",
-            travaux: "Leroy Merlin : on y va pour une ampoule, on sort avec 250€ de matériel.",
-            loisirs: "Acheter, jeter, pleurer. Le grand cycle de votre vie.",
-            sante: "La Sécu rembourse 70%. Votre banquier pleure pour les 30% restants."
+            nouveauMois: "Un nouveau mois ! Prêt à prendre de nouvelles mauvaises décisions ?|On efface tout et on recommence à se ruiner.|Nouveau mois, nouveau découvert. C'est la tradition.|30 jours pour prouver que vous savez gérer votre argent. J'en doute.|C'est reparti pour un tour de manège financier terrifiant.|Allez, ce mois-ci on essaie de ne pas pleurer en regardant son compte.|Préparez-vous psychologiquement, le capitalisme ne dort jamais.".split('|'),
+            resto: "Encore au resto ? Vos artères et votre banquier pleurent en chœur.|Le serveur va finir par vous compter comme personne à charge.|Ce soir c'est caviar ou juste un manque de self-control ?|Votre estomac a un meilleur train de vie que vous.|Le livreur Uber Eats a mis votre adresse en favori.|On dit que l'appétit vient en mangeant, la ruine aussi.|Le TPE du restaurant a fait une danse de la joie à votre approche.|Un jour, votre estomac fera banqueroute.|Vous appelez ça un brunch, j'appelle ça un suicide financier.|L'hospice vous donnera de la soupe gratuite.|Vous confondez 'se faire plaisir' et 'nourrir un régiment'.|Cuisiner, c'est pour les pauvres. Oh, attendez... vous l'êtes bientôt.|Ce repas vous a coûté l'équivalent du PIB d'un petit pays.|Le doggy bag est obligatoire à ce niveau, c'est pour la semaine.|Payer 25€ pour une salade. Le QI est en chute libre.|Si la gourmandise est un péché, votre compte est déjà en enfer.|Chaque fois que vous touchez un menu, le CAC 40 grimpe de deux points.".split('|'),
+            courses: "Vous savez qu'un paquet de riz coûte 1€, n'est-ce pas ?|Les actionnaires de Carrefour vous remercient.|Encore des courses ? On prépare la fin du monde ?|Le PDG de Leclerc s'est acheté une Ferrari grâce à vous.|L'industrie agroalimentaire va vous couler une statue en beurre.|Ce n'est pas parce que le chariot a des roulettes qu'il faut le remplir.|Vous êtes la cible marketing parfaite. Littéralement un pigeon en or.|Acheter bio pour mourir ruiné. Beau choix.|Votre caddie déborde, votre compte se vide. L'équilibre naturel.|Vous allez devoir payer vos courses en chèques-vacances.|La caissière connaît mieux votre code PIN que vous.|Mangez bien, le stress des huissiers vous fera brûler des calories.|Vous devriez sponsoriser des vaches laitières, ce serait plus direct.|Le caddie pèse plus lourd que vos regrets dans la vie.".split('|'),
+            loisirs: "Encore un truc qui va prendre la poussière.|Amazon devrait vous décerner le titre d'Employé du Mois.|Le capitalisme vous remercie pour votre noble sacrifice.|Vous venez d'acheter un aller simple pour la culpabilité de minuit.|C'est incroyable de payer si cher pour un truc si moche.|Si vous achetiez des neurones à la place, vous seriez prix Nobel.|Payer pour s'amuser, c'est triste. L'ennui, c'est gratuit.|La thérapie par le shopping, c'est boire de l'eau de mer quand on a soif.|Acheter, jeter, pleurer. Le grand cycle de votre vie.|Vous savez que Vinted a été créé pour les gens comme vous ?|Le capitalisme sourit, la planète pleure, votre banquier aiguise un couteau.|Ce n'est pas parce que 'vous le valez bien' qu'il fallait l'acheter.|Un 'achat plaisir'. Le nom de code pour 'regret matinal'.".split('|'),
+            pauvre: "Reste à vivre < 200€. Avez-vous pensé à vendre un rein ?|Vous êtes à une panne de réveil d'être SDF.|Votre banquier a imprimé votre relevé juste pour rire à la machine à café.|Il vous reste plus de jours dans le mois que d'euros sur le compte.|On ne dit plus 'fin de mois difficile', on dit 'jeûne intermittent'.|Votre compte ressemble à un oignon : le regarder fait pleurer.|200€. C'est exactement le prix d'une belle tente d'occasion.|La pauvreté vous va si bien au teint, ça creuse les joues.|Le mois dure 30 jours, pas 12. Juste pour info.|À ce stade, même la banque du Monopoly refuserait le crédit.|Il est temps d'apprendre à photosynthétiser pour vous nourrir.|Votre carte bleue vous supplie de la laisser tranquille. Achevez-la.".split('|'),
+            epargneZero: "Épargne : 0€. Votre plan de retraite c'est l'effondrement de la civilisation ?|Vous épargnez tellement peu que même votre cochon tirelire fait une dépression.|Le précepte 'L'argent ne fait pas le bonheur', vous l'avez pris à la lettre.|Même les écureuils mettent plus de noisettes de côté que vous.|Votre filet de sécurité ressemble furieusement à une passoire.|Zéro. Un chiffre rond, parfait pour symboliser le désespoir.|Travailler jusqu'à 85 ans, ça maintient en forme après tout !|Le vide sidéral de vos économies donne le vertige.|Avec cette épargne, vous pourrez vous acheter une demi-baguette en 2040.|Vous êtes le cauchemar des conseillers en patrimoine.|La cigale ayant chanté tout l'été... se retrouve en PLS cet hiver.|0€. C'est propre, c'est net, c'est tragique.|Vous êtes en mode survie, niveau expert.".split('|'),
+            charges: "Vous travaillez juste pour loger vos meubles et chauffer le vide.|Vu la facture d'eau, vous prenez des douches au champagne ?|Vos charges fixes sont tellement hautes qu'elles ont le mal des montagnes.|Chaque 1er du mois, un banquier gagne ses ailes d'ange de l'enfer.|Vous êtes le meilleur employé de votre propriétaire. Félicitations.|Loyer, EDF, assurances... C'est un racket en bande organisée.|C'est beau la vie d'adulte : payer 1500€ juste pour le droit d'exister.|Les impôts et EDF vous envoient des bisous (et leurs huissiers).|C'est l'heure de la saignée mensuelle ! Sortez le chéquier.|Regardez votre salaire fondre comme neige au soleil... C'est beau la nature.|'Salaire reçu' -> 'Salaire volatilisé'. Magie noire ou charges fixes ?".split('|'),
+            riche: "Oh, on a mis de l'argent de côté ? L'extrême gauche vous observe.|Quel étalage de richesse indécent. Préparez-vous à être guillotinés.|Vous avez vaincu le capitalisme. En devenant le capitalisme.|L'indécence a un nom. Et c'est votre solde bancaire actuel.|Vous faites honte à la classe ouvrière. C'est magnifique.|Attention, avec cette épargne, on va vous demander d'adopter un rond-point.|Ça épargne ! On prépare sa fuite fiscale aux Bahamas ?|Ouh là, un excédent budgétaire ! L'État va le récupérer de force.|Vous épargnez ? C'est le début du capitalisme sauvage chez vous.|Trop de reste à vivre. Vous manquez d'imagination pour dépenser.|Belle épargne. Karl Marx fait des saltos dans sa tombe.|Vous avez trop d'argent. Je peux vous envoyer mon RIB ?".split('|'),
+            sante: "Tomber malade est un luxe que votre compte désapprouve.|La Sécu rembourse 70%. Votre banquier pleure pour les 30% restants.|À ce prix, le Doliprane a intérêt à guérir votre découvert.|Faites du sport, un arrêt cardiaque coûte trop cher en frais de succession.|Le dentiste s'est acheté un jacuzzi grâce à votre carie.|Une mutuelle, c'est payer pour avoir le droit de payer.|Le psy prend 60€ de l'heure pour vous écouter pleurer sur vos dettes.|J'espère que c'est une maladie rare pour justifier une facture pareille.|Allez cueillir des herbes dans la forêt, ça fera des économies.|Le scanner a révélé un vide absolu. Sur le compte ou dans le crâne ?|La facture du kiné fait plus mal que votre tendinite.".split('|'),
+            vacances: "Payer 1000€ pour attraper des coups de soleil.|Un vol low-cost qui finit à 250€ avec les bagages.|Vous fuyez vos problèmes ? Ils seront là au retour avec des agios.|Le prix de ce péage finance le yacht du PDG de Vinci.|Airbnb : payer pour faire le ménage dans le lit d'un inconnu.|Des vacances ? Le chômage technique de votre bon sens.|La location de ski a coûté le prix de la montagne entière.|Le supplément bagage. La taxe sur l'imprévoyance.|Mettre un an à économiser pour flamber en 6 jours.|Félicitations, vous venez d'acheter du sable à prix d'or.|Le loueur de voiture a vu 'Pigeon' écrit sur votre front.|Votre Reste à vivre part en RTT ce mois-ci.|La taxe de séjour, ou se faire racketter pour dormir ailleurs.".split('|'),
+            travaux: "Leroy Merlin : on y va pour une ampoule, on sort avec 250€ de matériel.|Acheter des outils de pro pour faire un trou de travers dans le placo.|Le plombier a facturé 150€ pour tourner une vis.|Le meuble en kit : perdre son argent ET sa patience.|Le DIY coûte plus cher qu'un artisan au final.|Des coussins à 40€ pièce. Vous posez vos fesses sur de l'or ?|Un tournevis c'est utile. Le rayon complet, c'est une thérapie.|Le papier peint est à fleurs, le budget dans les choux.|Le devis a été rédigé par un braqueur de banque.|La décoration d'intérieur coûte cher pour impressionner des invités qui s'en fichent.|Valérie Damidot désapprouverait cette dépense. Moi aussi.|Votre maison vaut 1000€ de plus, votre compte vaut 1000€ de moins.|La plomberie lâche, le banquier se marre.|Les travaux ne sont jamais finis. Et vos dettes non plus.".split('|'),
+            logement: "Votre propriétaire se paye une retraite dorée sur votre dos.|Vous chauffez l'appartement ou vous recréez le climat de Dubaï ?|Le compteur Linky va décoller du mur à cette vitesse.|Mettez un pull. EDF n'est pas votre Sugar Daddy.|Loyer acquitté : le droit de dormir sous un toit. Quel luxe.|Les impôts fonciers... Payer pour posséder chez soi.|Orange, Free, SFR : le triangle des Bermudes du pouvoir d'achat.|Éteignez la lumière, vous n'avez plus les moyens d'y voir clair.|Le loyer : le péage mensuel de l'existence urbaine.|Payer 40€ pour qu'Internet coupe à chaque film. L'arnaque du siècle.|Prendre un bain coûte le prix d'un litre d'essence. Arrêtez de vous laver.|Le crédit immo sur 25 ans. Autant signer un pacte avec le Diable.|Faites du feu dans le salon avec les restes Ikea. Ça chauffe.|La régularisation de charges. Les mots les plus terrifiants de la langue française.".split('|'),
+            assurances_vehicules: "Le plein d'essence coûte plus cher que la voiture.|Les assurances : payer toute sa vie pour s'entendre dire 'pas couvert'.|Le garagiste a juste regardé le moteur : 150€.|La SNCF vous remercie pour ce retard de 3 heures financé par vos soins.|L'assurance auto : 800€/an pour une franchise de 500€. Génies.|Un pneu crevé = la fin de vos économies.|Le contrôle technique. La roulette russe automobile.|Prenez le vélo. C'est écolo et ça sauve le compte.|Une voiture est un trou noir financier sur 4 roues.|L'assurance vie... L'art de parier contre sa propre existence.|Votre assureur est le preneur de paris de Vegas en cravate.|Assurer un iPhone à 1200€. Le monde moderne a perdu la tête.|Le garagiste sourit quand il vous voit. Très mauvais signe.|L'expert a décidé que c'était de votre faute. Surprenant.|Votre banquier vous conseille de passer à la trottinette (non électrique).".split('|')
         };
 
-        // --- THEME ---
+        // --- THEME & NOEL ---
         window.toggleDarkMode = function() {
             document.body.classList.toggle('dark-mode');
             const isDark = document.body.classList.contains('dark-mode');
@@ -372,22 +444,49 @@
         }
         checkChristmas();
 
-        // --- DATA LOAD ---
+        window.neigeNoel = function() {
+            var duration = 3 * 1000; var end = Date.now() + duration;
+            (function frame() {
+                confetti({ particleCount: 3, startVelocity: 0, ticks: 200, origin: { x: Math.random(), y: Math.random() - 0.2 }, colors: ['#ffffff'], shapes: ['circle'], gravity: Math.random() * 0.4 + 0.4, scalar: Math.random() * 0.6 + 0.4, drift: Math.random() * 0.8 - 0.4, zIndex: 10000 });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+        }
+
+        // --- FIREBASE DATA LOAD ---
         onValue(budgetRef, (snapshot) => {
             if (snapshot.exists()) {
-                donnees = Object.values(snapshot.val());
+                let rawData = snapshot.val();
+                if (!Array.isArray(rawData)) rawData = Object.values(rawData);
+                donnees = rawData;
+                
                 donnees.forEach(m => {
-                    // MIGRATION ASSURANCES -> PROVISIONS
+                    if(!m.annee) m.annee = m.nom.match(/\d{4}/) ? parseInt(m.nom.match(/\d{4}/)[0]) : new Date().getFullYear();
+                    m.charges = Array.isArray(m.charges) ? m.charges : (m.charges ? Object.values(m.charges) : []);
+                    m.depenses = Array.isArray(m.depenses) ? m.depenses : (m.depenses ? Object.values(m.depenses) : []);
+                    m.epargne = Array.isArray(m.epargne) ? m.epargne : (m.epargne ? Object.values(m.epargne) : []);
+                    
+                    // Migration Assurances -> Provisions
                     m.provisions = Array.isArray(m.provisions) ? m.provisions : (Array.isArray(m.assurances) ? m.assurances : (m.assurances ? Object.values(m.assurances) : []));
                     delete m.assurances;
                     
-                    if(!m.annee) m.annee = parseInt(m.nom.split(' ')[1]);
+                    if(typeof m.revenus_add === 'undefined') m.revenus_add = 0; 
                 });
-                donnees.sort((a,b) => window.comparerMois(a,b));
+
+                const nomsMois = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
+                donnees.sort((a,b) => {
+                    if(a.annee !== b.annee) return a.annee - b.annee;
+                    return nomsMois.indexOf(a.nom.split(' ')[0]) - nomsMois.indexOf(b.nom.split(' ')[0]);
+                });
+
                 if (!moisActifId && donnees.length > 0) moisActifId = donnees[donnees.length - 1].id;
-                window.rendreInterface();
-            } else {
-                window.initDefaut();
+                
+                if (firstLoad) {
+                    rafraichirVueActuelle();
+                    setTimeout(() => window.evaluerSarcasmeGlobal("load"), 1000);
+                    firstLoad = false;
+                }
+            } else { 
+                if (firstLoad) { window.initDefaut(); firstLoad = false; }
             }
         });
 
@@ -406,27 +505,27 @@
                 }
 
                 if(!document.getElementById('vue-admin').classList.contains('hidden')) window.rendreAdmin();
+                if(!document.getElementById('vue-annuelle').classList.contains('hidden')) window.rendreVueAnnuelle();
             }
         });
 
-        window.initDefaut = function() {
-            donnees = [{ id: Date.now(), nom: "Mars 2026", annee: 2026, revenus: 4500, revenus_add: 0, charges: [], depenses: [], epargne: [], provisions: [], locked: false }];
-            moisActifId = donnees[0].id; 
-            window.sauvegarderDonnees();
-        }
-
-        window.comparerMois = function(a,b) {
-            const noms = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
-            const [mA, aA] = a.nom.split(' '); const [mB, aB] = b.nom.split(' ');
-            if(aA !== aB) return aA - aB;
-            return noms.indexOf(mA) - noms.indexOf(mB);
-        }
-
         window.sauvegarderDonnees = function() { 
-            const dot = document.getElementById('sync-dot'); dot.className = 'status-dot saving';
-            set(budgetRef, donnees).then(() => setTimeout(() => dot.className = 'status-dot', 500)); 
+            updateSyncDot('saving'); 
+            set(budgetRef, donnees).then(() => setTimeout(() => updateSyncDot('online'), 500)).catch(e => console.log("Erreur", e)); 
         }
         window.sauvegarderConfig = function() { set(configRef, { categories, corbeille, objectifsProvisions }); }
+
+        window.initDefaut = function() {
+            donnees = [{ id: Date.now(), nom: "Mars 2026", annee: 2026, revenus: 4500, revenus_add: 0, charges: [], depenses: [], epargne: [], provisions: [], locked: false }];
+            moisActifId = donnees[0].id; window.sauvegarderDonnees();
+            rafraichirVueActuelle();
+        }
+
+        // --- NAVIGATION & MENU ---
+        function rafraichirVueActuelle() {
+            if (!document.getElementById('vue-mensuelle').classList.contains('hidden')) window.rendreInterface();
+            else if (!document.getElementById('vue-annuelle').classList.contains('hidden')) { window.rendreMenu(); window.preparerFiltreAnnuel(); }
+        }
 
         window.changerVue = function(vue) {
             ['mensuelle', 'annuelle', 'admin'].forEach(v => {
@@ -443,13 +542,53 @@
             document.getElementById(id).classList.toggle('collapsed');
             if(headerEl) headerEl.classList.toggle('collapsed');
         }
+
         window.toggleAnnee = function(annee) {
-            if (anneesOuvertes.has(annee)) anneesOuvertes.delete(annee); else anneesOuvertes.add(annee);
+            if (anneesOuvertes.has(annee)) anneesOuvertes.delete(annee);
+            else anneesOuvertes.add(annee);
             window.rendreMenu();
         }
 
-        // --- MENSUEL ---
+        window.rendreMenu = function() {
+            const liste = document.getElementById('month-list'); liste.innerHTML = '';
+            const groupes = {};
+            donnees.forEach(m => { if(!groupes[m.annee]) groupes[m.annee] = []; groupes[m.annee].push(m); });
+            Object.keys(groupes).sort((a,b) => b-a).forEach(annee => {
+                const isOpened = anneesOuvertes.has(parseInt(annee));
+                const yearDiv = document.createElement('div'); yearDiv.className = 'year-group';
+                yearDiv.innerHTML = `<div class="year-header ${!isOpened?'collapsed':''}" onclick="window.toggleAnnee(${annee})">${annee}</div><div class="month-sublist ${!isOpened?'hidden':''}"></div>`;
+                const sublist = yearDiv.querySelector('.month-sublist');
+                [...groupes[annee]].reverse().forEach(m => {
+                    const pill = document.createElement('div'); pill.className = `month-pill ${m.id === moisActifId ? 'active' : ''}`;
+                    pill.innerText = m.nom.split(' ')[0] + (m.locked ? ' 🔒' : '');
+                    pill.onclick = () => { moisActifId = m.id; anneesOuvertes.clear(); window.rendreInterface(); };
+                    sublist.appendChild(pill);
+                });
+                liste.appendChild(yearDiv);
+            });
+        }
+
+        window.toggleLockMois = function() {
+            const mois = donnees.find(m => m.id === moisActifId);
+            mois.locked = !mois.locked; window.sauvegarderDonnees(); window.rendreInterface();
+        }
+
+        // --- CALCULS ET VUE MENSUELLE ---
+        window.calculerResteAVivre = function(moisData) {
+            const tc = (moisData.charges || []).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
+            const td = (moisData.depenses || []).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
+            const te = (moisData.epargne || []).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
+            const tprov = (moisData.provisions || []).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
+            
+            const idx = donnees.findIndex(item => item.id === moisData.id);
+            let report = 0;
+            if(idx > 0) report = window.calculerResteAVivre(donnees[idx-1]);
+
+            return report + (parseFloat(moisData.revenus)||0) + (parseFloat(moisData.revenus_add)||0) - tc - td - te - tprov;
+        }
+
         window.rendreInterface = function() {
+            window.rendreMenu();
             const mois = donnees.find(m => m.id === moisActifId);
             if (!mois) return;
 
@@ -457,87 +596,62 @@
             document.getElementById('conteneur-depenses').innerHTML = '';
             document.getElementById('conteneur-epargne').innerHTML = '';
             document.getElementById('conteneur-provisions').innerHTML = '';
-
+            
             document.getElementById('titre-mois').innerText = mois.nom;
             document.getElementById('revenus').value = mois.revenus || 0;
             document.getElementById('revenus_add').value = mois.revenus_add || 0;
-
+            
             const idx = donnees.findIndex(m => m.id === moisActifId);
             let soldePrecedent = 0;
             if(idx > 0) soldePrecedent = window.calculerResteAVivre(donnees[idx-1]);
             document.getElementById('solde_reporte').value = soldePrecedent.toFixed(2);
 
             const wrapper = document.getElementById('mois-content-wrapper');
-            if(mois.locked) wrapper.classList.add('locked-mode'); else wrapper.classList.remove('locked-mode');
-
-            window.rendreLignes('conteneur-charges', mois.charges || [], 'charges');
-            window.rendreLignes('conteneur-depenses', mois.depenses || [], 'depenses');
-            window.rendreLignes('conteneur-epargne', mois.epargne || [], 'epargne');
-            window.rendreLignes('conteneur-provisions', mois.provisions || [], 'provisions');
+            const btnLock = document.getElementById('btn-lock');
+            if(mois.locked) { wrapper.classList.add('locked-mode'); btnLock.classList.add('locked'); btnLock.innerText = '🔒'; } 
+            else { wrapper.classList.remove('locked-mode'); btnLock.classList.remove('locked'); btnLock.innerText = '🔓'; }
             
+            const [nomMois, anneeStr] = mois.nom.split(' ');
+            const moisIndex = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"].indexOf(nomMois);
+            const today = new Date();
+            if(today.getFullYear() === parseInt(anneeStr) && today.getMonth() === moisIndex) {
+                const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+                document.getElementById('jours-restants').innerText = `${lastDay - today.getDate()} jours restants ce mois`;
+            } else { document.getElementById('jours-restants').innerText = "Mois clôturé"; }
+
+            window.rendreLignes('conteneur-charges', Array.isArray(mois.charges) ? mois.charges : [], 'charges');
+            window.rendreLignes('conteneur-depenses', Array.isArray(mois.depenses) ? mois.depenses : [], 'depenses');
+            window.rendreLignes('conteneur-epargne', Array.isArray(mois.epargne) ? mois.epargne : [], 'epargne');
+            window.rendreLignes('conteneur-provisions', Array.isArray(mois.provisions) ? mois.provisions : [], 'provisions');
             window.calculerBudget();
-            window.rendreMenu();
         }
 
-        window.calculerResteAVivre = function(m) {
-            const tc = (m.charges || []).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
-            const td = (m.depenses || []).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
-            const te = (m.epargne || []).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
-            const tprov = (m.provisions || []).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
-            
-            const idx = donnees.findIndex(item => item.id === m.id);
-            let report = 0;
-            if(idx > 0) report = window.calculerResteAVivre(donnees[idx-1]);
-
-            return (report + (parseFloat(m.revenus)||0) + (parseFloat(m.revenus_add)||0)) - tc - td - te - tprov;
-        }
-
-        window.calculerBudget = function() {
-            const m = donnees.find(m => m.id === moisActifId);
-            const report = parseFloat(document.getElementById('solde_reporte').value) || 0;
-            const tc = (m.charges || []).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
-            const td = (m.depenses || []).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
-            const te = (m.epargne || []).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
-            const tprov = (m.provisions || []).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
-            
-            const totalRevenus = report + (parseFloat(m.revenus)||0) + (parseFloat(m.revenus_add)||0);
-            const r = totalRevenus - tc - td - te - tprov;
-            
-            document.getElementById('total-charges').innerText = tc.toFixed(2);
-            document.getElementById('total-depenses').innerText = td.toFixed(2);
-            document.getElementById('total-epargne').innerText = te.toFixed(2);
-            document.getElementById('total-provisions').innerText = tprov.toFixed(2);
-            document.getElementById('reste-a-vivre').innerText = r.toFixed(2) + " €";
-
-            let t = tc+td+te+tprov+(r>0?r:0); if(t===0) return;
-            document.getElementById(`bar-charges-m`).style.width = (tc/t*100)+'%';
-            document.getElementById(`bar-depenses-m`).style.width = (td/t*100)+'%';
-            document.getElementById(`bar-epargne-m`).style.width = (te/t*100)+'%';
-            document.getElementById(`bar-provisions-m`).style.width = (tprov/t*100)+'%';
-            document.getElementById(`bar-reste-m`).style.width = (r>0?r/t*100:0)+'%';
-        }
+        window.autoResize = function(el) { el.style.height = '24px'; el.style.height = (el.scrollHeight) + 'px'; }
 
         window.rendreLignes = function(idConteneur, tableau, type) {
-            const conteneur = document.getElementById(idConteneur);
+            const conteneur = document.getElementById(idConteneur); 
             if(!conteneur) return;
             conteneur.innerHTML = '';
             
-            tableau.forEach((item) => {
+            if(!Array.isArray(tableau)) return;
+            
+            tableau.filter(item => (item.libelle||'').toLowerCase().includes(termeRecherche)).forEach((item) => {
                 const row = document.createElement('div'); row.className = 'item-row'; row.dataset.id = item.id;
                 let html = (type === 'depenses' || type === 'charges' || type === 'provisions') ? 
-                    `<div class="item-top"><textarea onchange="window.majValeur('${type}','${item.id}','libelle',this.value)">${item.libelle||''}</textarea><input type="number" value="${item.montant}" onchange="window.majValeur('${type}','${item.id}','montant',this.value)"></div>
+                    `<div class="item-top"><textarea placeholder="Achat ou note détaillée..." oninput="window.autoResize(this)" onchange="window.majValeur('${type}','${item.id}','libelle',this.value)">${item.libelle||''}</textarea><input type="number" value="${item.montant}" onchange="window.majValeur('${type}','${item.id}','montant',this.value)"></div>
                      <div class="item-bottom"><input type="date" value="${item.date}" onchange="window.majValeur('${type}','${item.id}','date',this.value)"><select id="sel-${item.id}" onchange="window.majValeur('${type}','${item.id}','categorie',this.value)">${categories.map(c=>`<option value="${c}" ${c===item.categorie?'selected':''}>${c}</option>`).join('')}</select></div>` :
                     `<div class="item-top"><select onchange="window.majValeur('${type}','${item.id}','categorie',this.value)" style="flex:1; background:none; border:none; font-weight:600;">${categories.map(c=>`<option value="${c}" ${c===item.categorie?'selected':''}>${c}</option>`).join('')}</select><input type="number" value="${item.montant}" onchange="window.majValeur('${type}','${item.id}','montant',this.value)"></div>`;
                 row.innerHTML = `<div class="drag-handle">☰</div><div class="item-content">${html}</div><button class="btn-delete" onclick="window.demanderSuppression('${type}','${item.id}')">✕</button>`;
                 conteneur.appendChild(row);
-                const ta = row.querySelector('textarea'); if(ta) { ta.style.height = '24px'; ta.style.height = ta.scrollHeight + 'px'; }
+                const ta = row.querySelector('textarea'); if(ta) window.autoResize(ta);
             });
 
             if (conteneur._sortable) conteneur._sortable.destroy(); 
             const mois = donnees.find(m => m.id === moisActifId);
+            
             if(!mois.locked && typeof Sortable !== 'undefined') {
                 conteneur._sortable = new Sortable(conteneur, { 
-                    handle: '.drag-handle', animation: 150, delay: 150, delayOnTouchOnly: true,
+                    handle: '.drag-handle', animation: 150, delay: 150, delayOnTouchOnly: true, fallbackOnBody: true,
                     onEnd: () => {
                         const ids = Array.from(conteneur.children).map(r => r.dataset.id);
                         mois[type] = ids.map(id => (mois[type]||[]).find(i => i.id === id));
@@ -547,12 +661,13 @@
             }
         }
 
+        const regexSupermarche = /leclerc|lecler|carrefour|carefour|auchan|intermarch|super\s*u|lidl|aldi|frais|cora|casino|netto/i;
+
         window.majValeur = function(type, id, champ, val) {
             const mois = donnees.find(m => m.id === moisActifId);
             const item = (mois[type]||[]).find(i => i.id === id);
             if(!item) return;
             
-            const regexSupermarche = /leclerc|carrefour|auchan|intermarch|super\s*u|lidl|aldi|cora|casino/i;
             if(champ === 'libelle' && type === 'depenses' && regexSupermarche.test(val)) {
                 item.categorie = categories.find(c => c.includes("Courses")) || categories[0];
                 const sel = document.getElementById(`sel-${id}`); if(sel) sel.value = item.categorie;
@@ -560,48 +675,162 @@
             
             item[champ] = (champ === 'montant') ? parseFloat(val) || 0 : val;
             window.sauvegarderDonnees();
-            window.calculerBudget();
+            window.calculerBudget(); 
             
             try {
                 if((champ === 'montant' || champ === 'categorie') && parseFloat(item.montant) > 0 && item.categorie) {
                     const cat = item.categorie.toLowerCase();
                     if(type === 'epargne') window.afficherSarcasme('riche');
-                    else if(cat.includes('resto') || cat.includes('restaurant')) window.afficherSarcasme('resto');
-                    else if(cat.includes('course')) window.afficherSarcasme('courses');
-                    else if(cat.includes('brico') || cat.includes('travaux')) window.afficherSarcasme('travaux');
-                    else if(cat.includes('vacance')) window.afficherSarcasme('vacances');
-                    else if(cat.includes('loyer') || cat.includes('eau') || cat.includes('elec')) window.afficherSarcasme('logement');
+                    else if(type === 'provisions' || cat.includes('assurance') || cat.includes('auto')) window.afficherSarcasme('assurances_vehicules');
+                    else if(type === 'depenses' || type === 'charges') {
+                        if(cat.includes('resto') || cat.includes('restaurant')) window.afficherSarcasme('resto');
+                        else if(cat.includes('course')) window.afficherSarcasme('courses');
+                        else if(cat.includes('santé') || cat.includes('sante')) window.afficherSarcasme('sante');
+                        else if(cat.includes('vacance')) window.afficherSarcasme('vacances');
+                        else if(cat.includes('travaux') || cat.includes('brico')) window.afficherSarcasme('travaux');
+                        else if(cat.includes('loyer') || cat.includes('électricité') || cat.includes('eau') || cat.includes('internet')) window.afficherSarcasme('logement');
+                        else if(cat.includes('loisirs') || cat.includes('autre')) window.afficherSarcasme('loisirs');
+                    }
+                    window.evaluerSarcasmeGlobal("calc");
                 }
-            } catch(e) {}
+            } catch (e) {}
         }
 
         window.majRevenuField = function(champ, val) {
             const m = donnees.find(m => m.id === moisActifId);
-            m[champ] = parseFloat(val) || 0;
-            window.sauvegarderDonnees(); window.calculerBudget();
+            if(m) {
+                m[champ] = parseFloat(val) || 0;
+                window.sauvegarderDonnees();
+                window.calculerBudget();
+            }
         }
-
+        
         window.ajouterLigne = function(type) { 
             const mois = donnees.find(m => m.id === moisActifId);
+            if(!mois) return;
+            
             if(!Array.isArray(mois[type])) mois[type] = [];
             
-            let catDefaut = categories[0];
-            if(type === 'epargne') catDefaut = categories.find(c => c.toLowerCase().includes("vacance")) || catDefaut;
-            else if(type === 'provisions') catDefaut = categories.find(c => c.toLowerCase().includes("assurance")) || catDefaut;
+            let catDefaut = (categories && categories.length > 0) ? categories[0] : "Autre";
+
+            if(type === 'epargne' && categories) {
+                catDefaut = categories.find(c => c.toLowerCase().includes("vacance")) || catDefaut;
+            } else if(type === 'provisions' && categories) {
+                catDefaut = categories.find(c => c.toLowerCase().includes("assurance")) || catDefaut;
+            }
 
             mois[type].unshift({ id: Math.random().toString(36).substr(2,9), date:"", libelle:"", categorie: catDefaut, montant:0 }); 
-            if(type === 'epargne' && typeof confetti === 'function') confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
             
-            window.sauvegarderDonnees(); window.rendreInterface(); 
+            if(type === 'epargne') {
+                if(document.body.classList.contains('theme-christmas') && typeof window.neigeNoel === 'function') window.neigeNoel();
+                else if(typeof confetti === 'function') confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+            }
+            
+            window.sauvegarderDonnees(); 
+            window.rendreInterface(); 
         }
 
+        window.calculerBudget = function() {
+            const m = donnees.find(m => m.id === moisActifId); if(!m) return;
+            const tc = (Array.isArray(m.charges)?m.charges:[]).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
+            const td = (Array.isArray(m.depenses)?m.depenses:[]).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
+            const te = (Array.isArray(m.epargne)?m.epargne:[]).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
+            const tprov = (Array.isArray(m.provisions)?m.provisions:[]).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
+            
+            const report = parseFloat(document.getElementById('solde_reporte').value) || 0;
+            const totalRevenus = report + (parseFloat(m.revenus)||0) + (parseFloat(m.revenus_add)||0);
+            const r = totalRevenus - tc - td - te - tprov;
+            
+            document.getElementById('total-charges').innerText = tc.toFixed(2);
+            document.getElementById('total-depenses').innerText = td.toFixed(2);
+            document.getElementById('total-epargne').innerText = te.toFixed(2);
+            document.getElementById('total-provisions').innerText = tprov.toFixed(2);
+            document.getElementById('reste-a-vivre').innerText = r.toFixed(2) + " €";
+            
+            const compEl = document.getElementById('comparaison-n1');
+            const idxMoisActuel = donnees.findIndex(d => d.id === moisActifId);
+            if(idxMoisActuel > 0) {
+                const mPrec = donnees[idxMoisActuel - 1];
+                const depPrec = (Array.isArray(mPrec.depenses)?mPrec.depenses:[]).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
+                const diff = td - depPrec;
+                compEl.style.display = 'inline-block';
+                if(diff > 0) { compEl.innerText = `↗ +${diff.toFixed(0)}€ de dépenses / mois préc.`; compEl.className = 'comparison comp-bad'; }
+                else { compEl.innerText = `↘ ${diff.toFixed(0)}€ de dépenses / mois préc.`; compEl.className = 'comparison comp-good'; }
+            } else { compEl.style.display = 'none'; }
+
+            let t = tc+td+te+tprov+(r>0?r:0); if(t===0) return;
+            document.getElementById(`bar-charges-m`).style.width = (tc/t*100)+'%'; 
+            document.getElementById(`pct-charges-m`).innerText = Math.round(tc/t*100)+'%';
+            document.getElementById(`bar-depenses-m`).style.width = (td/t*100)+'%'; 
+            document.getElementById(`pct-depenses-m`).innerText = Math.round(td/t*100)+'%';
+            document.getElementById(`bar-epargne-m`).style.width = (te/t*100)+'%'; 
+            document.getElementById(`pct-epargne-m`).innerText = Math.round(te/t*100)+'%';
+            document.getElementById(`bar-provisions-m`).style.width = (tprov/t*100)+'%'; 
+            document.getElementById(`pct-provisions-m`).innerText = Math.round(tprov/t*100)+'%';
+            document.getElementById(`bar-reste-m`).style.width = (r>0?r/t*100:0)+'%'; 
+            document.getElementById(`pct-reste-m`).innerText = Math.round(r>0?r/t*100:0)+'%';
+        }
+
+        // --- CORBEILLE ---
         window.demanderSuppression = function(type, id) {
             const mois = donnees.find(m => m.id === moisActifId);
-            const index = (mois[type]||[]).findIndex(i => i.id === id);
+            const index = (Array.isArray(mois[type]) ? mois[type] : []).findIndex(i => i.id === id);
             if(index > -1) {
+                const item = mois[type][index];
+                suppressionEnAttente = { type: type, item: item, moisId: moisActifId, index: index };
                 mois[type].splice(index, 1);
-                window.sauvegarderDonnees(); window.rendreInterface();
+                window.sauvegarderDonnees();
+                const toast = document.getElementById('toast'); toast.classList.add('show');
+                clearTimeout(toastTimeout);
+                toastTimeout = setTimeout(() => {
+                    toast.classList.remove('show');
+                    if(suppressionEnAttente) {
+                        const dateActuelle = new Date();
+                        const dateFormat = dateActuelle.toLocaleDateString('fr-FR') + ' à ' + dateActuelle.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'});
+                        corbeille.unshift({ ...suppressionEnAttente.item, typeOriginal: suppressionEnAttente.type, dateSuppr: dateFormat });
+                        window.sauvegarderConfig(); suppressionEnAttente = null;
+                        if(!document.getElementById('vue-admin').classList.contains('hidden')) window.rendreAdmin();
+                    }
+                }, 5000);
+                window.rendreInterface();
             }
+        }
+
+        window.annulerSuppression = function() {
+            if(suppressionEnAttente) {
+                const mois = donnees.find(m => m.id === suppressionEnAttente.moisId);
+                if(mois) { 
+                    if(!Array.isArray(mois[suppressionEnAttente.type])) mois[suppressionEnAttente.type] = [];
+                    mois[suppressionEnAttente.type].splice(suppressionEnAttente.index, 0, suppressionEnAttente.item); 
+                    window.sauvegarderDonnees(); 
+                }
+                document.getElementById('toast').classList.remove('show'); clearTimeout(toastTimeout); suppressionEnAttente = null;
+                window.rendreInterface();
+            }
+        }
+
+        window.restaurerCorbeille = function(index) {
+            const item = corbeille[index]; const mois = donnees.find(m => m.id === moisActifId);
+            if(mois) {
+                let typeCible = item.typeOriginal || 'depenses';
+                if(!Array.isArray(mois[typeCible])) mois[typeCible] = [];
+                delete item.typeOriginal; delete item.dateSuppr;
+                mois[typeCible].unshift(item); corbeille.splice(index, 1);
+                window.sauvegarderDonnees(); window.sauvegarderConfig(); window.rendreInterface(); 
+            }
+        }
+
+        window.viderCorbeille = function() {
+            if(confirm("Vider définitivement TOUTE la corbeille ? Action irréversible.")) { corbeille = []; window.sauvegarderConfig(); window.rendreAdmin(); }
+        }
+
+        // --- CREATION DE MOIS ---
+        window.supprimerMoisActif = function() { 
+            if(confirm("Supprimer ce mois DEFINITIVEMENT ?")) { 
+                donnees = donnees.filter(m => m.id !== moisActifId); 
+                moisActifId = donnees.length ? donnees[donnees.length-1].id : null; 
+                window.sauvegarderDonnees(); window.rendreInterface(); 
+            } 
         }
 
         window.creerMoisSuivant = function() {
@@ -610,51 +839,68 @@
             let idx = noms.indexOf(d.nom.split(' ')[0]) + 1; let an = d.annee; if(idx > 11) { idx = 0; an++; }
             const nouveau = { 
                 id: Date.now(), nom: noms[idx]+" "+an, annee: an, revenus: d.revenus, revenus_add: 0,
-                charges: (d.charges||[]).map(c=>({...c, id:Math.random().toString(36).substr(2,9)})), 
-                depenses:[], epargne: (d.epargne||[]).map(e=>({...e, id:Math.random().toString(36).substr(2,9)})), 
-                provisions: (d.provisions||[]).map(a=>({...a, id:Math.random().toString(36).substr(2,9)})), locked: false 
+                charges: (Array.isArray(d.charges)?d.charges:[]).map(c=>({...c, id:Math.random().toString(36).substr(2,9)})), 
+                depenses:[], 
+                epargne: (Array.isArray(d.epargne)?d.epargne:[]).map(e=>({...e, id:Math.random().toString(36).substr(2,9)})), 
+                provisions: (Array.isArray(d.provisions)?d.provisions:[]).map(a=>({...a, id:Math.random().toString(36).substr(2,9)})),
+                locked: false 
             };
-            donnees.push(nouveau); moisActifId = nouveau.id; window.sauvegarderDonnees(); window.changerVue('mensuelle');
-            window.afficherSarcasme('nouveauMois');
+            donnees.push(nouveau); moisActifId = nouveau.id; 
+            window.sauvegarderDonnees(); window.changerVue('mensuelle');
+            setTimeout(() => window.afficherSarcasme('nouveauMois'), 600);
         }
 
         window.creerMoisManuel = function() {
             const val = document.getElementById('input-new-month').value;
-            if(!val) return;
-            const [a, mIdx] = val.split('-');
+            if(!val) { alert("Veuillez sélectionner un mois et une année."); return; }
+            const parts = val.split('-'); const an = parseInt(parts[0]); const moisIdx = parseInt(parts[1]) - 1;
             const noms = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
-            const nomMois = noms[parseInt(mIdx)-1] + " " + a;
+            const nomMois = noms[moisIdx] + " " + an;
             
             if(donnees.find(m => m.nom === nomMois)) { alert("Ce mois existe déjà !"); return; }
             
-            donnees.push({ id: Date.now(), nom: nomMois, annee: parseInt(a), revenus: 0, revenus_add: 0, charges: [], depenses:[], epargne: [], provisions: [], locked: false });
-            donnees.sort((a,b) => window.comparerMois(a,b));
+            let lastRevenus = 0;
+            if(donnees.length > 0) lastRevenus = donnees[donnees.length-1].revenus;
+            
+            donnees.push({ id: Date.now() + Math.random(), nom: nomMois, annee: an, revenus: lastRevenus, revenus_add: 0, charges: [], depenses:[], epargne: [], provisions: [], locked: false });
+            donnees.sort((a,b) => {
+                if(a.annee !== b.annee) return a.annee - b.annee;
+                return noms.indexOf(a.nom.split(' ')[0]) - noms.indexOf(b.nom.split(' ')[0]);
+            });
             moisActifId = donnees.find(m => m.nom === nomMois).id;
             window.sauvegarderDonnees(); window.changerVue('mensuelle');
+            document.getElementById('input-new-month').value = "";
         }
 
-        window.rendreMenu = function() {
-            const list = document.getElementById('month-list'); list.innerHTML = '';
-            donnees.slice().reverse().forEach(m => {
-                const btn = document.createElement('div');
-                btn.className = `month-pill ${m.id === moisActifId ? 'active' : ''}`;
-                btn.innerText = m.nom;
-                btn.onclick = () => { moisActifId = m.id; window.rendreInterface(); };
-                list.appendChild(btn);
-            });
+        window.filtrerRecherche = function() { termeRecherche = document.getElementById('search-bar').value.toLowerCase(); window.rendreInterface(); }
+
+        // --- SARCASME IA ---
+        window.afficherSarcasme = function(category) {
+            try {
+                const list = blagues[category];
+                if(!list) return;
+                const quote = list[Math.floor(Math.random() * list.length)];
+                const toast = document.getElementById('sarcasm-toast');
+                document.getElementById('sarcasm-text-content').innerText = quote;
+                clearTimeout(sarcasmTimeout);
+                toast.classList.add('show');
+                sarcasmTimeout = setTimeout(() => { toast.classList.remove('show'); }, 5000);
+            } catch(e) {}
         }
 
-        window.afficherSarcasme = function(cat) {
-            const quotes = blagues[cat].split('|');
-            const q = quotes[Math.floor(Math.random()*quotes.length)];
-            const toast = document.getElementById('sarcasm-toast');
-            document.getElementById('sarcasm-text-content').innerText = q;
-            toast.classList.add('show');
-            clearTimeout(sarcasmTimeout);
-            sarcasmTimeout = setTimeout(() => toast.classList.remove('show'), 5000);
+        window.evaluerSarcasmeGlobal = function(mode="calc") {
+            try {
+                const m = donnees.find(m => m.id === moisActifId); if(!m) return;
+                const r = window.calculerResteAVivre(m);
+                if(mode === "load" && !hasShownLoadSarcasm) {
+                    hasShownLoadSarcasm = true;
+                    if(r > 200) { setTimeout(()=>window.afficherSarcasme('riche'), 1500); return; }
+                }
+                if(mode === "calc" && r < 200 && r > -1000) window.afficherSarcasme('pauvre'); 
+            } catch (e) {}
         }
 
-        // --- ANNUEL ---
+        // --- VUE ANNUELLE ---
         window.preparerFiltreAnnuel = function() {
             const s = document.getElementById('select-annee'); s.innerHTML = '';
             const ans = [...new Set(donnees.map(m=>m.annee))].sort((a,b)=>b-a);
@@ -668,10 +914,10 @@
             let tc=0, td=0, te=0, tprovGeneral=0;
             
             mois.forEach(m => {
-                tc += (m.charges||[]).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
-                td += (m.depenses||[]).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
-                te += (m.epargne||[]).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
-                tprovGeneral += (m.provisions||[]).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
+                tc += (Array.isArray(m.charges)?m.charges:[]).reduce((s,i)=>s+(parseFloat(i.montant)||0),0); 
+                td += (Array.isArray(m.depenses)?m.depenses:[]).reduce((s,i)=>s+(parseFloat(i.montant)||0),0); 
+                te += (Array.isArray(m.epargne)?m.epargne:[]).reduce((s,i)=>s+(parseFloat(i.montant)||0),0); 
+                tprovGeneral += (Array.isArray(m.provisions)?m.provisions:[]).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
             });
 
             document.getElementById('annuel-total-epargne-top').innerText = te.toFixed(2) + " €";
@@ -680,7 +926,6 @@
             document.getElementById('annuel-total-charges').innerText = tc.toFixed(2) + " €";
             document.getElementById('annuel-total-depenses').innerText = td.toFixed(2) + " €";
 
-            // GENERATION DYNAMIQUE DES OBJECTIFS PROVISIONS
             let htmlProvisions = `
                 <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
                     <strong>🛡️ Total Provisions</strong>
@@ -691,9 +936,7 @@
                 let totalObj = 0;
                 mois.forEach(m => {
                     (m.provisions||[]).forEach(p => {
-                        if(p.categorie && p.categorie.toLowerCase().includes(obj.nom.toLowerCase())) {
-                            totalObj += (parseFloat(p.montant) || 0);
-                        }
+                        if(p.categorie && p.categorie.toLowerCase().includes(obj.nom.toLowerCase())) totalObj += (parseFloat(p.montant) || 0);
                     });
                 });
                 let pct = Math.min((totalObj / obj.montant) * 100, 100);
@@ -711,9 +954,32 @@
             document.getElementById('bloc-annuel-provisions').innerHTML = htmlProvisions;
         }
 
-        // --- ADMIN (DRAG & DROP CATÉGORIES + OBJECTIFS MULTIPLES) ---
+        window.genererWrapped = function() {
+            const a = parseInt(document.getElementById('select-annee').value); const moisAnnee = donnees.filter(m=>m.annee===a);
+            if(moisAnnee.length === 0) return;
+            let totalEpargne = 0; let maxMoisNom = ""; let maxMoisDepense = 0; let categoriesDepenses = {}; let nbRestos = 0;
+            moisAnnee.forEach(m => {
+                let depenseDuMois = 0;
+                (Array.isArray(m.epargne)?m.epargne:[]).forEach(e => totalEpargne += parseFloat(e.montant)||0);
+                (Array.isArray(m.depenses)?m.depenses:[]).forEach(d => {
+                    const mnt = parseFloat(d.montant)||0;
+                    depenseDuMois += mnt;
+                    if((d.categorie||'').toLowerCase().includes('resto')) nbRestos++;
+                    categoriesDepenses[d.categorie] = (categoriesDepenses[d.categorie] || 0) + mnt;
+                });
+                if(depenseDuMois > maxMoisDepense) { maxMoisDepense = depenseDuMois; maxMoisNom = m.nom; }
+            });
+            let topCat = Object.keys(categoriesDepenses).reduce((a, b) => categoriesDepenses[a] > categoriesDepenses[b] ? a : b, "Aucune");
+            document.getElementById('wrap-annee').innerText = a;
+            document.getElementById('wrap-content').innerHTML = `<ul><li style="margin-bottom:10px;">🌟 Vous avez épargné un total de <b>${totalEpargne.toFixed(0)}€</b> !</li><li style="margin-bottom:10px;">💸 <b>${maxMoisNom}</b> a été le mois le plus cher en dépenses (${maxMoisDepense.toFixed(0)}€).</li><li style="margin-bottom:10px;">🛒 Votre catégorie reine : <b>${topCat}</b>.</li>${nbRestos > 0 ? `<li style="margin-bottom:10px;">🍽️ Vous avez craqué pour <b>${nbRestos} restos</b> !</li>` : ''}</ul>`;
+            document.getElementById('wrapped-popup').classList.remove('hidden');
+            if(document.body.classList.contains('theme-christmas') && typeof window.neigeNoel === 'function') window.neigeNoel();
+            else if(typeof confetti === 'function') confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 }, zIndex: 10000 });
+        }
+
+        // --- VUE ADMIN ---
         window.rendreAdmin = function() {
-            // Liste des catégories Drag & Drop
+            // Drag and Drop des Catégories
             const catDiv = document.getElementById('admin-categories');
             catDiv.innerHTML = categories.map((c, i) => `
                 <div class="cat-item" data-id="${c}">
@@ -724,15 +990,17 @@
             `).join('');
 
             if(catDiv._sortable) catDiv._sortable.destroy();
-            catDiv._sortable = new Sortable(catDiv, {
-                handle: '.drag-handle-cat', animation: 150,
-                onEnd: () => {
-                    categories = Array.from(catDiv.children).map(el => el.dataset.id);
-                    window.sauvegarderConfig();
-                }
-            });
+            if(typeof Sortable !== 'undefined') {
+                catDiv._sortable = new Sortable(catDiv, {
+                    handle: '.drag-handle-cat', animation: 150,
+                    onEnd: () => {
+                        categories = Array.from(catDiv.children).map(el => el.dataset.id);
+                        window.sauvegarderConfig();
+                    }
+                });
+            }
 
-            // Liste des Objectifs Provisions
+            // Objectifs multiples Provisions
             const objDiv = document.getElementById('admin-objectifs');
             objDiv.innerHTML = objectifsProvisions.map((obj, i) => `
                 <div class="cat-item" style="cursor:default;">
@@ -741,12 +1009,29 @@
                     <button style="border:none;background:none;color:var(--danger);cursor:pointer;font-size:1.1rem;" onclick="window.supprimerObjectif(${i})">✕</button>
                 </div>
             `).join('');
+
+            // Corbeille
+            const corbDiv = document.getElementById('admin-corbeille');
+            if(corbeille.length === 0) { corbDiv.innerHTML = "<p style='color:var(--text-muted);font-size:0.9rem;'>Corbeille vide.</p>"; } 
+            else {
+                let html = `<button class="btn-action bg-danger" style="padding:10px; font-size:0.9rem; margin-bottom:15px;" onclick="window.viderCorbeille()">🗑️ Vider la corbeille</button>`;
+                const creerLigneHTML = (c, index) => {
+                    let badge = c.typeOriginal === 'charges' ? '🏠 Fixe' : (c.typeOriginal === 'epargne' ? '✈️ Épargne' : (c.typeOriginal === 'provisions' ? '🛡️ Prov' : '🛒 Dépense'));
+                    let dateInfo = c.dateSuppr ? `<br><small style="color:var(--text-muted); font-size:0.75rem;">Supprimé le ${c.dateSuppr}</small>` : '';
+                    return `<div style="display:flex; justify-content:space-between; align-items:center; padding:10px 5px; border-bottom:1px solid var(--border); font-size:0.9rem;">
+                                <div><strong style="color:var(--primary); font-size:0.8rem;">[${badge}]</strong> ${c.categorie} ${c.libelle ? '- '+c.libelle : ''} <b>(${c.montant}€)</b>${dateInfo}</div>
+                                <button class="btn-small bg-primary" style="color:white; font-size:0.8rem;" onclick="window.restaurerCorbeille(${index})">Restaurer</button>
+                            </div>`;
+                };
+                html += corbeille.slice(0, 3).map((c, i) => creerLigneHTML(c, i)).join('');
+                if(corbeille.length > 3) {
+                    html += `<div class="card-header collapsed" style="margin-top:15px; cursor:pointer;" onclick="window.toggleSection('corbeille-plus', this)"><h3 style="font-size:0.9rem; color:var(--text-muted);">Voir les ${corbeille.length - 3} autres suppressions</h3></div><div id="corbeille-plus" class="section-content collapsed">${corbeille.slice(3).map((c, i) => creerLigneHTML(c, i + 3)).join('')}</div>`;
+                }
+                corbDiv.innerHTML = html;
+            }
         }
 
-        window.ajouterCategorie = function() { 
-            const v = document.getElementById('new-cat-input').value; 
-            if(v && !categories.includes(v)) { categories.push(v); window.sauvegarderConfig(); document.getElementById('new-cat-input').value = ""; window.rendreAdmin(); } 
-        }
+        window.ajouterCategorie = function() { const v = document.getElementById('new-cat-input').value; if(v && !categories.includes(v)) { categories.push(v); window.sauvegarderConfig(); document.getElementById('new-cat-input').value = ""; window.rendreAdmin(); } }
         window.supprimerCategorie = function(i) { categories.splice(i, 1); window.sauvegarderConfig(); window.rendreAdmin(); }
 
         window.ajouterObjectif = function() {
@@ -760,7 +1045,42 @@
             }
         }
         window.supprimerObjectif = function(i) { objectifsProvisions.splice(i, 1); window.sauvegarderConfig(); window.rendreAdmin(); }
-        
+
+        // --- IMPORT / EXPORT / ONLINE ---
+        window.envoyerSauvegardeMail = function(btn) {
+            const originalText = btn.innerText; btn.innerText = "⏳ Envoi..."; btn.disabled = true;
+            const urlScript = "https://script.google.com/macros/s/AKfycbwW3w-ScyWzRousgkNA7tdUeifNqB_kr2fXbGH1AqUSduOEdqjegbllEcxkkhVAko3ZIA/exec";
+            fetch(urlScript, { method: 'POST', mode: 'no-cors', body: JSON.stringify(donnees) })
+            .then(() => { alert("✅ Sauvegarde envoyée !"); btn.innerText = originalText; btn.disabled = false; })
+            .catch(() => { alert("❌ Erreur"); btn.innerText = originalText; btn.disabled = false; });
+        };
+
+        const importInput = document.getElementById('import-json');
+        if(importInput) {
+            importInput.addEventListener('change', function(e) {
+                const file = e.target.files[0]; if(!file) return; const reader = new FileReader();
+                reader.onload = function(evt) {
+                    try {
+                        const imported = JSON.parse(evt.target.result);
+                        if(confirm("Écraser les données actuelles avec ce fichier ?")) { 
+                            donnees = imported; moisActifId = donnees[donnees.length-1].id; 
+                            window.sauvegarderDonnees(); alert("Restauration réussie !"); 
+                            window.changerVue('mensuelle');
+                        }
+                    } catch(err) { alert("Fichier invalide."); }
+                }; reader.readAsText(file);
+            });
+        }
+
+        function updateSyncDot(status) {
+            const dot = document.getElementById('sync-dot');
+            if(!dot) return;
+            dot.className = 'status-dot';
+            if(status === 'offline') dot.classList.add('offline');
+            else if(status === 'saving') dot.classList.add('saving');
+        }
+        window.addEventListener('offline', () => { updateSyncDot('offline'); document.getElementById('offline-popup').classList.remove('hidden'); });
+        window.addEventListener('online', () => { updateSyncDot('online'); document.getElementById('offline-popup').classList.add('hidden'); });
     </script>
 </body>
 </html>
