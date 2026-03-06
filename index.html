@@ -81,7 +81,7 @@
         .btn-action { padding: 14px; color: white; border-radius: 12px; font-weight: 700; font-size: 1rem; cursor: pointer; border: none; width: 100%; margin-bottom: 10px; }
         .bg-primary { background: var(--primary); } .bg-danger { background: var(--danger); }
 
-        .main-content { flex: 1; padding: 15px; max-width: 1000px; margin: 0 auto; width: 100%; }
+        .main-content { flex: 1; padding: 15px; max-width: 1000px; margin: 0 auto; width: 100%; padding-bottom: 80px; }
         .hidden { display: none !important; }
 
         input, select, textarea { font-size: 16px !important; outline: none; background: transparent; color: var(--text-main); }
@@ -94,6 +94,7 @@
         .header-actions { display: flex; gap: 10px; align-items: center; flex-shrink: 0; }
         .btn-icon { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; flex-shrink:0; }
         .btn-icon.danger { background: #FFE5E5; color: var(--danger); border:none; }
+        .btn-icon.locked { background: var(--primary-light); border-color: var(--primary); }
         body.dark-mode .btn-icon.danger { background: #4A1515; }
 
         .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--success); display: inline-block; margin-left: 8px; transition: 0.3s; flex-shrink: 0;}
@@ -101,6 +102,7 @@
         .status-dot.saving { background-color: var(--secondary); animation: pulse 1s infinite; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
+        /* REVENUS */
         .revenus-box { background: var(--card-bg); padding: 15px; border-radius: 16px; display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid var(--border); min-width: 0; }
         .revenus-row { display: flex; justify-content: space-between; align-items: center; width: 100%; min-width: 0;}
         .revenus-row:not(:last-child) { padding-bottom: 12px; border-bottom: 1px dashed var(--border); }
@@ -124,8 +126,14 @@
         .item-bottom { display: flex; gap: 8px; min-width: 0; }
         .item-top textarea { flex: 1; border: none; font-weight: 600; padding:0; resize: none; min-height: 24px; overflow:hidden; min-width: 0; }
         .item-top input[type="number"] { width: 75px; text-align: right; border: none; font-weight: 700; padding: 6px; border-radius: 8px; flex-shrink: 0; background: var(--bg-color);}
-        .item-bottom input[type="date"], .item-bottom select { flex: 1; background: var(--bg-color); border: none; font-size: 0.8rem; padding: 6px 8px; border-radius: 6px; min-width: 0; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
+        
+        .item-bottom input[type="date"], .item-bottom select { 
+            flex: 1; background: var(--bg-color); border: none; font-size: 0.8rem; 
+            padding: 6px 8px; border-radius: 6px; min-width: 0; 
+            text-overflow: ellipsis; white-space: nowrap; overflow: hidden; 
+        }
         .item-top select { min-width: 0; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; font-size:0.9rem !important; }
+        
         .btn-delete { color: var(--danger); background: none; border: none; font-size: 1.3rem; padding-left: 10px; flex-shrink: 0;}
 
         .summary-card { background: linear-gradient(135deg, var(--primary), var(--info)); color: white; text-align: center; border-radius: 16px; padding: 20px 15px; position: relative; }
@@ -142,6 +150,7 @@
         .cat-item { display: flex; align-items: center; background: var(--bg-color); padding: 10px 15px; border-radius: 12px; margin-bottom: 8px; border: 1px solid var(--border); }
         .drag-handle-cat { cursor: grab; font-size: 1.2rem; margin-right: 15px; color: var(--text-muted); }
 
+        /* TOAST ANNULER */
         #toast { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 12px 20px; border-radius: 20px; font-weight: 600; display: flex; align-items: center; gap: 15px; transition: bottom 0.3s ease; z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
         #toast.show { bottom: 25px; }
         #btn-undo { background: var(--secondary); color: white; border: none; padding: 6px 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
@@ -156,6 +165,28 @@
         .color-circle { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
         .color-circle.active { border-color: var(--text-main); transform: scale(1.1); }
 
+        /* --- BULLE CALCULATRICE --- */
+        #calc-bubble {
+            position: fixed; bottom: 30px; right: 20px; width: 60px; height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--info));
+            color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 1.8rem; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            cursor: grab; z-index: 9000; touch-action: none;
+            user-select: none; -webkit-user-select: none;
+        }
+        #calc-bubble:active { cursor: grabbing; transform: scale(0.95); }
+
+        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px; }
+        .calc-btn { 
+            background: var(--bg-color); border: 1px solid var(--border); border-radius: 12px; 
+            padding: 15px 0; font-size: 1.2rem; font-weight: bold; cursor: pointer; color: var(--text-main);
+        }
+        .calc-btn:active { background: var(--border); }
+        .calc-btn.op { background: var(--primary-light); color: var(--primary); }
+        .calc-btn.eq { background: var(--primary); color: white; border: none; }
+        .calc-btn.c { background: #FFE5E5; color: var(--danger); border: none; }
+        body.dark-mode .calc-btn.c { background: #4A1515; }
+
         @media (min-width: 768px) { body { flex-direction: row; } .top-nav { width: 280px; height: 100vh; position: sticky; display: flex; flex-direction: column; padding: 20px; overflow-y: auto; } }
     </style>
 </head>
@@ -169,6 +200,45 @@
             <input type="password" id="login-password" placeholder="Mot de passe">
             <button class="login-btn" onclick="window.seConnecter()">Ouvrir les comptes</button>
             <div id="login-error">Identifiants incorrects.</div>
+        </div>
+    </div>
+
+    <div id="calc-bubble">🧮</div>
+
+    <div id="calc-popup" class="overlay-popup hidden">
+        <div class="popup-box" style="width: 320px; padding: 25px 20px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <h3 style="margin:0; font-size:1.2rem;">Calculatrice</h3>
+                <button style="border:none; background:none; font-size:1.5rem; cursor:pointer; color:var(--danger);" onclick="window.fermerCalculatrice()">✕</button>
+            </div>
+            
+            <input type="text" id="calc-display" readonly value="" style="width: 100%; font-size: 2rem; text-align: right; padding: 15px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg-color); color: var(--text-main); font-weight:bold; box-sizing:border-box;">
+            
+            <div class="calc-grid">
+                <button class="calc-btn c" onclick="window.calcClear()">C</button>
+                <button class="calc-btn op" onclick="window.calcInput('(')">(</button>
+                <button class="calc-btn op" onclick="window.calcInput(')')">)</button>
+                <button class="calc-btn op" onclick="window.calcInput('/')">÷</button>
+                
+                <button class="calc-btn" onclick="window.calcInput('7')">7</button>
+                <button class="calc-btn" onclick="window.calcInput('8')">8</button>
+                <button class="calc-btn" onclick="window.calcInput('9')">9</button>
+                <button class="calc-btn op" onclick="window.calcInput('*')">×</button>
+                
+                <button class="calc-btn" onclick="window.calcInput('4')">4</button>
+                <button class="calc-btn" onclick="window.calcInput('5')">5</button>
+                <button class="calc-btn" onclick="window.calcInput('6')">6</button>
+                <button class="calc-btn op" onclick="window.calcInput('-')">-</button>
+                
+                <button class="calc-btn" onclick="window.calcInput('1')">1</button>
+                <button class="calc-btn" onclick="window.calcInput('2')">2</button>
+                <button class="calc-btn" onclick="window.calcInput('3')">3</button>
+                <button class="calc-btn op" onclick="window.calcInput('+')">+</button>
+                
+                <button class="calc-btn" onclick="window.calcInput('0')" style="grid-column: span 2;">0</button>
+                <button class="calc-btn" onclick="window.calcInput('.')">.</button>
+                <button class="calc-btn eq" onclick="window.calcResult()">=</button>
+            </div>
         </div>
     </div>
 
@@ -307,8 +377,7 @@
                     </div>
                 </div>
                 
-                <div class="revenus-box" id="bloc-annuel-provisions">
-                    </div>
+                <div class="revenus-box" id="bloc-annuel-provisions"></div>
             </div>
         </div>
 
@@ -385,7 +454,7 @@
             </div>
 
             <div style="text-align: right; color: var(--text-muted); font-size: 0.85rem; margin-top: 30px; font-weight: bold; padding-bottom: 20px;">
-                Version v1.3.1 (Sécurisée)
+                Version v1.4 (Calculatrice)
             </div>
 
         </div>
@@ -442,6 +511,7 @@
         let anneesOuvertes = new Set();
         let suppressionEnAttente = null;
         let toastTimeout = null;
+        let firstLoad = true;
 
         // --- GESTION DE LA CONNEXION ---
         onAuthStateChanged(auth, (user) => {
@@ -478,6 +548,99 @@
             }
         }
 
+        // --- GESTION DE LA CALCULATRICE FLOTTANTE (DRAG & DROP) ---
+        const calcBubble = document.getElementById('calc-bubble');
+        let isDraggingCalc = false;
+        let calcStartX, calcStartY, calcInitialX, calcInitialY;
+
+        function calcDragStart(e) {
+            isDraggingCalc = false;
+            if (e.type === 'touchstart') {
+                calcStartX = e.touches[0].clientX;
+                calcStartY = e.touches[0].clientY;
+            } else {
+                calcStartX = e.clientX;
+                calcStartY = e.clientY;
+            }
+            const rect = calcBubble.getBoundingClientRect();
+            calcInitialX = rect.left;
+            calcInitialY = rect.top;
+            
+            document.addEventListener('mousemove', calcDragMove);
+            document.addEventListener('mouseup', calcDragEnd);
+            document.addEventListener('touchmove', calcDragMove, {passive: false});
+            document.addEventListener('touchend', calcDragEnd);
+        }
+
+        function calcDragMove(e) {
+            let clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+            let clientY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
+            
+            const dx = clientX - calcStartX;
+            const dy = clientY - calcStartY;
+            
+            if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+                isDraggingCalc = true;
+            }
+
+            if (isDraggingCalc) {
+                e.preventDefault(); 
+                let newX = calcInitialX + dx;
+                let newY = calcInitialY + dy;
+                
+                // Garder la bulle à l'intérieur de l'écran
+                newX = Math.max(0, Math.min(window.innerWidth - calcBubble.offsetWidth, newX));
+                newY = Math.max(0, Math.min(window.innerHeight - calcBubble.offsetHeight, newY));
+
+                calcBubble.style.left = newX + 'px';
+                calcBubble.style.top = newY + 'px';
+                calcBubble.style.bottom = 'auto';
+                calcBubble.style.right = 'auto';
+            }
+        }
+
+        function calcDragEnd(e) {
+            document.removeEventListener('mousemove', calcDragMove);
+            document.removeEventListener('mouseup', calcDragEnd);
+            document.removeEventListener('touchmove', calcDragMove);
+            document.removeEventListener('touchend', calcDragEnd);
+            
+            if (!isDraggingCalc) {
+                // C'est un simple clic : ouvrir la calculatrice
+                document.getElementById('calc-popup').classList.remove('hidden');
+            }
+        }
+
+        calcBubble.addEventListener('mousedown', calcDragStart);
+        calcBubble.addEventListener('touchstart', calcDragStart, {passive: false});
+
+        // --- FONCTIONS CALCULATRICE POPUP ---
+        window.fermerCalculatrice = function() {
+            document.getElementById('calc-popup').classList.add('hidden');
+        };
+        window.calcInput = function(val) {
+            const display = document.getElementById('calc-display');
+            if (display.value === "Erreur") display.value = "";
+            display.value += val;
+        };
+        window.calcClear = function() {
+            document.getElementById('calc-display').value = '';
+        };
+        window.calcResult = function() {
+            const display = document.getElementById('calc-display');
+            try {
+                // Remplacement des signes visuels par des signes mathématiques valides
+                let expression = display.value.replace(/×/g, '*').replace(/÷/g, '/');
+                // Évaluation simple (sécurisée car les entrées viennent uniquement des boutons de l'UI)
+                let res = Function('"use strict";return (' + expression + ')')();
+                // Arrondi à 2 décimales max pour l'argent
+                display.value = Math.round(res * 100) / 100;
+            } catch(e) {
+                display.value = 'Erreur';
+                setTimeout(window.calcClear, 1500);
+            }
+        };
+
         // --- THEME & NOEL ---
         window.toggleDarkMode = function() {
             document.body.classList.toggle('dark-mode');
@@ -511,14 +674,6 @@
         }
         checkChristmas();
 
-        window.neigeNoel = function() {
-            var duration = 3 * 1000; var end = Date.now() + duration;
-            (function frame() {
-                confetti({ particleCount: 3, startVelocity: 0, ticks: 200, origin: { x: Math.random(), y: Math.random() - 0.2 }, colors: ['#ffffff'], shapes: ['circle'], gravity: Math.random() * 0.4 + 0.4, scalar: Math.random() * 0.6 + 0.4, drift: Math.random() * 0.8 - 0.4, zIndex: 10000 });
-                if (Date.now() < end) requestAnimationFrame(frame);
-            }());
-        }
-
         // --- FIREBASE DATA LOAD ---
         function attacherEcouteursDB() {
             onValue(budgetRef, (snapshot) => {
@@ -544,7 +699,11 @@
                     });
 
                     if (!moisActifId && donnees.length > 0) moisActifId = donnees[donnees.length - 1].id;
-                    rafraichirVueActuelle();
+                    
+                    if (firstLoad) {
+                        rafraichirVueActuelle();
+                        firstLoad = false;
+                    }
                 } else { 
                     window.initDefaut(); 
                 }
@@ -555,7 +714,13 @@
                     const conf = snapshot.val();
                     if(conf.categories) categories = conf.categories;
                     if(conf.corbeille) corbeille = conf.corbeille;
-                    if(conf.objectifsProvisions) objectifsProvisions = conf.objectifsProvisions;
+                    
+                    if(conf.objectifsProvisions) {
+                        objectifsProvisions = conf.objectifsProvisions;
+                    } else if(conf.objectifAssurance) {
+                        objectifsProvisions = [{ nom: "Assurance", montant: parseFloat(conf.objectifAssurance) || 600 }];
+                        window.sauvegarderConfig();
+                    }
 
                     if(!document.getElementById('vue-admin').classList.contains('hidden')) window.rendreAdmin();
                     if(!document.getElementById('vue-annuelle').classList.contains('hidden')) window.rendreVueAnnuelle();
