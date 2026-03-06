@@ -131,6 +131,8 @@
         .summary-card { background: linear-gradient(135deg, var(--primary), var(--info)); color: white; text-align: center; border-radius: 16px; padding: 20px 15px; position: relative; }
         .total-amount { font-size: 2.6rem; font-weight: 800; margin: 5px 0; letter-spacing: -1px; }
         .sub-text { font-size: 0.85rem; opacity: 0.9; margin-top: 5px; }
+        .comparison { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 0.8rem; font-weight: bold; margin-top: 10px; background: rgba(255,255,255,0.2); }
+        .comp-good { color: #D4EDDA; text-shadow: 0 1px 2px rgba(0,0,0,0.1); } .comp-bad { color: #FFE5E5; text-shadow: 0 1px 2px rgba(0,0,0,0.1); }
 
         .progress-container { margin-bottom: 12px; }
         .progress-header { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; margin-bottom: 5px; }
@@ -149,6 +151,7 @@
 
         .admin-section { background: var(--card-bg); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--border); }
         .btn-small { padding: 6px 12px; border-radius: 8px; border: none; background: var(--bg-color); color: var(--text-main); font-weight: 600; cursor:pointer;}
+        
         .color-selector { display: flex; gap: 10px; margin-top: 10px; }
         .color-circle { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
         .color-circle.active { border-color: var(--text-main); transform: scale(1.1); }
@@ -217,6 +220,7 @@
                     <h3>Reste à vivre</h3>
                     <div class="total-amount" id="reste-a-vivre">0 €</div>
                     <div class="sub-text" id="jours-restants">-- jours restants ce mois</div>
+                    <div class="comparison" id="comparaison-n1" style="display:none;"></div>
                 </div>
 
                 <div class="card">
@@ -303,7 +307,8 @@
                     </div>
                 </div>
                 
-                <div class="revenus-box" id="bloc-annuel-provisions"></div>
+                <div class="revenus-box" id="bloc-annuel-provisions">
+                    </div>
             </div>
         </div>
 
@@ -380,7 +385,7 @@
             </div>
 
             <div style="text-align: right; color: var(--text-muted); font-size: 0.85rem; margin-top: 30px; font-weight: bold; padding-bottom: 20px;">
-                Version v1.3 (Sécurisée)
+                Version v1.3.1 (Sécurisée)
             </div>
 
         </div>
@@ -408,7 +413,6 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getDatabase, ref, set, onValue, off } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
-        // AJOUT DE L'AUTHENTIFICATION
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
         const firebaseConfig = {
@@ -423,7 +427,7 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-        const auth = getAuth(app); // Initialisation de l'Auth
+        const auth = getAuth(app);
         
         const budgetRef = ref(db, 'budgetDataLC');
         const configRef = ref(db, 'budgetConfigLC');
@@ -442,15 +446,12 @@
         // --- GESTION DE LA CONNEXION ---
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // Connecté : On cache l'écran de login et on télécharge les données
                 document.getElementById('login-screen').style.opacity = '0';
                 setTimeout(() => document.getElementById('login-screen').style.display = 'none', 500);
                 attacherEcouteursDB();
             } else {
-                // Déconnecté : On affiche le login et on bloque tout
                 document.getElementById('login-screen').style.display = 'flex';
                 document.getElementById('login-screen').style.opacity = '1';
-                // On arrête d'écouter la base pour éviter les erreurs "Permission Denied"
                 off(budgetRef);
                 off(configRef);
             }
@@ -518,7 +519,7 @@
             }());
         }
 
-        // --- FIREBASE DATA LOAD (Seulement si connecté) ---
+        // --- FIREBASE DATA LOAD ---
         function attacherEcouteursDB() {
             onValue(budgetRef, (snapshot) => {
                 if (snapshot.exists()) {
@@ -808,14 +809,16 @@
             document.getElementById('reste-a-vivre').innerText = r.toFixed(2) + " €";
             
             const compEl = document.getElementById('comparaison-n1');
-            if(idxMoisActuel > 0) {
-                const mPrec = donnees[idxMoisActuel - 1];
-                const depPrec = (Array.isArray(mPrec.depenses)?mPrec.depenses:[]).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
-                const diff = td - depPrec;
-                compEl.style.display = 'inline-block';
-                if(diff > 0) { compEl.innerText = `↗ +${diff.toFixed(0)}€ de dépenses / mois préc.`; compEl.className = 'comparison comp-bad'; }
-                else { compEl.innerText = `↘ ${diff.toFixed(0)}€ de dépenses / mois préc.`; compEl.className = 'comparison comp-good'; }
-            } else { compEl.style.display = 'none'; }
+            if(compEl) {
+                if(idxMoisActuel > 0) {
+                    const mPrec = donnees[idxMoisActuel - 1];
+                    const depPrec = (Array.isArray(mPrec.depenses)?mPrec.depenses:[]).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
+                    const diff = td - depPrec;
+                    compEl.style.display = 'inline-block';
+                    if(diff > 0) { compEl.innerText = `↗ +${diff.toFixed(0)}€ de dépenses / mois préc.`; compEl.className = 'comparison comp-bad'; }
+                    else { compEl.innerText = `↘ ${diff.toFixed(0)}€ de dépenses / mois préc.`; compEl.className = 'comparison comp-good'; }
+                } else { compEl.style.display = 'none'; }
+            }
 
             let t = Math.abs(tc) + Math.abs(td) + Math.abs(te) + Math.abs(tprov) + (r>0?r:0); if(t===0) return;
             document.getElementById(`bar-charges-m`).style.width = (tc/t*100)+'%'; 
@@ -897,7 +900,6 @@
             const noms = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
             let idx = noms.indexOf(d.nom.split(' ')[0]) + 1; let an = d.annee; if(idx > 11) { idx = 0; an++; }
             
-            // Les charges fixes sont copiées, mais LEUR MONTANT EST MIS A 0€
             const nouveau = { 
                 id: Date.now(), nom: noms[idx]+" "+an, annee: an, revenus: d.revenus, revenus_add: 0,
                 charges: (Array.isArray(d.charges)?d.charges:[]).map(c=>({...c, id:Math.random().toString(36).substr(2,9), montant: 0})), 
