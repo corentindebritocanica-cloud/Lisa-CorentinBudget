@@ -94,7 +94,6 @@
         .header-actions { display: flex; gap: 10px; align-items: center; flex-shrink: 0; }
         .btn-icon { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; flex-shrink:0; }
         .btn-icon.danger { background: #FFE5E5; color: var(--danger); border:none; }
-        .btn-icon.locked { background: var(--primary-light); border-color: var(--primary); }
         body.dark-mode .btn-icon.danger { background: #4A1515; }
 
         .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--success); display: inline-block; margin-left: 8px; transition: 0.3s; flex-shrink: 0;}
@@ -156,7 +155,7 @@
         #btn-undo { background: var(--secondary); color: white; border: none; padding: 6px 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
 
         .overlay-popup { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 9999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(3px); }
-        .popup-box { background: var(--card-bg); padding: 30px; border-radius: 20px; text-align: center; max-width: 85%; width:400px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto;}
+        .popup-box { background: var(--card-bg); padding: 30px; border-radius: 20px; text-align: center; max-width: 85%; width:400px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto; display: flex; flex-direction: column;}
 
         .admin-section { background: var(--card-bg); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--border); }
         .btn-small { padding: 6px 12px; border-radius: 8px; border: none; background: var(--bg-color); color: var(--text-main); font-weight: 600; cursor:pointer;}
@@ -242,6 +241,16 @@
         </div>
     </div>
 
+    <div id="changelog-popup" class="overlay-popup hidden">
+        <div class="popup-box" style="width: 90%; max-width: 400px; max-height: 80vh; padding: 25px 20px;">
+            <h2 style="font-size:1.5rem; margin-bottom:5px;">🔔 Nouveautés</h2>
+            <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:15px; line-height:1.4;">Modifications effectuées par l'autre utilisateur depuis votre dernière visite :</p>
+            <div id="changelog-content" style="flex:1; overflow-y:auto; text-align:left; font-size:0.95rem; margin-bottom:20px; border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding: 10px 0;">
+                </div>
+            <button class="btn-action bg-primary" style="margin-bottom:0;" onclick="document.getElementById('changelog-popup').classList.add('hidden')">J'ai compris</button>
+        </div>
+    </div>
+
     <nav class="top-nav">
         <div class="nav-header">
             <h2>Budget <span id="sync-dot" class="status-dot" title="En ligne & Synchronisé"></span></h2>
@@ -319,6 +328,7 @@
                 <div class="card">
                     <div class="card-header" onclick="window.toggleSection('conteneur-epargne', this)"><h3>✈️ Projets / Épargne (<span id="total-epargne">0</span> €)</h3></div>
                     <div id="conteneur-epargne" class="section-content" style="max-height: 2000px;"></div>
+                    
                     <div style="display:flex; gap:10px;">
                         <button class="btn-action bg-primary btn-add" style="flex:1; margin-bottom:0;" onclick="window.ajouterLigne('epargne')">+ Épargner</button>
                         <button class="btn-action btn-add" style="background:var(--danger); flex:1; margin-bottom:0;" onclick="window.retirerEpargne()">- Utiliser</button>
@@ -377,7 +387,8 @@
                     </div>
                 </div>
                 
-                <div class="revenus-box" id="bloc-annuel-provisions"></div>
+                <div class="revenus-box" id="bloc-annuel-provisions">
+                    </div>
             </div>
         </div>
 
@@ -454,7 +465,7 @@
             </div>
 
             <div style="text-align: right; color: var(--text-muted); font-size: 0.85rem; margin-top: 30px; font-weight: bold; padding-bottom: 20px;">
-                Version v1.4 (Calculatrice)
+                Version v1.5 (Notifications Intelligentes)
             </div>
 
         </div>
@@ -548,7 +559,7 @@
             }
         }
 
-        // --- GESTION DE LA CALCULATRICE FLOTTANTE (DRAG & DROP) ---
+        // --- GESTION DE LA CALCULATRICE FLOTTANTE ---
         const calcBubble = document.getElementById('calc-bubble');
         let isDraggingCalc = false;
         let calcStartX, calcStartY, calcInitialX, calcInitialY;
@@ -579,16 +590,13 @@
             const dx = clientX - calcStartX;
             const dy = clientY - calcStartY;
             
-            if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
-                isDraggingCalc = true;
-            }
+            if (Math.abs(dx) > 5 || Math.abs(dy) > 5) isDraggingCalc = true;
 
             if (isDraggingCalc) {
                 e.preventDefault(); 
                 let newX = calcInitialX + dx;
                 let newY = calcInitialY + dy;
                 
-                // Garder la bulle à l'intérieur de l'écran
                 newX = Math.max(0, Math.min(window.innerWidth - calcBubble.offsetWidth, newX));
                 newY = Math.max(0, Math.min(window.innerHeight - calcBubble.offsetHeight, newY));
 
@@ -605,35 +613,24 @@
             document.removeEventListener('touchmove', calcDragMove);
             document.removeEventListener('touchend', calcDragEnd);
             
-            if (!isDraggingCalc) {
-                // C'est un simple clic : ouvrir la calculatrice
-                document.getElementById('calc-popup').classList.remove('hidden');
-            }
+            if (!isDraggingCalc) { document.getElementById('calc-popup').classList.remove('hidden'); }
         }
 
         calcBubble.addEventListener('mousedown', calcDragStart);
         calcBubble.addEventListener('touchstart', calcDragStart, {passive: false});
 
-        // --- FONCTIONS CALCULATRICE POPUP ---
-        window.fermerCalculatrice = function() {
-            document.getElementById('calc-popup').classList.add('hidden');
-        };
+        window.fermerCalculatrice = function() { document.getElementById('calc-popup').classList.add('hidden'); };
         window.calcInput = function(val) {
             const display = document.getElementById('calc-display');
             if (display.value === "Erreur") display.value = "";
             display.value += val;
         };
-        window.calcClear = function() {
-            document.getElementById('calc-display').value = '';
-        };
+        window.calcClear = function() { document.getElementById('calc-display').value = ''; };
         window.calcResult = function() {
             const display = document.getElementById('calc-display');
             try {
-                // Remplacement des signes visuels par des signes mathématiques valides
                 let expression = display.value.replace(/×/g, '*').replace(/÷/g, '/');
-                // Évaluation simple (sécurisée car les entrées viennent uniquement des boutons de l'UI)
                 let res = Function('"use strict";return (' + expression + ')')();
-                // Arrondi à 2 décimales max pour l'argent
                 display.value = Math.round(res * 100) / 100;
             } catch(e) {
                 display.value = 'Erreur';
@@ -674,38 +671,101 @@
         }
         checkChristmas();
 
+        // --- COMPARAISON DES DONNEES (NOTIFICATIONS) ---
+        function extractAllItems(dataArray) {
+            let items = {};
+            (dataArray || []).forEach(m => {
+                ['charges', 'depenses', 'epargne', 'provisions'].forEach(type => {
+                    (m[type] || []).forEach(item => {
+                        items[item.id] = { ...item, type, moisNom: m.nom };
+                    });
+                });
+            });
+            return items;
+        }
+
+        function compareDataAndShowDiff(oldData, newData) {
+            let oldItems = extractAllItems(oldData);
+            let newItems = extractAllItems(newData);
+            let changes = [];
+
+            for (let id in newItems) {
+                let newItem = newItems[id];
+                let oldItem = oldItems[id];
+                let mNew = parseFloat(newItem.montant) || 0;
+                
+                if (!oldItem) {
+                    if (mNew !== 0) changes.push(`➕ <b>${mNew}€</b> ${newItem.categorie} <span style="color:var(--text-muted); font-size:0.8em;">(${newItem.moisNom})</span>`);
+                } else {
+                    let mOld = parseFloat(oldItem.montant) || 0;
+                    if (mNew !== mOld || newItem.categorie !== oldItem.categorie) {
+                        if(!(mOld === 0 && mNew === 0)) {
+                            changes.push(`✏️ <b>${mNew}€</b> ${newItem.categorie} <span style="color:var(--text-muted); font-size:0.8em;">(${newItem.moisNom})</span>`);
+                        }
+                    }
+                }
+            }
+
+            for (let id in oldItems) {
+                if (!newItems[id]) {
+                    let oldItem = oldItems[id];
+                    let mOld = parseFloat(oldItem.montant) || 0;
+                    if (mOld !== 0) {
+                        changes.push(`🗑️ Supprimé : <b>${mOld}€</b> ${oldItem.categorie} <span style="color:var(--text-muted); font-size:0.8em;">(${oldItem.moisNom})</span>`);
+                    }
+                }
+            }
+
+            if (changes.length > 0) {
+                document.getElementById('changelog-content').innerHTML = changes.map(d => `<div style="padding: 8px 0; border-bottom: 1px solid var(--border);">${d}</div>`).join('');
+                document.getElementById('changelog-popup').classList.remove('hidden');
+            }
+        }
+
         // --- FIREBASE DATA LOAD ---
         function attacherEcouteursDB() {
             onValue(budgetRef, (snapshot) => {
                 if (snapshot.exists()) {
                     let rawData = snapshot.val();
                     if (!Array.isArray(rawData)) rawData = Object.values(rawData);
-                    donnees = rawData;
                     
-                    donnees.forEach(m => {
+                    let newDataFormatted = rawData.map(m => {
                         if(!m.annee) m.annee = m.nom.match(/\d{4}/) ? parseInt(m.nom.match(/\d{4}/)[0]) : new Date().getFullYear();
-                        m.charges = Array.isArray(m.charges) ? m.charges : (m.charges ? Object.values(m.charges) : []);
-                        m.depenses = Array.isArray(m.depenses) ? m.depenses : (m.depenses ? Object.values(m.depenses) : []);
-                        m.epargne = Array.isArray(m.epargne) ? m.epargne : (m.epargne ? Object.values(m.epargne) : []);
-                        m.provisions = Array.isArray(m.provisions) ? m.provisions : (Array.isArray(m.assurances) ? m.assurances : (m.assurances ? Object.values(m.assurances) : []));
-                        delete m.assurances;
-                        if(typeof m.revenus_add === 'undefined') m.revenus_add = 0; 
+                        return {
+                            ...m,
+                            charges: Array.isArray(m.charges) ? m.charges : (m.charges ? Object.values(m.charges) : []),
+                            depenses: Array.isArray(m.depenses) ? m.depenses : (m.depenses ? Object.values(m.depenses) : []),
+                            epargne: Array.isArray(m.epargne) ? m.epargne : (m.epargne ? Object.values(m.epargne) : []),
+                            provisions: Array.isArray(m.provisions) ? m.provisions : (Array.isArray(m.assurances) ? m.assurances : (m.assurances ? Object.values(m.assurances) : [])),
+                            revenus_add: typeof m.revenus_add === 'undefined' ? 0 : m.revenus_add
+                        };
                     });
 
                     const nomsMois = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
-                    donnees.sort((a,b) => {
+                    newDataFormatted.sort((a,b) => {
                         if(a.annee !== b.annee) return a.annee - b.annee;
                         return nomsMois.indexOf(a.nom.split(' ')[0]) - nomsMois.indexOf(b.nom.split(' ')[0]);
                     });
 
-                    if (!moisActifId && donnees.length > 0) moisActifId = donnees[donnees.length - 1].id;
-                    
+                    // SYSTEME DE NOTIFICATION INTELLIGENT
                     if (firstLoad) {
-                        rafraichirVueActuelle();
+                        let cached = localStorage.getItem('budgetLocalCacheLC');
+                        if (cached) {
+                            let oldData = JSON.parse(cached);
+                            compareDataAndShowDiff(oldData, newDataFormatted);
+                        }
                         firstLoad = false;
                     }
+
+                    donnees = newDataFormatted;
+                    
+                    // Met à jour le cache local pour la prochaine visite
+                    localStorage.setItem('budgetLocalCacheLC', JSON.stringify(donnees));
+
+                    if (!moisActifId && donnees.length > 0) moisActifId = donnees[donnees.length - 1].id;
+                    rafraichirVueActuelle();
                 } else { 
-                    window.initDefaut(); 
+                    if (firstLoad) { window.initDefaut(); firstLoad = false; }
                 }
             });
 
@@ -714,13 +774,7 @@
                     const conf = snapshot.val();
                     if(conf.categories) categories = conf.categories;
                     if(conf.corbeille) corbeille = conf.corbeille;
-                    
-                    if(conf.objectifsProvisions) {
-                        objectifsProvisions = conf.objectifsProvisions;
-                    } else if(conf.objectifAssurance) {
-                        objectifsProvisions = [{ nom: "Assurance", montant: parseFloat(conf.objectifAssurance) || 600 }];
-                        window.sauvegarderConfig();
-                    }
+                    if(conf.objectifsProvisions) objectifsProvisions = conf.objectifsProvisions;
 
                     if(!document.getElementById('vue-admin').classList.contains('hidden')) window.rendreAdmin();
                     if(!document.getElementById('vue-annuelle').classList.contains('hidden')) window.rendreVueAnnuelle();
@@ -730,6 +784,8 @@
 
         window.sauvegarderDonnees = function() { 
             updateSyncDot('saving'); 
+            // On met à jour le cache local à chaque sauvegarde manuelle pour ne pas être notifié de ses propres changements
+            localStorage.setItem('budgetLocalCacheLC', JSON.stringify(donnees));
             set(budgetRef, donnees).then(() => setTimeout(() => updateSyncDot('online'), 500)).catch(e => console.log("Erreur", e)); 
         }
         window.sauvegarderConfig = function() { set(configRef, { categories, corbeille, objectifsProvisions }); }
