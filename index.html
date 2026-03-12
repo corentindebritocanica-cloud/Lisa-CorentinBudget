@@ -31,39 +31,88 @@
         body.theme-rose { --primary: #FF2D55; --primary-light: #FFE5EA; }
         body.theme-christmas { --primary: #D42426; --primary-light: #F8D7DA; --success: #1E5631; --info: #D42426; }
 
-        /* THEME GLASSMORPHISM IOS 26 */
+        /* THEME GLASSMORPHISM IOS 26 (DARK) */
         body.theme-glass {
             color-scheme: dark;
             --primary: #0a84ff; --primary-light: rgba(10, 132, 255, 0.2);
-            --bg-color: #000000; 
-            --text-main: #ffffff; --text-muted: rgba(235, 235, 245, 0.6);
-            --border: rgba(255, 255, 255, 0.1);
+            --bg-color: #000000; --text-main: #ffffff; --text-muted: rgba(235, 235, 245, 0.6); --border: rgba(255, 255, 255, 0.1);
         }
         body.theme-glass::before {
             content: ''; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: 
-                radial-gradient(circle at 15% 50%, rgba(70, 20, 150, 0.35), transparent 50%),
-                radial-gradient(circle at 85% 30%, rgba(10, 100, 200, 0.35), transparent 50%);
+            background: radial-gradient(circle at 15% 50%, rgba(70, 20, 150, 0.35), transparent 50%), radial-gradient(circle at 85% 30%, rgba(10, 100, 200, 0.35), transparent 50%);
             z-index: -1; pointer-events: none;
         }
         body.theme-glass .card, body.theme-glass .revenus-box, body.theme-glass .admin-section, body.theme-glass .top-nav, body.theme-glass .popup-box {
-            background: rgba(30, 30, 35, 0.5) !important;
-            backdrop-filter: blur(25px) saturate(200%);
-            -webkit-backdrop-filter: blur(25px) saturate(200%);
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3) !important;
+            background: rgba(30, 30, 35, 0.5) !important; backdrop-filter: blur(25px) saturate(200%); -webkit-backdrop-filter: blur(25px) saturate(200%); border: 1px solid rgba(255, 255, 255, 0.1) !important; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3) !important;
         }
-        body.theme-glass .item-row, body.theme-glass .cat-item, body.theme-glass .month-pill {
-            background: rgba(255, 255, 255, 0.03) !important;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
-        }
-        body.theme-glass input, body.theme-glass select, body.theme-glass textarea, body.theme-glass .search-container input {
-            background: rgba(255, 255, 255, 0.05) !important;
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
-            color: #fff !important;
-        }
+        body.theme-glass .item-row, body.theme-glass .cat-item, body.theme-glass .month-pill { background: rgba(255, 255, 255, 0.03) !important; border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important; }
+        body.theme-glass input, body.theme-glass select, body.theme-glass textarea, body.theme-glass .search-container input { background: rgba(255, 255, 255, 0.05) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; color: #fff !important; }
         body.theme-glass .btn-icon { background: rgba(255, 255, 255, 0.05) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; }
 
+        /* THEME GLASSMORPHISM LIGHT */
+        body.theme-glass-light {
+            --primary: #007AFF; --primary-light: rgba(0, 122, 255, 0.1);
+            --bg-color: #F5F5F7; --text-main: #1D1D1F; --text-muted: rgba(60, 60, 67, 0.6); --border: rgba(255, 255, 255, 0.6);
+        }
+        body.theme-glass-light::before {
+            content: ''; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: radial-gradient(circle at 20% 30%, rgba(255, 182, 193, 0.4), transparent 50%), radial-gradient(circle at 80% 70%, rgba(173, 216, 230, 0.4), transparent 50%);
+            z-index: -1; pointer-events: none;
+        }
+        body.theme-glass-light .card, body.theme-glass-light .revenus-box, body.theme-glass-light .admin-section, body.theme-glass-light .top-nav, body.theme-glass-light .popup-box {
+            background: rgba(255, 255, 255, 0.6) !important; backdrop-filter: blur(30px) saturate(150%); -webkit-backdrop-filter: blur(30px) saturate(150%); border: 1px solid rgba(255, 255, 255, 0.8) !important; box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07) !important;
+        }
+        body.theme-glass-light input, body.theme-glass-light select, body.theme-glass-light textarea { background: rgba(255, 255, 255, 0.5) !important; border: 1px solid rgba(255, 255, 255, 0.8) !important; }
+
+        /* THEME CAFE LATTE */
+        body.theme-latte {
+            --primary: #C47335; --primary-light: #F2E4D8; --secondary: #A36029; --danger: #D9534F; --success: #6B8E23; --info: #8B5A2B;
+            --bg-color: #F9F6F0; --card-bg: #EFEBE0; --text-main: #4A3B32; --text-muted: #8E7C6E; --border: #D8D0C5;
+        }
+
+        /* THEME JARDIN BOTANIQUE */
+        body.theme-botanic {
+            --primary: #3E7C59; --primary-light: #DDF2E4; --secondary: #F2A65A; --danger: #C0392B; --success: #27AE60; --info: #2980B9;
+            --bg-color: #E8EFE9; --card-bg: #F4F9F5; --text-main: #2C4A3B; --text-muted: #6B8E7B; --border: #CDE0D5;
+        }
+
+        /* THEME GATSBY / ART DECO */
+        body.theme-gatsby {
+            color-scheme: dark;
+            --primary: #D4AF37; --primary-light: rgba(212, 175, 55, 0.15); --secondary: #C5A028; --danger: #E74C3C; --success: #2ECC71; --info: #D4AF37;
+            --bg-color: #12151C; --card-bg: #1A1F29; --text-main: #E5C37E; --text-muted: #A38B57; --border: #D4AF37;
+        }
+        body.theme-gatsby .card, body.theme-gatsby .revenus-box { border: 1px solid var(--border); box-shadow: inset 0 0 0 1px rgba(212, 175, 55, 0.2); }
+        body.theme-gatsby .btn-action { color: #12151C !important; font-weight: 800; }
+        
+        /* THEME TERRACOTTA */
+        body.theme-terracotta {
+            --primary: #C0573E; --primary-light: #F6DFD7; --secondary: #D48C70; --danger: #A93226; --success: #527A61; --info: #B9770E;
+            --bg-color: #F4E8E1; --card-bg: #FCF7F4; --text-main: #5C3A21; --text-muted: #A67D65; --border: #E8D0C3;
+        }
+
+        /* THEME MOLESKINE / CARNET */
+        body.theme-moleskine {
+            --primary: #B22222; --primary-light: #F4DCDA; --secondary: #E67E22; --danger: #C0392B; --success: #2980B9; --info: #8E44AD;
+            --bg-color: #F1EAD7; --card-bg: #F8F3E6; --text-main: #1C2B4B; /* Encre bleue */ --text-muted: #5B6B8C; --border: #A2B5CD;
+        }
+        body.theme-moleskine .item-row { border-bottom: 1px dashed var(--border) !important; }
+
+        /* THEME AQUARELLE POUDREE */
+        body.theme-watercolor {
+            --primary: #FF8DA1; --primary-light: #FFE4E8; --secondary: #FFB347; --danger: #FF6961; --success: #77DD77; --info: #AEC6CF;
+            --bg-color: #FAFAFA; --text-main: #555555; --text-muted: #999999; --border: rgba(255, 255, 255, 0.5);
+        }
+        body.theme-watercolor::before {
+            content: ''; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: radial-gradient(circle at 20% 20%, rgba(255,182,193,0.3), transparent 50%), radial-gradient(circle at 80% 80%, rgba(173,216,230,0.3), transparent 50%), radial-gradient(circle at 50% 50%, rgba(255,253,208,0.3), transparent 50%), #FAFAFA;
+            z-index: -1; pointer-events: none;
+        }
+        body.theme-watercolor .card, body.theme-watercolor .revenus-box, body.theme-watercolor .admin-section, body.theme-watercolor .top-nav {
+            background: rgba(255, 255, 255, 0.6) !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.8) !important; box-shadow: 0 4px 15px rgba(0,0,0,0.02) !important;
+        }
+
+        /* STYLES DE BASE */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; transition: background-color 0.3s, color 0.3s, border-color 0.3s; }
         body { background-color: var(--bg-color); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
 
@@ -134,7 +183,6 @@
         .status-dot.saving { background-color: var(--secondary); animation: pulse 1s infinite; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
-        /* REVENUS */
         .revenus-box { background: var(--card-bg); padding: 15px; border-radius: 16px; display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid var(--border); min-width: 0; }
         .revenus-row { display: flex; justify-content: space-between; align-items: center; width: 100%; min-width: 0;}
         .revenus-row:not(:last-child) { padding-bottom: 12px; border-bottom: 1px dashed var(--border); }
@@ -193,9 +241,9 @@
         .admin-section { background: var(--card-bg); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--border); }
         .btn-small { padding: 6px 12px; border-radius: 8px; border: none; background: var(--bg-color); color: var(--text-main); font-weight: 600; cursor:pointer;}
         
-        .color-selector { display: flex; gap: 10px; margin-top: 10px; }
-        .color-circle { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
-        .color-circle.active { border-color: var(--text-main); transform: scale(1.1); }
+        .color-selector { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+        .color-circle { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s; }
+        .color-circle.active { border-color: var(--text-main); transform: scale(1.15); }
 
         /* --- BULLE CALCULATRICE --- */
         #calc-bubble {
@@ -469,13 +517,24 @@
             </div>
 
             <div class="admin-section">
-                <h3>🎨 Thème de l'application</h3>
+                <h3>🎨 Garde-robe (Thèmes)</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Changez l'ambiance de l'application selon vos envies.</p>
+                
                 <div class="color-selector">
-                    <div class="color-circle" style="background:#007AFF;" onclick="window.changerCouleur('default')"></div>
-                    <div class="color-circle" style="background:#AF52DE;" onclick="window.changerCouleur('theme-purple')"></div>
-                    <div class="color-circle" style="background:#34C759;" onclick="window.changerCouleur('theme-green')"></div>
-                    <div class="color-circle" style="background:#FF2D55;" onclick="window.changerCouleur('theme-rose')"></div>
-                    <div class="color-circle" style="background: linear-gradient(135deg, rgba(255,255,255,0.4), rgba(255,255,255,0.1)); border: 1px solid rgba(255,255,255,0.5);" onclick="window.changerCouleur('theme-glass')" title="Glassmorphism iOS 26"></div>
+                    <div class="color-circle" style="background:#007AFF;" onclick="window.changerCouleur('default')" title="Classique Bleu"></div>
+                    <div class="color-circle" style="background:#AF52DE;" onclick="window.changerCouleur('theme-purple')" title="Violet"></div>
+                    <div class="color-circle" style="background:#34C759;" onclick="window.changerCouleur('theme-green')" title="Vert"></div>
+                    <div class="color-circle" style="background:#FF2D55;" onclick="window.changerCouleur('theme-rose')" title="Rose"></div>
+                    
+                    <div class="color-circle" style="background: linear-gradient(135deg, rgba(255,255,255,0.4), rgba(255,255,255,0.1)); border: 1px solid rgba(255,255,255,0.5);" onclick="window.changerCouleur('theme-glass-light')" title="Glassmorphism Light"></div>
+                    <div class="color-circle" style="background: linear-gradient(135deg, rgba(70,20,150,0.5), rgba(10,100,200,0.5)); border: 1px solid rgba(255,255,255,0.3);" onclick="window.changerCouleur('theme-glass')" title="Glassmorphism Dark"></div>
+                    
+                    <div class="color-circle" style="background:#C47335;" onclick="window.changerCouleur('theme-latte')" title="Café Latte"></div>
+                    <div class="color-circle" style="background:#3E7C59;" onclick="window.changerCouleur('theme-botanic')" title="Jardin Botanique"></div>
+                    <div class="color-circle" style="background:#D4AF37;" onclick="window.changerCouleur('theme-gatsby')" title="Gatsby / Art Déco"></div>
+                    <div class="color-circle" style="background:#C0573E;" onclick="window.changerCouleur('theme-terracotta')" title="Terracotta"></div>
+                    <div class="color-circle" style="background:#F1EAD7; border: 1px solid #A2B5CD;" onclick="window.changerCouleur('theme-moleskine')" title="Carnet Moleskine"></div>
+                    <div class="color-circle" style="background: radial-gradient(circle, #FF8DA1, #AEC6CF);" onclick="window.changerCouleur('theme-watercolor')" title="Aquarelle Poudrée"></div>
                 </div>
             </div>
 
@@ -497,13 +556,30 @@
             </div>
 
             <div style="text-align: right; color: var(--text-muted); font-size: 0.85rem; margin-top: 30px; font-weight: bold; padding-bottom: 20px;">
-                Version v1.9 (Calculatrice PC + Opti)
+                Version 2.0 (La Grande Garde-Robe 👗)
             </div>
 
         </div>
     </main>
 
     <div id="toast"><span id="toast-msg">Ligne supprimée</span><button id="btn-undo" onclick="window.annulerSuppression()">Annuler</button></div>
+
+    <div id="offline-popup" class="overlay-popup hidden">
+        <div class="popup-box">
+            <h2 style="color:var(--danger); margin-bottom:15px; font-size:2rem;">⚠️</h2>
+            <h3 style="margin-bottom:10px;">Connexion Perdue</h3>
+            <p style="color:var(--text-muted); font-size:0.95rem; line-height:1.4;">Vous n'avez plus de réseau internet.<br><strong style="color:var(--text-main);">Aucune donnée ne sera sauvegardée</strong> tant que la connexion ne sera pas rétablie.</p>
+            <button class="btn-action bg-primary" style="margin-top:20px; width:auto; padding:10px 25px;" onclick="document.getElementById('offline-popup').classList.add('hidden')">J'ai compris</button>
+        </div>
+    </div>
+
+    <div id="wrapped-popup" class="overlay-popup hidden">
+        <div class="popup-box" style="background: linear-gradient(135deg, var(--card-bg), var(--primary-light));">
+            <h2 style="font-size:2rem; margin-bottom:10px;">🎁 Bilan <span id="wrap-annee"></span></h2>
+            <div id="wrap-content" style="font-size:1.1rem; line-height:1.8; text-align:left; margin:20px 0;"></div>
+            <button class="btn-action bg-primary" onclick="document.getElementById('wrapped-popup').classList.add('hidden')">Super !</button>
+        </div>
+    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
@@ -673,6 +749,7 @@
 
         // --- THEME & NOEL ---
         window.toggleDarkMode = function() {
+            // Le mode sombre classique bascule juste la classe "dark-mode" (si on est sur un theme non forcé)
             document.body.classList.toggle('dark-mode');
             const isDark = document.body.classList.contains('dark-mode');
             document.getElementById('theme-icon').innerText = isDark ? '🌙' : '☀️';
@@ -680,23 +757,34 @@
             localStorage.setItem('darkModeLC', isDark);
             MAJSelecteursCouleur();
         }
+        
         window.changerCouleur = function(t) {
-            document.body.classList.remove('theme-purple', 'theme-green', 'theme-rose', 'theme-glass');
+            const themes = ['theme-purple', 'theme-green', 'theme-rose', 'theme-glass', 'theme-glass-light', 'theme-latte', 'theme-botanic', 'theme-gatsby', 'theme-terracotta', 'theme-moleskine', 'theme-watercolor'];
+            document.body.classList.remove(...themes);
             if(t !== 'default') document.body.classList.add(t);
             localStorage.setItem('themeColorLC', t);
             MAJSelecteursCouleur();
         }
+        
         function MAJSelecteursCouleur() {
             const currentTheme = localStorage.getItem('themeColorLC') || 'default';
             const circles = document.querySelectorAll('.color-circle');
             circles.forEach(c => c.classList.remove('active'));
-            if(currentTheme === 'default') circles[0].classList.add('active');
-            else if(currentTheme === 'theme-purple') circles[1].classList.add('active');
-            else if(currentTheme === 'theme-green') circles[2].classList.add('active');
-            else if(currentTheme === 'theme-rose') circles[3].classList.add('active');
-            else if(currentTheme === 'theme-glass') circles[4].classList.add('active');
+            
+            // Ordre : 0:Default, 1:Purple, 2:Green, 3:Rose, 4:Glass Light, 5:Glass Dark, 6:Latte, 7:Botanic, 8:Gatsby, 9:Terracotta, 10:Moleskine, 11:Watercolor
+            const mapThemes = {
+                'default': 0, 'theme-purple': 1, 'theme-green': 2, 'theme-rose': 3,
+                'theme-glass-light': 4, 'theme-glass': 5, 'theme-latte': 6, 'theme-botanic': 7,
+                'theme-gatsby': 8, 'theme-terracotta': 9, 'theme-moleskine': 10, 'theme-watercolor': 11
+            };
+            if(circles[mapThemes[currentTheme]]) circles[mapThemes[currentTheme]].classList.add('active');
         }
-        if(localStorage.getItem('darkModeLC') === 'true') window.toggleDarkMode();
+
+        if(localStorage.getItem('darkModeLC') === 'true') {
+            document.body.classList.add('dark-mode');
+            document.getElementById('theme-icon').innerText = '🌙';
+            document.getElementById('meta-theme-color').content = '#000000';
+        }
         if(localStorage.getItem('themeColorLC')) window.changerCouleur(localStorage.getItem('themeColorLC'));
         else MAJSelecteursCouleur();
 
