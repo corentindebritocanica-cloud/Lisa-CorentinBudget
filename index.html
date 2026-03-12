@@ -458,8 +458,8 @@
             </div>
 
             <div class="admin-section">
-                <h3>🎯 Budgets de Provisions (Annuel)</h3>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Créez des objectifs. Le bilan calculera les provisions dont la catégorie contient le mot-clé défini ici.</p>
+                <h3>🎯 Objectifs (Épargne & Provisions)</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Créez des objectifs. Le bilan calculera toutes les lignes (Épargne ou Provision) contenant ce mot-clé.</p>
                 <div id="admin-objectifs"></div>
                 <div style="display:flex; gap:10px; margin-top:15px;">
                     <input type="text" id="new-obj-nom" placeholder="Mot-clé (ex: Auto)" style="flex:1; border:1px solid var(--border); padding:10px; border-radius:8px; min-width:0;">
@@ -497,13 +497,30 @@
             </div>
 
             <div style="text-align: right; color: var(--text-muted); font-size: 0.85rem; margin-top: 30px; font-weight: bold; padding-bottom: 20px;">
-                Version v1.7 (Theme Glassmorphism)
+                Version v1.8 (Moteur Objectifs + Glassmorphism)
             </div>
 
         </div>
     </main>
 
     <div id="toast"><span id="toast-msg">Ligne supprimée</span><button id="btn-undo" onclick="window.annulerSuppression()">Annuler</button></div>
+
+    <div id="offline-popup" class="overlay-popup hidden">
+        <div class="popup-box">
+            <h2 style="color:var(--danger); margin-bottom:15px; font-size:2rem;">⚠️</h2>
+            <h3 style="margin-bottom:10px;">Connexion Perdue</h3>
+            <p style="color:var(--text-muted); font-size:0.95rem; line-height:1.4;">Vous n'avez plus de réseau internet.<br><strong style="color:var(--text-main);">Aucune donnée ne sera sauvegardée</strong> tant que la connexion ne sera pas rétablie.</p>
+            <button class="btn-action bg-primary" style="margin-top:20px; width:auto; padding:10px 25px;" onclick="document.getElementById('offline-popup').classList.add('hidden')">J'ai compris</button>
+        </div>
+    </div>
+
+    <div id="wrapped-popup" class="overlay-popup hidden">
+        <div class="popup-box" style="background: linear-gradient(135deg, var(--card-bg), var(--primary-light));">
+            <h2 style="font-size:2rem; margin-bottom:10px;">🎁 Bilan <span id="wrap-annee"></span></h2>
+            <div id="wrap-content" style="font-size:1.1rem; line-height:1.8; text-align:left; margin:20px 0;"></div>
+            <button class="btn-action bg-primary" onclick="document.getElementById('wrapped-popup').classList.add('hidden')">Super !</button>
+        </div>
+    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
@@ -763,7 +780,6 @@
                         return nomsMois.indexOf(a.nom.split(' ')[0]) - nomsMois.indexOf(b.nom.split(' ')[0]);
                     });
 
-                    // SYSTEME DE NOTIFICATION INTELLIGENT
                     if (firstLoad) {
                         let cached = localStorage.getItem('budgetLocalCacheLC');
                         if (cached) {
@@ -774,8 +790,6 @@
                     }
 
                     donnees = newDataFormatted;
-                    
-                    // Met à jour le cache local pour la prochaine visite
                     localStorage.setItem('budgetLocalCacheLC', JSON.stringify(donnees));
 
                     if (!moisActifId && donnees.length > 0) moisActifId = donnees[donnees.length - 1].id;
@@ -800,7 +814,6 @@
 
         window.sauvegarderDonnees = function() { 
             updateSyncDot('saving'); 
-            // On met à jour le cache local à chaque sauvegarde manuelle pour ne pas être notifié de ses propres changements
             localStorage.setItem('budgetLocalCacheLC', JSON.stringify(donnees));
             set(budgetRef, donnees).then(() => setTimeout(() => updateSyncDot('online'), 500)).catch(e => console.log("Erreur", e)); 
         }
@@ -868,7 +881,6 @@
                 const td = (Array.isArray(m.depenses)?m.depenses:[]).reduce((s,item)=>s+(parseFloat(item.montant)||0),0);
                 const rev = (parseFloat(m.revenus)||0) + (parseFloat(m.revenus_add)||0);
                 
-                // On ne soustrait PLUS l'épargne (te) ni les provisions (tprov) ici !
                 solde += (rev - tc - td);
             }
             return solde; 
@@ -1038,7 +1050,6 @@
             
             const totalRevenus = report + (parseFloat(m.revenus)||0) + (parseFloat(m.revenus_add)||0);
             
-            // LA NOUVELLE REGLE DE CALCUL (Epargne et Provisions ne sont PLUS soustraites du Reste à vivre)
             const r = totalRevenus - tc - td;
             
             document.getElementById('total-charges').innerText = tc.toFixed(2);
@@ -1059,7 +1070,6 @@
                 } else { compEl.style.display = 'none'; }
             }
 
-            // Pour la barre de progression, on garde un visuel de tout l'argent bougé
             let t = Math.abs(tc) + Math.abs(td) + Math.abs(te) + Math.abs(tprov) + (r>0?r:0); if(t===0) return;
             document.getElementById(`bar-charges-m`).style.width = (tc/t*100)+'%'; 
             document.getElementById(`pct-charges-m`).innerText = Math.round(tc/t*100)+'%';
@@ -1219,13 +1229,25 @@
                     <h3 style="color:var(--warn);">${tprovGeneral.toFixed(2)} €</h3>
                 </div>`;
             
+            // CORRECTION DU MOTEUR DE RECHERCHE D'OBJECTIFS (PROVISIONS + EPARGNE)
             objectifsProvisions.forEach(obj => {
                 let totalObj = 0;
+                
+                // Normaliser le mot clé (enlever accents et espaces)
+                let removeAccents = str => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                let searchWord = removeAccents(obj.nom.trim().toLowerCase());
+
                 mois.forEach(m => {
-                    (m.provisions||[]).forEach(p => {
-                        if(p.categorie && p.categorie.toLowerCase().includes(obj.nom.toLowerCase())) totalObj += (parseFloat(p.montant) || 0);
+                    // On fusionne les tableaux Provisions ET Epargne pour la recherche
+                    let itemsToScan = [ ...(m.provisions||[]), ...(m.epargne||[]) ];
+                    
+                    itemsToScan.forEach(p => {
+                        if(p.categorie && removeAccents(p.categorie.toLowerCase()).includes(searchWord)) {
+                            totalObj += (parseFloat(p.montant) || 0);
+                        }
                     });
                 });
+                
                 let pct = Math.min((totalObj / obj.montant) * 100, 100);
                 htmlProvisions += `
                     <div style="margin-bottom:12px;">
