@@ -282,7 +282,7 @@
                 
                 <div class="revenus-box">
                     <div class="revenus-row">
-                        <strong>Solde reporté (mois préc.)</strong>
+                        <strong>Solde reporté (compte commun)</strong>
                         <input type="number" id="solde_reporte" value="0" readonly>
                     </div>
                     <div class="revenus-row">
@@ -296,14 +296,14 @@
                 </div>
 
                 <div class="card summary-card">
-                    <h3>Reste à vivre</h3>
+                    <h3>Reste à vivre (Compte Commun)</h3>
                     <div class="total-amount" id="reste-a-vivre">0 €</div>
                     <div class="sub-text" id="jours-restants">-- jours restants ce mois</div>
                     <div class="comparison" id="comparaison-n1" style="display:none;"></div>
                 </div>
 
                 <div class="card">
-                    <div class="card-header" onclick="window.toggleSection('repartition-m', this)"><h3>📊 Répartition</h3></div>
+                    <div class="card-header" onclick="window.toggleSection('repartition-m', this)"><h3>📊 Répartition globale</h3></div>
                     <div id="repartition-m" class="section-content" style="max-height: 500px;">
                         <div class="progress-container"><div class="progress-header"><span>🏠 Charges Fixes</span><span id="pct-charges-m">0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--danger);" id="bar-charges-m"></div></div></div>
                         <div class="progress-container"><div class="progress-header"><span>🛒 Dépenses</span><span id="pct-depenses-m">0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--secondary);" id="bar-depenses-m"></div></div></div>
@@ -328,7 +328,6 @@
                 <div class="card">
                     <div class="card-header" onclick="window.toggleSection('conteneur-epargne', this)"><h3>✈️ Projets / Épargne (<span id="total-epargne">0</span> €)</h3></div>
                     <div id="conteneur-epargne" class="section-content" style="max-height: 2000px;"></div>
-                    
                     <div style="display:flex; gap:10px;">
                         <button class="btn-action bg-primary btn-add" style="flex:1; margin-bottom:0;" onclick="window.ajouterLigne('epargne')">+ Épargner</button>
                         <button class="btn-action btn-add" style="background:var(--danger); flex:1; margin-bottom:0;" onclick="window.retirerEpargne()">- Utiliser</button>
@@ -387,8 +386,7 @@
                     </div>
                 </div>
                 
-                <div class="revenus-box" id="bloc-annuel-provisions">
-                    </div>
+                <div class="revenus-box" id="bloc-annuel-provisions"></div>
             </div>
         </div>
 
@@ -465,30 +463,13 @@
             </div>
 
             <div style="text-align: right; color: var(--text-muted); font-size: 0.85rem; margin-top: 30px; font-weight: bold; padding-bottom: 20px;">
-                Version v1.5 (Notifications Intelligentes)
+                Version v1.6 (Comptes Séparés)
             </div>
 
         </div>
     </main>
 
     <div id="toast"><span id="toast-msg">Ligne supprimée</span><button id="btn-undo" onclick="window.annulerSuppression()">Annuler</button></div>
-
-    <div id="offline-popup" class="overlay-popup hidden">
-        <div class="popup-box">
-            <h2 style="color:var(--danger); margin-bottom:15px; font-size:2rem;">⚠️</h2>
-            <h3 style="margin-bottom:10px;">Connexion Perdue</h3>
-            <p style="color:var(--text-muted); font-size:0.95rem; line-height:1.4;">Vous n'avez plus de réseau internet.<br><strong style="color:var(--text-main);">Aucune donnée ne sera sauvegardée</strong> tant que la connexion ne sera pas rétablie.</p>
-            <button class="btn-action bg-primary" style="margin-top:20px; width:auto; padding:10px 25px;" onclick="document.getElementById('offline-popup').classList.add('hidden')">J'ai compris</button>
-        </div>
-    </div>
-
-    <div id="wrapped-popup" class="overlay-popup hidden">
-        <div class="popup-box" style="background: linear-gradient(135deg, var(--card-bg), var(--primary-light));">
-            <h2 style="font-size:2rem; margin-bottom:10px;">🎁 Bilan <span id="wrap-annee"></span></h2>
-            <div id="wrap-content" style="font-size:1.1rem; line-height:1.8; text-align:left; margin:20px 0;"></div>
-            <button class="btn-action bg-primary" onclick="document.getElementById('wrapped-popup').classList.add('hidden')">Super !</button>
-        </div>
-    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
@@ -843,17 +824,17 @@
             });
         }
 
-        // --- CALCUL DU SOLDE REPORTE STRICT ---
+        // --- CALCUL DU SOLDE REPORTE STRICTEMENT SUR COMPTE COMMUN ---
         window.calculerSoldeReporte = function(cibleIdx) {
             let solde = 0;
             for (let i = 0; i < cibleIdx; i++) {
                 const m = donnees[i];
                 const tc = (Array.isArray(m.charges)?m.charges:[]).reduce((s,item)=>s+(parseFloat(item.montant)||0),0);
                 const td = (Array.isArray(m.depenses)?m.depenses:[]).reduce((s,item)=>s+(parseFloat(item.montant)||0),0);
-                const te = (Array.isArray(m.epargne)?m.epargne:[]).reduce((s,item)=>s+(parseFloat(item.montant)||0),0);
-                const tprov = (Array.isArray(m.provisions)?m.provisions:[]).reduce((s,item)=>s+(parseFloat(item.montant)||0),0);
                 const rev = (parseFloat(m.revenus)||0) + (parseFloat(m.revenus_add)||0);
-                solde += (rev - tc - td - te - tprov);
+                
+                // On ne soustrait PLUS l'épargne (te) ni les provisions (tprov) ici !
+                solde += (rev - tc - td);
             }
             return solde; 
         }
@@ -1021,7 +1002,9 @@
             const tprov = (Array.isArray(m.provisions)?m.provisions:[]).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
             
             const totalRevenus = report + (parseFloat(m.revenus)||0) + (parseFloat(m.revenus_add)||0);
-            const r = totalRevenus - tc - td - te - tprov;
+            
+            // LA NOUVELLE REGLE DE CALCUL (Epargne et Provisions ne sont PLUS soustraites du Reste à vivre)
+            const r = totalRevenus - tc - td;
             
             document.getElementById('total-charges').innerText = tc.toFixed(2);
             document.getElementById('total-depenses').innerText = td.toFixed(2);
@@ -1041,6 +1024,7 @@
                 } else { compEl.style.display = 'none'; }
             }
 
+            // Pour la barre de progression, on garde un visuel de tout l'argent bougé
             let t = Math.abs(tc) + Math.abs(td) + Math.abs(te) + Math.abs(tprov) + (r>0?r:0); if(t===0) return;
             document.getElementById(`bar-charges-m`).style.width = (tc/t*100)+'%'; 
             document.getElementById(`pct-charges-m`).innerText = Math.round(tc/t*100)+'%';
