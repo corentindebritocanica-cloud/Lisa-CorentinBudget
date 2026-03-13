@@ -26,7 +26,6 @@
             --bg-color: #000000; --card-bg: #1C1C1E; --text-main: #FFFFFF; --text-muted: #EBEBF599; --border: #38383A;
         }
 
-        /* VIOLET, VERT, ROSE (Utilisent la base dark-mode standard) */
         body.theme-purple { --primary: #AF52DE; --primary-light: #F2E6FA; }
         body.dark-mode.theme-purple { --primary-light: #3A1D4A; }
         body.theme-green { --primary: #34C759; --primary-light: #E6F8EA; }
@@ -36,7 +35,6 @@
         
         body.theme-christmas { --primary: #D42426; --primary-light: #F8D7DA; --success: #1E5631; --info: #D42426; }
 
-        /* THEME GLASSMORPHISM (S'adapte Jour/Nuit) */
         body.theme-glass {
             --primary: #007AFF; --primary-light: rgba(0, 122, 255, 0.1);
             --bg-color: #F5F5F7; --text-main: #1D1D1F; --text-muted: rgba(60, 60, 67, 0.6); --border: rgba(255, 255, 255, 0.6);
@@ -56,7 +54,6 @@
         body.theme-glass .item-row, body.theme-glass .cat-item, body.theme-glass .month-pill { background: transparent !important; border-bottom: 1px solid rgba(125, 125, 125, 0.1) !important; }
         body.theme-glass input, body.theme-glass select, body.theme-glass textarea, body.theme-glass .search-container input, body.theme-glass .btn-icon { background: rgba(125, 125, 125, 0.1) !important; border: 1px solid var(--border) !important; color: var(--text-main) !important; }
 
-        /* THEME CAFE LATTE */
         body.theme-latte {
             --primary: #C47335; --primary-light: #F2E4D8; --secondary: #A36029; --danger: #D9534F; --success: #6B8E23; --info: #8B5A2B;
             --bg-color: #F9F6F0; --card-bg: #EFEBE0; --text-main: #4A3B32; --text-muted: #8E7C6E; --border: #D8D0C5;
@@ -65,7 +62,6 @@
             --bg-color: #2E251F; --card-bg: #3D322A; --text-main: #EAE0D5; --text-muted: #A3968C; --border: #4D4036; --primary-light: #573A22;
         }
 
-        /* THEME JARDIN BOTANIQUE */
         body.theme-botanic {
             --primary: #3E7C59; --primary-light: #DDF2E4; --secondary: #F2A65A; --danger: #C0392B; --success: #27AE60; --info: #2980B9;
             --bg-color: #E8EFE9; --card-bg: #F4F9F5; --text-main: #2C4A3B; --text-muted: #6B8E7B; --border: #CDE0D5;
@@ -74,7 +70,6 @@
             --bg-color: #1A2620; --card-bg: #24362D; --text-main: #E2EDE7; --text-muted: #8FA89B; --border: #314A3E; --primary-light: #254734;
         }
 
-        /* THEME GATSBY / ART DECO */
         body.theme-gatsby {
             --primary: #D4AF37; --primary-light: rgba(212, 175, 55, 0.15); --secondary: #C5A028; --danger: #E74C3C; --success: #2ECC71; --info: #D4AF37;
             --bg-color: #FDFBF7; --card-bg: #FFFFFF; --text-main: #1A1F29; --text-muted: #7A8599; --border: #D4AF37;
@@ -85,7 +80,6 @@
         body.theme-gatsby .card, body.theme-gatsby .revenus-box { border: 1px solid var(--border); box-shadow: inset 0 0 0 1px rgba(212, 175, 55, 0.2); }
         body.theme-gatsby .btn-action { color: #12151C !important; font-weight: 800; }
         
-        /* THEME TERRACOTTA */
         body.theme-terracotta {
             --primary: #C0573E; --primary-light: #F6DFD7; --secondary: #D48C70; --danger: #A93226; --success: #527A61; --info: #B9770E;
             --bg-color: #F4E8E1; --card-bg: #FCF7F4; --text-main: #5C3A21; --text-muted: #A67D65; --border: #E8D0C3;
@@ -94,7 +88,6 @@
             --bg-color: #3B241A; --card-bg: #4A3024; --text-main: #F4E8E1; --text-muted: #C49F8B; --border: #5C3A2B; --primary-light: #5C2D22;
         }
 
-        /* THEME MOLESKINE */
         body.theme-moleskine {
             --primary: #B22222; --primary-light: #F4DCDA; --secondary: #E67E22; --danger: #C0392B; --success: #2980B9; --info: #8E44AD;
             --bg-color: #F1EAD7; --card-bg: #F8F3E6; --text-main: #1C2B4B; --text-muted: #5B6B8C; --border: #A2B5CD;
@@ -105,7 +98,6 @@
         }
         body.theme-moleskine .item-row { border-bottom: 1px dashed var(--border) !important; }
 
-        /* THEME AQUARELLE POUDREE */
         body.theme-watercolor {
             --primary: #FF8DA1; --primary-light: #FFE4E8; --secondary: #FFB347; --danger: #FF6961; --success: #77DD77; --info: #AEC6CF;
             --bg-color: #FAFAFA; --text-main: #555555; --text-muted: #999999; --border: rgba(0,0,0,0.05);
@@ -122,36 +114,17 @@
             background: var(--card-w) !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important; border: 1px solid var(--border) !important;
         }
 
-        /* STYLES DE BASE */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; transition: background-color 0.3s, color 0.3s, border-color 0.3s; }
         body { background-color: var(--bg-color); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
 
-        /* ÉCRAN DE CONNEXION */
-        #login-screen {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: var(--bg-color); z-index: 10000;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 20px; transition: opacity 0.5s;
-        }
-        .login-box {
-            background: var(--card-bg); padding: 40px 30px; border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 400px;
-            text-align: center;
-        }
+        #login-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--bg-color); z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; transition: opacity 0.5s; }
+        .login-box { background: var(--card-bg); padding: 40px 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
         .login-box h1 { margin-bottom: 5px; font-size: 1.8rem; }
         .login-box p { color: var(--text-muted); margin-bottom: 25px; font-size: 0.9rem; }
-        .login-box input {
-            width: 100%; padding: 15px; border-radius: 12px; border: 1px solid var(--border);
-            background: var(--bg-color); margin-bottom: 15px; font-size: 1rem; color: var(--text-main);
-        }
-        .login-btn {
-            width: 100%; padding: 15px; border-radius: 12px; border: none;
-            background: var(--primary); color: white; font-weight: bold; font-size: 1.1rem;
-            cursor: pointer; margin-top: 10px;
-        }
+        .login-box input { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg-color); margin-bottom: 15px; font-size: 1rem; color: var(--text-main); }
+        .login-btn { width: 100%; padding: 15px; border-radius: 12px; border: none; background: var(--primary); color: white; font-weight: bold; font-size: 1.1rem; cursor: pointer; margin-top: 10px; }
         #login-error { color: var(--danger); font-size: 0.9rem; margin-top: 15px; display: none; }
 
-        /* RESTE DE L'APP */
         .top-nav { background-color: var(--card-bg); border-bottom: 1px solid var(--border); padding: 15px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
         .nav-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .nav-header h2 { font-size: 1.4rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
@@ -519,7 +492,7 @@
 
             <div class="admin-section">
                 <h3>✨ Intelligence Artificielle</h3>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Collez ici votre clé API Google Gemini. Elle sera chiffrée et partagée sur vos appareils.</p>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Collez ici votre clé API Google Gemini pour activer l'assistant.</p>
                 <div style="display:flex; gap:10px;">
                     <input type="password" id="input-api-key" placeholder="AIzaSy..." style="flex:1; border:1px solid var(--border); padding:10px; border-radius:8px;">
                     <button class="btn-small bg-primary" style="color:white;" onclick="window.sauvegarderConfig()">Enregistrer</button>
@@ -571,7 +544,9 @@
                     <div class="color-circle" style="background:#AF52DE;" onclick="window.changerCouleur('theme-purple')" title="Violet"></div>
                     <div class="color-circle" style="background:#34C759;" onclick="window.changerCouleur('theme-green')" title="Vert"></div>
                     <div class="color-circle" style="background:#FF2D55;" onclick="window.changerCouleur('theme-rose')" title="Rose"></div>
+                    
                     <div class="color-circle" style="background: linear-gradient(135deg, rgba(125,125,125,0.4), rgba(125,125,125,0.1)); border: 1px solid rgba(125,125,125,0.5);" onclick="window.changerCouleur('theme-glass')" title="Glassmorphism (Adaptatif)"></div>
+                    
                     <div class="color-circle" style="background:#C47335;" onclick="window.changerCouleur('theme-latte')" title="Café Latte"></div>
                     <div class="color-circle" style="background:#3E7C59;" onclick="window.changerCouleur('theme-botanic')" title="Jardin Botanique"></div>
                     <div class="color-circle" style="background:#D4AF37;" onclick="window.changerCouleur('theme-gatsby')" title="Gatsby / Art Déco"></div>
@@ -599,7 +574,7 @@
             </div>
 
             <div style="text-align: right; color: var(--text-muted); font-size: 0.85rem; margin-top: 30px; font-weight: bold; padding-bottom: 20px;">
-                Version 2.2 (Assistant Gemini 🤖)
+                Version 2.2.1 (Debug Assistant 🕵️‍♂️)
             </div>
 
         </div>
@@ -633,7 +608,7 @@
         let categories = ["🏠 Loyer", "⚡ Électricité", "💧 Eau", "🛡️ Assurance", "🌐 Internet", "🛒 Courses", "🍽️ Restaurant", "🎬 Loisirs", "🏥 Santé", "✈️ Vacances", "🛠️ Travaux", "❓ Autre"];
         let corbeille = [];
         let objectifsProvisions = [{ nom: "Assurance", montant: 600 }];
-        let geminiApiKey = ""; // Stockage local de la clé
+        let geminiApiKey = ""; 
         
         let moisActifId = null;
         let termeRecherche = "";
@@ -677,7 +652,7 @@
             }
         }
 
-        // --- GESTION DES BULLES FLOTTANTES (DRAG & DROP GENERIQUE) ---
+        // --- GESTION DES BULLES FLOTTANTES ---
         function applyDrag(elId) {
             const bubble = document.getElementById(elId);
             let isDragging = false;
@@ -760,7 +735,7 @@
             }
         });
 
-        // --- ASSISTANT IA (GEMINI) ---
+        // --- ASSISTANT IA (GEMINI) AVEC DEBUG ---
         window.envoyerMessageIA = async function() {
             const input = document.getElementById('chat-input');
             const message = input.value.trim();
@@ -768,7 +743,6 @@
 
             const chatBox = document.getElementById('chat-messages');
             
-            // Afficher message utilisateur
             const userDiv = document.createElement('div');
             userDiv.className = 'chat-msg user';
             userDiv.innerText = message;
@@ -781,7 +755,6 @@
                 return;
             }
 
-            // Préparation du Contexte (Cerveau)
             const moisActuel = donnees.find(m => m.id === moisActifId);
             let contexte = "Tu es l'assistant financier virtuel de l'application 'Budget L&C' appartenant à Lisa et Corentin. Tu es amical, bienveillant, clair et tu utilises des emojis. ";
             if(moisActuel) {
@@ -790,9 +763,8 @@
                 const epargne = document.getElementById('total-epargne') ? document.getElementById('total-epargne').innerText : "Inconnu";
                 contexte += `\nCe mois-ci (${moisActuel.nom}): Leurs revenus sont de ${moisActuel.revenus}€. Le Reste à vivre actuel du compte commun est de ${rav}. Ils ont dépensé ${dep}€ et mis de côté ${epargne}€ d'épargne.`;
             }
-            contexte += `\nRéponds directement à leur question de manière naturelle, sans faire de longues introductions. Voici leur question : ${message}`;
+            contexte += `\nRéponds directement à leur question de manière naturelle. Voici leur question : ${message}`;
 
-            // Afficher statut chargement
             const loadDiv = document.createElement('div');
             loadDiv.className = 'chat-msg ai';
             loadDiv.id = 'chat-loading';
@@ -808,18 +780,22 @@
                     body: JSON.stringify({ contents: [{ parts: [{ text: contexte }] }] })
                 });
 
-                document.getElementById('chat-loading').remove(); // Retirer le loader
+                document.getElementById('chat-loading').remove();
 
                 if (response.ok) {
                     const data = await response.json();
                     const texteReponse = data.candidates[0].content.parts[0].text;
                     afficherReponseIA(texteReponse);
                 } else {
-                    afficherReponseIA("Désolé, il y a eu un problème de connexion avec l'IA. Vérifiez votre clé API.");
+                    // C'EST ICI LA NOUVEAUTÉ DEBUG : On lit l'erreur exacte envoyée par Google
+                    const errorData = await response.json();
+                    console.error(errorData);
+                    let errMsg = errorData.error ? errorData.error.message : "Erreur inconnue";
+                    afficherReponseIA(`⚠️ **Erreur API Google :**<br>${errMsg}<br><br><small><i>Vérifiez que la clé n'a pas de restriction sur Google Cloud et que votre compte est actif.</i></small>`);
                 }
             } catch (error) {
                 if(document.getElementById('chat-loading')) document.getElementById('chat-loading').remove();
-                afficherReponseIA("Erreur réseau. Vérifiez votre connexion.");
+                afficherReponseIA(`⚠️ **Erreur réseau locale :**<br>${error.message}`);
             }
         };
 
@@ -827,7 +803,6 @@
             const chatBox = document.getElementById('chat-messages');
             const aiDiv = document.createElement('div');
             aiDiv.className = 'chat-msg ai';
-            // Conversion basique du gras Markdown vers HTML pour un bel affichage
             let htmlTexte = texte.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             htmlTexte = htmlTexte.replace(/\n/g, '<br>');
             aiDiv.innerHTML = htmlTexte;
@@ -981,7 +956,6 @@
                     if(conf.corbeille) corbeille = conf.corbeille;
                     if(conf.objectifsProvisions) objectifsProvisions = conf.objectifsProvisions;
                     
-                    // Chargement de la clé API si elle existe
                     if(conf.geminiApiKey) {
                         geminiApiKey = conf.geminiApiKey;
                         document.getElementById('input-api-key').value = geminiApiKey;
@@ -999,7 +973,6 @@
             set(budgetRef, donnees).then(() => setTimeout(() => updateSyncDot('online'), 500)).catch(e => console.log("Erreur", e)); 
         }
         
-        // Sauvegarde de la configuration + Clé API
         window.sauvegarderConfig = function() { 
             const inputKey = document.getElementById('input-api-key').value.trim();
             geminiApiKey = inputKey;
