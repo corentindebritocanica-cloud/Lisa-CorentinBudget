@@ -26,6 +26,7 @@
             --bg-color: #000000; --card-bg: #1C1C1E; --text-main: #FFFFFF; --text-muted: #EBEBF599; --border: #38383A;
         }
 
+        /* VIOLET, VERT, ROSE (Utilisent la base dark-mode standard) */
         body.theme-purple { --primary: #AF52DE; --primary-light: #F2E6FA; }
         body.dark-mode.theme-purple { --primary-light: #3A1D4A; }
         body.theme-green { --primary: #34C759; --primary-light: #E6F8EA; }
@@ -35,6 +36,7 @@
         
         body.theme-christmas { --primary: #D42426; --primary-light: #F8D7DA; --success: #1E5631; --info: #D42426; }
 
+        /* THEME GLASSMORPHISM (S'adapte Jour/Nuit) */
         body.theme-glass {
             --primary: #007AFF; --primary-light: rgba(0, 122, 255, 0.1);
             --bg-color: #F5F5F7; --text-main: #1D1D1F; --text-muted: rgba(60, 60, 67, 0.6); --border: rgba(255, 255, 255, 0.6);
@@ -54,6 +56,7 @@
         body.theme-glass .item-row, body.theme-glass .cat-item, body.theme-glass .month-pill { background: transparent !important; border-bottom: 1px solid rgba(125, 125, 125, 0.1) !important; }
         body.theme-glass input, body.theme-glass select, body.theme-glass textarea, body.theme-glass .search-container input, body.theme-glass .btn-icon { background: rgba(125, 125, 125, 0.1) !important; border: 1px solid var(--border) !important; color: var(--text-main) !important; }
 
+        /* THEME CAFE LATTE */
         body.theme-latte {
             --primary: #C47335; --primary-light: #F2E4D8; --secondary: #A36029; --danger: #D9534F; --success: #6B8E23; --info: #8B5A2B;
             --bg-color: #F9F6F0; --card-bg: #EFEBE0; --text-main: #4A3B32; --text-muted: #8E7C6E; --border: #D8D0C5;
@@ -62,6 +65,7 @@
             --bg-color: #2E251F; --card-bg: #3D322A; --text-main: #EAE0D5; --text-muted: #A3968C; --border: #4D4036; --primary-light: #573A22;
         }
 
+        /* THEME JARDIN BOTANIQUE */
         body.theme-botanic {
             --primary: #3E7C59; --primary-light: #DDF2E4; --secondary: #F2A65A; --danger: #C0392B; --success: #27AE60; --info: #2980B9;
             --bg-color: #E8EFE9; --card-bg: #F4F9F5; --text-main: #2C4A3B; --text-muted: #6B8E7B; --border: #CDE0D5;
@@ -70,6 +74,7 @@
             --bg-color: #1A2620; --card-bg: #24362D; --text-main: #E2EDE7; --text-muted: #8FA89B; --border: #314A3E; --primary-light: #254734;
         }
 
+        /* THEME GATSBY / ART DECO */
         body.theme-gatsby {
             --primary: #D4AF37; --primary-light: rgba(212, 175, 55, 0.15); --secondary: #C5A028; --danger: #E74C3C; --success: #2ECC71; --info: #D4AF37;
             --bg-color: #FDFBF7; --card-bg: #FFFFFF; --text-main: #1A1F29; --text-muted: #7A8599; --border: #D4AF37;
@@ -80,6 +85,7 @@
         body.theme-gatsby .card, body.theme-gatsby .revenus-box { border: 1px solid var(--border); box-shadow: inset 0 0 0 1px rgba(212, 175, 55, 0.2); }
         body.theme-gatsby .btn-action { color: #12151C !important; font-weight: 800; }
         
+        /* THEME TERRACOTTA */
         body.theme-terracotta {
             --primary: #C0573E; --primary-light: #F6DFD7; --secondary: #D48C70; --danger: #A93226; --success: #527A61; --info: #B9770E;
             --bg-color: #F4E8E1; --card-bg: #FCF7F4; --text-main: #5C3A21; --text-muted: #A67D65; --border: #E8D0C3;
@@ -88,6 +94,7 @@
             --bg-color: #3B241A; --card-bg: #4A3024; --text-main: #F4E8E1; --text-muted: #C49F8B; --border: #5C3A2B; --primary-light: #5C2D22;
         }
 
+        /* THEME MOLESKINE */
         body.theme-moleskine {
             --primary: #B22222; --primary-light: #F4DCDA; --secondary: #E67E22; --danger: #C0392B; --success: #2980B9; --info: #8E44AD;
             --bg-color: #F1EAD7; --card-bg: #F8F3E6; --text-main: #1C2B4B; --text-muted: #5B6B8C; --border: #A2B5CD;
@@ -98,6 +105,7 @@
         }
         body.theme-moleskine .item-row { border-bottom: 1px dashed var(--border) !important; }
 
+        /* THEME AQUARELLE POUDREE */
         body.theme-watercolor {
             --primary: #FF8DA1; --primary-light: #FFE4E8; --secondary: #FFB347; --danger: #FF6961; --success: #77DD77; --info: #AEC6CF;
             --bg-color: #FAFAFA; --text-main: #555555; --text-muted: #999999; --border: rgba(0,0,0,0.05);
@@ -114,17 +122,36 @@
             background: var(--card-w) !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important; border: 1px solid var(--border) !important;
         }
 
+        /* STYLES DE BASE */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; transition: background-color 0.3s, color 0.3s, border-color 0.3s; }
         body { background-color: var(--bg-color); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
 
-        #login-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--bg-color); z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; transition: opacity 0.5s; }
-        .login-box { background: var(--card-bg); padding: 40px 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
+        /* ÉCRAN DE CONNEXION */
+        #login-screen {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: var(--bg-color); z-index: 10000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 20px; transition: opacity 0.5s;
+        }
+        .login-box {
+            background: var(--card-bg); padding: 40px 30px; border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 400px;
+            text-align: center;
+        }
         .login-box h1 { margin-bottom: 5px; font-size: 1.8rem; }
         .login-box p { color: var(--text-muted); margin-bottom: 25px; font-size: 0.9rem; }
-        .login-box input { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg-color); margin-bottom: 15px; font-size: 1rem; color: var(--text-main); }
-        .login-btn { width: 100%; padding: 15px; border-radius: 12px; border: none; background: var(--primary); color: white; font-weight: bold; font-size: 1.1rem; cursor: pointer; margin-top: 10px; }
+        .login-box input {
+            width: 100%; padding: 15px; border-radius: 12px; border: 1px solid var(--border);
+            background: var(--bg-color); margin-bottom: 15px; font-size: 1rem; color: var(--text-main);
+        }
+        .login-btn {
+            width: 100%; padding: 15px; border-radius: 12px; border: none;
+            background: var(--primary); color: white; font-weight: bold; font-size: 1.1rem;
+            cursor: pointer; margin-top: 10px;
+        }
         #login-error { color: var(--danger); font-size: 0.9rem; margin-top: 15px; display: none; }
 
+        /* RESTE DE L'APP */
         .top-nav { background-color: var(--card-bg); border-bottom: 1px solid var(--border); padding: 15px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
         .nav-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .nav-header h2 { font-size: 1.4rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
@@ -574,7 +601,7 @@
             </div>
 
             <div style="text-align: right; color: var(--text-muted); font-size: 0.85rem; margin-top: 30px; font-weight: bold; padding-bottom: 20px;">
-                Version 2.2.1 (Debug Assistant 🕵️‍♂️)
+                Version 2.2.2 (Correctif Modèle IA)
             </div>
 
         </div>
@@ -773,7 +800,8 @@
             chatBox.scrollTop = chatBox.scrollHeight;
 
             try {
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`;
+                // CHANGEMENT ICI : gemini-pro est utilisé pour garantir la compatibilité
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${geminiApiKey}`;
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -787,7 +815,6 @@
                     const texteReponse = data.candidates[0].content.parts[0].text;
                     afficherReponseIA(texteReponse);
                 } else {
-                    // C'EST ICI LA NOUVEAUTÉ DEBUG : On lit l'erreur exacte envoyée par Google
                     const errorData = await response.json();
                     console.error(errorData);
                     let errMsg = errorData.error ? errorData.error.message : "Erreur inconnue";
