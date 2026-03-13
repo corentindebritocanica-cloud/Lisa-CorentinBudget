@@ -26,7 +26,7 @@
             --bg-color: #000000; --card-bg: #1C1C1E; --text-main: #FFFFFF; --text-muted: #EBEBF599; --border: #38383A;
         }
 
-        /* VIOLET, VERT, ROSE (Utilisent la base dark-mode standard) */
+        /* VIOLET, VERT, ROSE */
         body.theme-purple { --primary: #AF52DE; --primary-light: #F2E6FA; }
         body.dark-mode.theme-purple { --primary-light: #3A1D4A; }
         body.theme-green { --primary: #34C759; --primary-light: #E6F8EA; }
@@ -36,7 +36,7 @@
         
         body.theme-christmas { --primary: #D42426; --primary-light: #F8D7DA; --success: #1E5631; --info: #D42426; }
 
-        /* THEME GLASSMORPHISM (S'adapte Jour/Nuit) */
+        /* THEME GLASSMORPHISM */
         body.theme-glass {
             --primary: #007AFF; --primary-light: rgba(0, 122, 255, 0.1);
             --bg-color: #F5F5F7; --text-main: #1D1D1F; --text-muted: rgba(60, 60, 67, 0.6); --border: rgba(255, 255, 255, 0.6);
@@ -255,7 +255,7 @@
         .color-circle { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s; }
         .color-circle.active { border-color: var(--text-main); transform: scale(1.15); }
 
-        /* --- BULLES FLOTTANTES --- */
+        /* --- BULLE CALCULATRICE --- */
         .floating-bubble {
             position: fixed; width: 60px; height: 60px; border-radius: 50%; 
             display: flex; align-items: center; justify-content: center; font-size: 1.8rem; 
@@ -264,7 +264,6 @@
         .floating-bubble:active { cursor: grabbing; transform: scale(0.95); }
         
         #calc-bubble { bottom: 30px; right: 20px; background: linear-gradient(135deg, var(--primary), var(--info)); color: white; }
-        #ai-bubble { bottom: 105px; right: 20px; background: linear-gradient(135deg, #10a37f, #0a84ff); color: white; font-size: 1.5rem; }
 
         .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px; }
         .calc-btn { background: var(--bg-color); border: 1px solid var(--border); border-radius: 12px; padding: 15px 0; font-size: 1.2rem; font-weight: bold; cursor: pointer; color: var(--text-main); }
@@ -273,16 +272,6 @@
         .calc-btn.eq { background: var(--primary); color: white; border: none; }
         .calc-btn.c { background: #FFE5E5; color: var(--danger); border: none; }
         body.dark-mode .calc-btn.c, body.theme-glass .calc-btn.c { background: rgba(255, 59, 48, 0.2); }
-
-        /* --- CHAT IA --- */
-        .chat-container { display: flex; flex-direction: column; height: 60vh; max-height: 500px; text-align: left; }
-        .chat-messages { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding: 10px 5px; margin-bottom: 15px; border-bottom: 1px solid var(--border); }
-        .chat-msg { padding: 12px 15px; border-radius: 16px; font-size: 0.95rem; line-height: 1.4; max-width: 85%; word-wrap: break-word; }
-        .chat-msg.user { background: var(--primary); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
-        .chat-msg.ai { background: var(--bg-color); border: 1px solid var(--border); color: var(--text-main); align-self: flex-start; border-bottom-left-radius: 4px; }
-        .chat-input-area { display: flex; gap: 10px; }
-        .chat-input-area input { flex: 1; padding: 12px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg-color); color: var(--text-main); font-size: 1rem; }
-        .chat-input-area button { background: var(--primary); color: white; border: none; border-radius: 12px; padding: 0 20px; font-weight: bold; cursor: pointer; }
 
         @media (min-width: 768px) { body { flex-direction: row; } .top-nav { width: 280px; height: 100vh; position: sticky; display: flex; flex-direction: column; padding: 20px; overflow-y: auto; } }
     </style>
@@ -301,7 +290,6 @@
     </div>
 
     <div id="calc-bubble" class="floating-bubble" title="Calculatrice">🧮</div>
-    <div id="ai-bubble" class="floating-bubble" title="Assistant IA">✨</div>
 
     <div id="calc-popup" class="overlay-popup hidden">
         <div class="popup-box" style="width: 320px; padding: 25px 20px;">
@@ -336,25 +324,6 @@
                 <button class="calc-btn" onclick="window.calcInput('0')" style="grid-column: span 2;">0</button>
                 <button class="calc-btn" onclick="window.calcInput('.')">.</button>
                 <button class="calc-btn eq" onclick="window.calcResult()">=</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="ai-popup" class="overlay-popup hidden">
-        <div class="popup-box" style="width: 90%; max-width: 450px; padding: 25px 20px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                <h3 style="margin:0; font-size:1.2rem; display:flex; align-items:center; gap:8px;">✨ Assistant Budget</h3>
-                <button style="border:none; background:none; font-size:1.5rem; cursor:pointer; color:var(--danger);" onclick="document.getElementById('ai-popup').classList.add('hidden')">✕</button>
-            </div>
-            
-            <div class="chat-container">
-                <div class="chat-messages" id="chat-messages">
-                    <div class="chat-msg ai">Bonjour ! Je suis votre assistant financier propulsé par Gemini 3.1 Pro. Posez-moi vos questions sur le mois en cours ! 💰</div>
-                </div>
-                <div class="chat-input-area">
-                    <input type="text" id="chat-input" placeholder="Écrivez votre message..." onkeypress="if(event.key === 'Enter') window.envoyerMessageIA()">
-                    <button onclick="window.envoyerMessageIA()">Envoyer</button>
-                </div>
             </div>
         </div>
     </div>
@@ -518,23 +487,6 @@
             </div>
 
             <div class="admin-section">
-                <h3>✨ Intelligence Artificielle</h3>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Collez ici votre clé API Google Gemini pour activer l'assistant.</p>
-                
-                <input type="password" id="input-api-key" placeholder="AIzaSy..." style="width:100%; border:1px solid var(--border); padding:10px; border-radius:8px; margin-bottom: 10px;">
-                
-                <div style="display:flex; gap:10px; align-items: center;">
-                    <select id="input-ai-model" style="flex:1; border:1px solid var(--border); padding:10px; border-radius:8px; font-size: 0.9rem;">
-                        <option value="gemini-3.1-pro">Modèle : 3.1 Pro (Défaut - 2026)</option>
-                        <option value="gemini-2.0-flash">Modèle : 2.0 Flash</option>
-                        <option value="gemini-1.5-pro">Modèle : 1.5 Pro</option>
-                        <option value="gemini-1.5-flash">Modèle : 1.5 Flash</option>
-                    </select>
-                    <button class="btn-small bg-primary" style="color:white; padding: 10px 20px;" onclick="window.sauvegarderConfig()">Enregistrer</button>
-                </div>
-            </div>
-
-            <div class="admin-section">
                 <h3>🔄 Outils Système</h3>
                 <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Forcer la mise à jour de l'application (vide le cache de la page).</p>
                 <button class="btn-action" style="background:var(--secondary);" onclick="window.location.reload(true)">Forcer le rechargement</button>
@@ -609,7 +561,7 @@
             </div>
 
             <div style="text-align: right; color: var(--text-muted); font-size: 0.85rem; margin-top: 30px; font-weight: bold; padding-bottom: 20px;">
-                Version 2.4 (Gemini 3.1 Pro Update)
+                Version 2.5 (Rollback IA - Sans Gemini)
             </div>
 
         </div>
@@ -643,8 +595,6 @@
         let categories = ["🏠 Loyer", "⚡ Électricité", "💧 Eau", "🛡️ Assurance", "🌐 Internet", "🛒 Courses", "🍽️ Restaurant", "🎬 Loisirs", "🏥 Santé", "✈️ Vacances", "🛠️ Travaux", "❓ Autre"];
         let corbeille = [];
         let objectifsProvisions = [{ nom: "Assurance", montant: 600 }];
-        let geminiApiKey = ""; 
-        let geminiModelName = "gemini-3.1-pro"; // DÉFAUT MIS À JOUR EN 3.1 PRO !
         
         let moisActifId = null;
         let termeRecherche = "";
@@ -691,6 +641,7 @@
         // --- GESTION DES BULLES FLOTTANTES ---
         function applyDrag(elId) {
             const bubble = document.getElementById(elId);
+            if (!bubble) return;
             let isDragging = false;
             let startX, startY, initialX, initialY;
 
@@ -727,7 +678,6 @@
                 document.removeEventListener('touchmove', dragMove); document.removeEventListener('touchend', dragEnd);
                 if (!isDragging) {
                     if(elId === 'calc-bubble') document.getElementById('calc-popup').classList.remove('hidden');
-                    if(elId === 'ai-bubble') document.getElementById('ai-popup').classList.remove('hidden');
                 }
             }
 
@@ -736,7 +686,6 @@
         }
 
         applyDrag('calc-bubble');
-        applyDrag('ai-bubble');
 
         // --- CALCULATRICE LOGIC ---
         window.fermerCalculatrice = function() { document.getElementById('calc-popup').classList.add('hidden'); };
@@ -770,80 +719,6 @@
                 if (key === 'Escape') window.fermerCalculatrice();
             }
         });
-
-        // --- ASSISTANT IA (GEMINI) ---
-        window.envoyerMessageIA = async function() {
-            const input = document.getElementById('chat-input');
-            const message = input.value.trim();
-            if (!message) return;
-
-            const chatBox = document.getElementById('chat-messages');
-            
-            const userDiv = document.createElement('div');
-            userDiv.className = 'chat-msg user';
-            userDiv.innerText = message;
-            chatBox.appendChild(userDiv);
-            input.value = '';
-            chatBox.scrollTop = chatBox.scrollHeight;
-
-            if (!geminiApiKey) {
-                afficherReponseIA("⚠️ Veuillez coller votre clé API Gemini dans l'onglet Admin (Paramètres) pour m'activer !");
-                return;
-            }
-
-            const moisActuel = donnees.find(m => m.id === moisActifId);
-            let contexte = "Tu es l'assistant financier virtuel de l'application 'Budget L&C' appartenant à Lisa et Corentin. Tu es amical, bienveillant, clair et tu utilises des emojis. ";
-            if(moisActuel) {
-                const rav = document.getElementById('reste-a-vivre') ? document.getElementById('reste-a-vivre').innerText : "Inconnu";
-                const dep = document.getElementById('total-depenses') ? document.getElementById('total-depenses').innerText : "Inconnu";
-                const epargne = document.getElementById('total-epargne') ? document.getElementById('total-epargne').innerText : "Inconnu";
-                contexte += `\nCe mois-ci (${moisActuel.nom}): Leurs revenus sont de ${moisActuel.revenus}€. Le Reste à vivre actuel du compte commun est de ${rav}. Ils ont dépensé ${dep}€ et mis de côté ${epargne}€ d'épargne.`;
-            }
-            contexte += `\nRéponds directement à leur question de manière naturelle. Voici leur question : ${message}`;
-
-            const loadDiv = document.createElement('div');
-            loadDiv.className = 'chat-msg ai';
-            loadDiv.id = 'chat-loading';
-            loadDiv.innerText = "Je réfléchis...";
-            chatBox.appendChild(loadDiv);
-            chatBox.scrollTop = chatBox.scrollHeight;
-
-            try {
-                // Utilisation de la version d'API v1beta compatible avec les modèles récents comme le 3.1 Pro
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/${geminiModelName}:generateContent?key=${geminiApiKey}`;
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: contexte }] }] })
-                });
-
-                document.getElementById('chat-loading').remove();
-
-                if (response.ok) {
-                    const data = await response.json();
-                    const texteReponse = data.candidates[0].content.parts[0].text;
-                    afficherReponseIA(texteReponse);
-                } else {
-                    const errorData = await response.json();
-                    let errMsg = errorData.error ? errorData.error.message : "Erreur inconnue";
-                    afficherReponseIA(`⚠️ **Modèle bloqué (${geminiModelName}) :**<br>${errMsg}<br><br><small><i>Astuce : Allez dans l'onglet Admin et sélectionnez un autre modèle dans la liste.</i></small>`);
-                }
-            } catch (error) {
-                if(document.getElementById('chat-loading')) document.getElementById('chat-loading').remove();
-                afficherReponseIA(`⚠️ **Erreur réseau locale :**<br>${error.message}`);
-            }
-        };
-
-        function afficherReponseIA(texte) {
-            const chatBox = document.getElementById('chat-messages');
-            const aiDiv = document.createElement('div');
-            aiDiv.className = 'chat-msg ai';
-            let htmlTexte = texte.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            htmlTexte = htmlTexte.replace(/\n/g, '<br>');
-            aiDiv.innerHTML = htmlTexte;
-            chatBox.appendChild(aiDiv);
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
 
         // --- THEME & NOEL ---
         window.toggleDarkMode = function() {
@@ -990,16 +865,6 @@
                     if(conf.categories) categories = conf.categories;
                     if(conf.corbeille) corbeille = conf.corbeille;
                     if(conf.objectifsProvisions) objectifsProvisions = conf.objectifsProvisions;
-                    
-                    if(conf.geminiApiKey) {
-                        geminiApiKey = conf.geminiApiKey;
-                        document.getElementById('input-api-key').value = geminiApiKey;
-                    }
-                    if(conf.geminiModelName) {
-                        geminiModelName = conf.geminiModelName;
-                        const selectModel = document.getElementById('input-ai-model');
-                        if(selectModel) selectModel.value = geminiModelName;
-                    }
 
                     if(!document.getElementById('vue-admin').classList.contains('hidden')) window.rendreAdmin();
                     if(!document.getElementById('vue-annuelle').classList.contains('hidden')) window.rendreVueAnnuelle();
@@ -1014,12 +879,8 @@
         }
         
         window.sauvegarderConfig = function() { 
-            const inputKey = document.getElementById('input-api-key').value.trim();
-            const inputModel = document.getElementById('input-ai-model').value;
-            geminiApiKey = inputKey;
-            geminiModelName = inputModel;
-            set(configRef, { categories, corbeille, objectifsProvisions, geminiApiKey, geminiModelName }); 
-            if(!document.getElementById('vue-admin').classList.contains('hidden')) alert("Paramètres IA enregistrés avec succès !");
+            set(configRef, { categories, corbeille, objectifsProvisions }); 
+            if(!document.getElementById('vue-admin').classList.contains('hidden')) alert("Paramètres enregistrés avec succès !");
         }
 
         window.initDefaut = function() {
