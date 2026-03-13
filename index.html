@@ -26,90 +26,100 @@
             --bg-color: #000000; --card-bg: #1C1C1E; --text-main: #FFFFFF; --text-muted: #EBEBF599; --border: #38383A;
         }
 
+        /* VIOLET, VERT, ROSE (Utilisent la base dark-mode standard) */
         body.theme-purple { --primary: #AF52DE; --primary-light: #F2E6FA; }
+        body.dark-mode.theme-purple { --primary-light: #3A1D4A; }
         body.theme-green { --primary: #34C759; --primary-light: #E6F8EA; }
+        body.dark-mode.theme-green { --primary-light: #1A3B24; }
         body.theme-rose { --primary: #FF2D55; --primary-light: #FFE5EA; }
+        body.dark-mode.theme-rose { --primary-light: #4A1A24; }
+        
         body.theme-christmas { --primary: #D42426; --primary-light: #F8D7DA; --success: #1E5631; --info: #D42426; }
 
-        /* THEME GLASSMORPHISM IOS 26 (DARK) */
+        /* THEME GLASSMORPHISM (S'adapte Jour/Nuit) */
         body.theme-glass {
-            color-scheme: dark;
-            --primary: #0a84ff; --primary-light: rgba(10, 132, 255, 0.2);
-            --bg-color: #000000; --text-main: #ffffff; --text-muted: rgba(235, 235, 245, 0.6); --border: rgba(255, 255, 255, 0.1);
-        }
-        body.theme-glass::before {
-            content: ''; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: radial-gradient(circle at 15% 50%, rgba(70, 20, 150, 0.35), transparent 50%), radial-gradient(circle at 85% 30%, rgba(10, 100, 200, 0.35), transparent 50%);
-            z-index: -1; pointer-events: none;
-        }
-        body.theme-glass .card, body.theme-glass .revenus-box, body.theme-glass .admin-section, body.theme-glass .top-nav, body.theme-glass .popup-box {
-            background: rgba(30, 30, 35, 0.5) !important; backdrop-filter: blur(25px) saturate(200%); -webkit-backdrop-filter: blur(25px) saturate(200%); border: 1px solid rgba(255, 255, 255, 0.1) !important; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3) !important;
-        }
-        body.theme-glass .item-row, body.theme-glass .cat-item, body.theme-glass .month-pill { background: rgba(255, 255, 255, 0.03) !important; border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important; }
-        body.theme-glass input, body.theme-glass select, body.theme-glass textarea, body.theme-glass .search-container input { background: rgba(255, 255, 255, 0.05) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; color: #fff !important; }
-        body.theme-glass .btn-icon { background: rgba(255, 255, 255, 0.05) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; }
-
-        /* THEME GLASSMORPHISM LIGHT */
-        body.theme-glass-light {
             --primary: #007AFF; --primary-light: rgba(0, 122, 255, 0.1);
             --bg-color: #F5F5F7; --text-main: #1D1D1F; --text-muted: rgba(60, 60, 67, 0.6); --border: rgba(255, 255, 255, 0.6);
+            --glass-bg: radial-gradient(circle at 20% 30%, rgba(255, 182, 193, 0.4), transparent 50%), radial-gradient(circle at 80% 70%, rgba(173, 216, 230, 0.4), transparent 50%);
+            --card-glass: rgba(255, 255, 255, 0.6); --glass-blur: blur(30px) saturate(150%); --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
         }
-        body.theme-glass-light::before {
-            content: ''; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: radial-gradient(circle at 20% 30%, rgba(255, 182, 193, 0.4), transparent 50%), radial-gradient(circle at 80% 70%, rgba(173, 216, 230, 0.4), transparent 50%);
-            z-index: -1; pointer-events: none;
+        body.dark-mode.theme-glass {
+            --primary: #0a84ff; --primary-light: rgba(10, 132, 255, 0.2);
+            --bg-color: #000000; --text-main: #ffffff; --text-muted: rgba(235, 235, 245, 0.6); --border: rgba(255, 255, 255, 0.1);
+            --glass-bg: radial-gradient(circle at 15% 50%, rgba(70, 20, 150, 0.35), transparent 50%), radial-gradient(circle at 85% 30%, rgba(10, 100, 200, 0.35), transparent 50%);
+            --card-glass: rgba(30, 30, 35, 0.5); --glass-blur: blur(25px) saturate(200%); --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
         }
-        body.theme-glass-light .card, body.theme-glass-light .revenus-box, body.theme-glass-light .admin-section, body.theme-glass-light .top-nav, body.theme-glass-light .popup-box {
-            background: rgba(255, 255, 255, 0.6) !important; backdrop-filter: blur(30px) saturate(150%); -webkit-backdrop-filter: blur(30px) saturate(150%); border: 1px solid rgba(255, 255, 255, 0.8) !important; box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07) !important;
+        body.theme-glass::before { content: ''; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--glass-bg); z-index: -1; pointer-events: none; }
+        body.theme-glass .card, body.theme-glass .revenus-box, body.theme-glass .admin-section, body.theme-glass .top-nav, body.theme-glass .popup-box {
+            background: var(--card-glass) !important; backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border: 1px solid var(--border) !important; box-shadow: var(--glass-shadow) !important;
         }
-        body.theme-glass-light input, body.theme-glass-light select, body.theme-glass-light textarea { background: rgba(255, 255, 255, 0.5) !important; border: 1px solid rgba(255, 255, 255, 0.8) !important; }
+        body.theme-glass .item-row, body.theme-glass .cat-item, body.theme-glass .month-pill { background: transparent !important; border-bottom: 1px solid rgba(125, 125, 125, 0.1) !important; }
+        body.theme-glass input, body.theme-glass select, body.theme-glass textarea, body.theme-glass .search-container input, body.theme-glass .btn-icon { background: rgba(125, 125, 125, 0.1) !important; border: 1px solid var(--border) !important; color: var(--text-main) !important; }
 
-        /* THEME CAFE LATTE */
+        /* THEME CAFE LATTE (S'adapte Jour/Nuit) */
         body.theme-latte {
             --primary: #C47335; --primary-light: #F2E4D8; --secondary: #A36029; --danger: #D9534F; --success: #6B8E23; --info: #8B5A2B;
             --bg-color: #F9F6F0; --card-bg: #EFEBE0; --text-main: #4A3B32; --text-muted: #8E7C6E; --border: #D8D0C5;
         }
+        body.dark-mode.theme-latte {
+            --bg-color: #2E251F; --card-bg: #3D322A; --text-main: #EAE0D5; --text-muted: #A3968C; --border: #4D4036; --primary-light: #573A22;
+        }
 
-        /* THEME JARDIN BOTANIQUE */
+        /* THEME JARDIN BOTANIQUE (S'adapte Jour/Nuit) */
         body.theme-botanic {
             --primary: #3E7C59; --primary-light: #DDF2E4; --secondary: #F2A65A; --danger: #C0392B; --success: #27AE60; --info: #2980B9;
             --bg-color: #E8EFE9; --card-bg: #F4F9F5; --text-main: #2C4A3B; --text-muted: #6B8E7B; --border: #CDE0D5;
         }
+        body.dark-mode.theme-botanic {
+            --bg-color: #1A2620; --card-bg: #24362D; --text-main: #E2EDE7; --text-muted: #8FA89B; --border: #314A3E; --primary-light: #254734;
+        }
 
-        /* THEME GATSBY / ART DECO */
+        /* THEME GATSBY / ART DECO (S'adapte Jour/Nuit) */
         body.theme-gatsby {
-            color-scheme: dark;
             --primary: #D4AF37; --primary-light: rgba(212, 175, 55, 0.15); --secondary: #C5A028; --danger: #E74C3C; --success: #2ECC71; --info: #D4AF37;
-            --bg-color: #12151C; --card-bg: #1A1F29; --text-main: #E5C37E; --text-muted: #A38B57; --border: #D4AF37;
+            --bg-color: #FDFBF7; --card-bg: #FFFFFF; --text-main: #1A1F29; --text-muted: #7A8599; --border: #D4AF37;
+        }
+        body.dark-mode.theme-gatsby {
+            --bg-color: #12151C; --card-bg: #1A1F29; --text-main: #E5C37E; --text-muted: #A38B57;
         }
         body.theme-gatsby .card, body.theme-gatsby .revenus-box { border: 1px solid var(--border); box-shadow: inset 0 0 0 1px rgba(212, 175, 55, 0.2); }
         body.theme-gatsby .btn-action { color: #12151C !important; font-weight: 800; }
         
-        /* THEME TERRACOTTA */
+        /* THEME TERRACOTTA (S'adapte Jour/Nuit) */
         body.theme-terracotta {
             --primary: #C0573E; --primary-light: #F6DFD7; --secondary: #D48C70; --danger: #A93226; --success: #527A61; --info: #B9770E;
             --bg-color: #F4E8E1; --card-bg: #FCF7F4; --text-main: #5C3A21; --text-muted: #A67D65; --border: #E8D0C3;
         }
+        body.dark-mode.theme-terracotta {
+            --bg-color: #3B241A; --card-bg: #4A3024; --text-main: #F4E8E1; --text-muted: #C49F8B; --border: #5C3A2B; --primary-light: #5C2D22;
+        }
 
-        /* THEME MOLESKINE / CARNET */
+        /* THEME MOLESKINE (S'adapte Jour/Nuit) */
         body.theme-moleskine {
             --primary: #B22222; --primary-light: #F4DCDA; --secondary: #E67E22; --danger: #C0392B; --success: #2980B9; --info: #8E44AD;
-            --bg-color: #F1EAD7; --card-bg: #F8F3E6; --text-main: #1C2B4B; /* Encre bleue */ --text-muted: #5B6B8C; --border: #A2B5CD;
+            --bg-color: #F1EAD7; --card-bg: #F8F3E6; --text-main: #1C2B4B; --text-muted: #5B6B8C; --border: #A2B5CD;
+        }
+        body.dark-mode.theme-moleskine {
+            --bg-color: #21252B; --card-bg: #2C313C; --text-main: #ABB2BF; --text-muted: #7F848E; --border: #4B5363;
+            --primary: #E06C75; --primary-light: #3E2B2E; --success: #98C379; --info: #C678DD;
         }
         body.theme-moleskine .item-row { border-bottom: 1px dashed var(--border) !important; }
 
-        /* THEME AQUARELLE POUDREE */
+        /* THEME AQUARELLE POUDREE (S'adapte Jour/Nuit) */
         body.theme-watercolor {
             --primary: #FF8DA1; --primary-light: #FFE4E8; --secondary: #FFB347; --danger: #FF6961; --success: #77DD77; --info: #AEC6CF;
-            --bg-color: #FAFAFA; --text-main: #555555; --text-muted: #999999; --border: rgba(255, 255, 255, 0.5);
+            --bg-color: #FAFAFA; --text-main: #555555; --text-muted: #999999; --border: rgba(0,0,0,0.05);
+            --water-bg: radial-gradient(circle at 20% 20%, rgba(255,182,193,0.3), transparent 50%), radial-gradient(circle at 80% 80%, rgba(173,216,230,0.3), transparent 50%), radial-gradient(circle at 50% 50%, rgba(255,253,208,0.3), transparent 50%), #FAFAFA;
+            --card-w: rgba(255, 255, 255, 0.6);
         }
-        body.theme-watercolor::before {
-            content: ''; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: radial-gradient(circle at 20% 20%, rgba(255,182,193,0.3), transparent 50%), radial-gradient(circle at 80% 80%, rgba(173,216,230,0.3), transparent 50%), radial-gradient(circle at 50% 50%, rgba(255,253,208,0.3), transparent 50%), #FAFAFA;
-            z-index: -1; pointer-events: none;
+        body.dark-mode.theme-watercolor {
+            --bg-color: #121212; --text-main: #E0E0E0; --text-muted: #888888; --border: rgba(255, 255, 255, 0.05); --primary-light: rgba(255,141,161,0.2);
+            --water-bg: radial-gradient(circle at 20% 20%, rgba(255,141,161,0.15), transparent 50%), radial-gradient(circle at 80% 80%, rgba(174,198,207,0.15), transparent 50%), radial-gradient(circle at 50% 50%, rgba(255,179,71,0.1), transparent 50%), #121212;
+            --card-w: rgba(30, 30, 30, 0.7);
         }
+        body.theme-watercolor::before { content: ''; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--water-bg); z-index: -1; pointer-events: none; }
         body.theme-watercolor .card, body.theme-watercolor .revenus-box, body.theme-watercolor .admin-section, body.theme-watercolor .top-nav {
-            background: rgba(255, 255, 255, 0.6) !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.8) !important; box-shadow: 0 4px 15px rgba(0,0,0,0.02) !important;
+            background: var(--card-w) !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important; border: 1px solid var(--border) !important;
         }
 
         /* STYLES DE BASE */
@@ -176,7 +186,7 @@
         .header-actions { display: flex; gap: 10px; align-items: center; flex-shrink: 0; }
         .btn-icon { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; flex-shrink:0; }
         .btn-icon.danger { background: #FFE5E5; color: var(--danger); border:none; }
-        body.dark-mode .btn-icon.danger { background: #4A1515; }
+        body.dark-mode .btn-icon.danger, body.theme-glass .btn-icon.danger { background: rgba(255, 59, 48, 0.2); }
 
         .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--success); display: inline-block; margin-left: 8px; transition: 0.3s; flex-shrink: 0;}
         .status-dot.offline { background-color: var(--danger); }
@@ -518,7 +528,7 @@
 
             <div class="admin-section">
                 <h3>🎨 Garde-robe (Thèmes)</h3>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Changez l'ambiance de l'application selon vos envies.</p>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Changez l'ambiance. <strong>Chaque thème s'adapte au Soleil ☀️ et à la Lune 🌙 !</strong></p>
                 
                 <div class="color-selector">
                     <div class="color-circle" style="background:#007AFF;" onclick="window.changerCouleur('default')" title="Classique Bleu"></div>
@@ -526,8 +536,7 @@
                     <div class="color-circle" style="background:#34C759;" onclick="window.changerCouleur('theme-green')" title="Vert"></div>
                     <div class="color-circle" style="background:#FF2D55;" onclick="window.changerCouleur('theme-rose')" title="Rose"></div>
                     
-                    <div class="color-circle" style="background: linear-gradient(135deg, rgba(255,255,255,0.4), rgba(255,255,255,0.1)); border: 1px solid rgba(255,255,255,0.5);" onclick="window.changerCouleur('theme-glass-light')" title="Glassmorphism Light"></div>
-                    <div class="color-circle" style="background: linear-gradient(135deg, rgba(70,20,150,0.5), rgba(10,100,200,0.5)); border: 1px solid rgba(255,255,255,0.3);" onclick="window.changerCouleur('theme-glass')" title="Glassmorphism Dark"></div>
+                    <div class="color-circle" style="background: linear-gradient(135deg, rgba(125,125,125,0.4), rgba(125,125,125,0.1)); border: 1px solid rgba(125,125,125,0.5);" onclick="window.changerCouleur('theme-glass')" title="Glassmorphism (Adaptatif)"></div>
                     
                     <div class="color-circle" style="background:#C47335;" onclick="window.changerCouleur('theme-latte')" title="Café Latte"></div>
                     <div class="color-circle" style="background:#3E7C59;" onclick="window.changerCouleur('theme-botanic')" title="Jardin Botanique"></div>
@@ -556,7 +565,7 @@
             </div>
 
             <div style="text-align: right; color: var(--text-muted); font-size: 0.85rem; margin-top: 30px; font-weight: bold; padding-bottom: 20px;">
-                Version 2.0 (La Grande Garde-Robe 👗)
+                Version 2.1 (Débits stricts & Thèmes adaptatifs)
             </div>
 
         </div>
@@ -749,7 +758,6 @@
 
         // --- THEME & NOEL ---
         window.toggleDarkMode = function() {
-            // Le mode sombre classique bascule juste la classe "dark-mode" (si on est sur un theme non forcé)
             document.body.classList.toggle('dark-mode');
             const isDark = document.body.classList.contains('dark-mode');
             document.getElementById('theme-icon').innerText = isDark ? '🌙' : '☀️';
@@ -759,7 +767,7 @@
         }
         
         window.changerCouleur = function(t) {
-            const themes = ['theme-purple', 'theme-green', 'theme-rose', 'theme-glass', 'theme-glass-light', 'theme-latte', 'theme-botanic', 'theme-gatsby', 'theme-terracotta', 'theme-moleskine', 'theme-watercolor'];
+            const themes = ['theme-purple', 'theme-green', 'theme-rose', 'theme-glass', 'theme-latte', 'theme-botanic', 'theme-gatsby', 'theme-terracotta', 'theme-moleskine', 'theme-watercolor'];
             document.body.classList.remove(...themes);
             if(t !== 'default') document.body.classList.add(t);
             localStorage.setItem('themeColorLC', t);
@@ -771,11 +779,11 @@
             const circles = document.querySelectorAll('.color-circle');
             circles.forEach(c => c.classList.remove('active'));
             
-            // Ordre : 0:Default, 1:Purple, 2:Green, 3:Rose, 4:Glass Light, 5:Glass Dark, 6:Latte, 7:Botanic, 8:Gatsby, 9:Terracotta, 10:Moleskine, 11:Watercolor
+            // Ordre : 0:Default, 1:Purple, 2:Green, 3:Rose, 4:Glass, 5:Latte, 6:Botanic, 7:Gatsby, 8:Terracotta, 9:Moleskine, 10:Watercolor
             const mapThemes = {
                 'default': 0, 'theme-purple': 1, 'theme-green': 2, 'theme-rose': 3,
-                'theme-glass-light': 4, 'theme-glass': 5, 'theme-latte': 6, 'theme-botanic': 7,
-                'theme-gatsby': 8, 'theme-terracotta': 9, 'theme-moleskine': 10, 'theme-watercolor': 11
+                'theme-glass': 4, 'theme-latte': 5, 'theme-botanic': 6,
+                'theme-gatsby': 7, 'theme-terracotta': 8, 'theme-moleskine': 9, 'theme-watercolor': 10
             };
             if(circles[mapThemes[currentTheme]]) circles[mapThemes[currentTheme]].classList.add('active');
         }
@@ -961,16 +969,18 @@
             });
         }
 
-        // --- CALCUL DU SOLDE REPORTE STRICTEMENT SUR COMPTE COMMUN ---
+        // --- CALCUL DU SOLDE REPORTE AVEC DEBIT TOTAL ---
         window.calculerSoldeReporte = function(cibleIdx) {
             let solde = 0;
             for (let i = 0; i < cibleIdx; i++) {
                 const m = donnees[i];
                 const tc = (Array.isArray(m.charges)?m.charges:[]).reduce((s,item)=>s+(parseFloat(item.montant)||0),0);
                 const td = (Array.isArray(m.depenses)?m.depenses:[]).reduce((s,item)=>s+(parseFloat(item.montant)||0),0);
+                const te = (Array.isArray(m.epargne)?m.epargne:[]).reduce((s,item)=>s+(parseFloat(item.montant)||0),0);
+                const tprov = (Array.isArray(m.provisions)?m.provisions:[]).reduce((s,item)=>s+(parseFloat(item.montant)||0),0);
                 const rev = (parseFloat(m.revenus)||0) + (parseFloat(m.revenus_add)||0);
                 
-                solde += (rev - tc - td);
+                solde += (rev - tc - td - te - tprov);
             }
             return solde; 
         }
@@ -1139,7 +1149,7 @@
             
             const totalRevenus = report + (parseFloat(m.revenus)||0) + (parseFloat(m.revenus_add)||0);
             
-            const r = totalRevenus - tc - td;
+            const r = totalRevenus - tc - td - te - tprov;
             
             document.getElementById('total-charges').innerText = tc.toFixed(2);
             document.getElementById('total-depenses').innerText = td.toFixed(2);
