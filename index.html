@@ -56,7 +56,7 @@
         body.theme-glass .item-row, body.theme-glass .cat-item, body.theme-glass .month-pill { background: transparent !important; border-bottom: 1px solid rgba(125, 125, 125, 0.1) !important; }
         body.theme-glass input, body.theme-glass select, body.theme-glass textarea, body.theme-glass .search-container input, body.theme-glass .btn-icon { background: rgba(125, 125, 125, 0.1) !important; border: 1px solid var(--border) !important; color: var(--text-main) !important; }
 
-        /* THEME CAFE LATTE (S'adapte Jour/Nuit) */
+        /* THEME CAFE LATTE */
         body.theme-latte {
             --primary: #C47335; --primary-light: #F2E4D8; --secondary: #A36029; --danger: #D9534F; --success: #6B8E23; --info: #8B5A2B;
             --bg-color: #F9F6F0; --card-bg: #EFEBE0; --text-main: #4A3B32; --text-muted: #8E7C6E; --border: #D8D0C5;
@@ -65,7 +65,7 @@
             --bg-color: #2E251F; --card-bg: #3D322A; --text-main: #EAE0D5; --text-muted: #A3968C; --border: #4D4036; --primary-light: #573A22;
         }
 
-        /* THEME JARDIN BOTANIQUE (S'adapte Jour/Nuit) */
+        /* THEME JARDIN BOTANIQUE */
         body.theme-botanic {
             --primary: #3E7C59; --primary-light: #DDF2E4; --secondary: #F2A65A; --danger: #C0392B; --success: #27AE60; --info: #2980B9;
             --bg-color: #E8EFE9; --card-bg: #F4F9F5; --text-main: #2C4A3B; --text-muted: #6B8E7B; --border: #CDE0D5;
@@ -74,7 +74,7 @@
             --bg-color: #1A2620; --card-bg: #24362D; --text-main: #E2EDE7; --text-muted: #8FA89B; --border: #314A3E; --primary-light: #254734;
         }
 
-        /* THEME GATSBY / ART DECO (S'adapte Jour/Nuit) */
+        /* THEME GATSBY / ART DECO */
         body.theme-gatsby {
             --primary: #D4AF37; --primary-light: rgba(212, 175, 55, 0.15); --secondary: #C5A028; --danger: #E74C3C; --success: #2ECC71; --info: #D4AF37;
             --bg-color: #FDFBF7; --card-bg: #FFFFFF; --text-main: #1A1F29; --text-muted: #7A8599; --border: #D4AF37;
@@ -85,7 +85,7 @@
         body.theme-gatsby .card, body.theme-gatsby .revenus-box { border: 1px solid var(--border); box-shadow: inset 0 0 0 1px rgba(212, 175, 55, 0.2); }
         body.theme-gatsby .btn-action { color: #12151C !important; font-weight: 800; }
         
-        /* THEME TERRACOTTA (S'adapte Jour/Nuit) */
+        /* THEME TERRACOTTA */
         body.theme-terracotta {
             --primary: #C0573E; --primary-light: #F6DFD7; --secondary: #D48C70; --danger: #A93226; --success: #527A61; --info: #B9770E;
             --bg-color: #F4E8E1; --card-bg: #FCF7F4; --text-main: #5C3A21; --text-muted: #A67D65; --border: #E8D0C3;
@@ -94,7 +94,7 @@
             --bg-color: #3B241A; --card-bg: #4A3024; --text-main: #F4E8E1; --text-muted: #C49F8B; --border: #5C3A2B; --primary-light: #5C2D22;
         }
 
-        /* THEME MOLESKINE (S'adapte Jour/Nuit) */
+        /* THEME MOLESKINE */
         body.theme-moleskine {
             --primary: #B22222; --primary-light: #F4DCDA; --secondary: #E67E22; --danger: #C0392B; --success: #2980B9; --info: #8E44AD;
             --bg-color: #F1EAD7; --card-bg: #F8F3E6; --text-main: #1C2B4B; --text-muted: #5B6B8C; --border: #A2B5CD;
@@ -105,7 +105,7 @@
         }
         body.theme-moleskine .item-row { border-bottom: 1px dashed var(--border) !important; }
 
-        /* THEME AQUARELLE POUDREE (S'adapte Jour/Nuit) */
+        /* THEME AQUARELLE POUDREE */
         body.theme-watercolor {
             --primary: #FF8DA1; --primary-light: #FFE4E8; --secondary: #FFB347; --danger: #FF6961; --success: #77DD77; --info: #AEC6CF;
             --bg-color: #FAFAFA; --text-main: #555555; --text-muted: #999999; --border: rgba(0,0,0,0.05);
@@ -255,27 +255,34 @@
         .color-circle { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s; }
         .color-circle.active { border-color: var(--text-main); transform: scale(1.15); }
 
-        /* --- BULLE CALCULATRICE --- */
-        #calc-bubble {
-            position: fixed; bottom: 30px; right: 20px; width: 60px; height: 60px;
-            background: linear-gradient(135deg, var(--primary), var(--info));
-            color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 1.8rem; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            cursor: grab; z-index: 9000; touch-action: none;
-            user-select: none; -webkit-user-select: none;
+        /* --- BULLES FLOTTANTES --- */
+        .floating-bubble {
+            position: fixed; width: 60px; height: 60px; border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; font-size: 1.8rem; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3); cursor: grab; z-index: 9000; touch-action: none; user-select: none; -webkit-user-select: none;
         }
-        #calc-bubble:active { cursor: grabbing; transform: scale(0.95); }
+        .floating-bubble:active { cursor: grabbing; transform: scale(0.95); }
+        
+        #calc-bubble { bottom: 30px; right: 20px; background: linear-gradient(135deg, var(--primary), var(--info)); color: white; }
+        #ai-bubble { bottom: 105px; right: 20px; background: linear-gradient(135deg, #10a37f, #0a84ff); color: white; font-size: 1.5rem; }
 
         .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px; }
-        .calc-btn { 
-            background: var(--bg-color); border: 1px solid var(--border); border-radius: 12px; 
-            padding: 15px 0; font-size: 1.2rem; font-weight: bold; cursor: pointer; color: var(--text-main);
-        }
+        .calc-btn { background: var(--bg-color); border: 1px solid var(--border); border-radius: 12px; padding: 15px 0; font-size: 1.2rem; font-weight: bold; cursor: pointer; color: var(--text-main); }
         .calc-btn:active { background: var(--border); }
         .calc-btn.op { background: var(--primary-light); color: var(--primary); }
         .calc-btn.eq { background: var(--primary); color: white; border: none; }
         .calc-btn.c { background: #FFE5E5; color: var(--danger); border: none; }
         body.dark-mode .calc-btn.c, body.theme-glass .calc-btn.c { background: rgba(255, 59, 48, 0.2); }
+
+        /* --- CHAT IA --- */
+        .chat-container { display: flex; flex-direction: column; height: 60vh; max-height: 500px; text-align: left; }
+        .chat-messages { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding: 10px 5px; margin-bottom: 15px; border-bottom: 1px solid var(--border); }
+        .chat-msg { padding: 12px 15px; border-radius: 16px; font-size: 0.95rem; line-height: 1.4; max-width: 85%; word-wrap: break-word; }
+        .chat-msg.user { background: var(--primary); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+        .chat-msg.ai { background: var(--bg-color); border: 1px solid var(--border); color: var(--text-main); align-self: flex-start; border-bottom-left-radius: 4px; }
+        .chat-input-area { display: flex; gap: 10px; }
+        .chat-input-area input { flex: 1; padding: 12px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg-color); color: var(--text-main); font-size: 1rem; }
+        .chat-input-area button { background: var(--primary); color: white; border: none; border-radius: 12px; padding: 0 20px; font-weight: bold; cursor: pointer; }
 
         @media (min-width: 768px) { body { flex-direction: row; } .top-nav { width: 280px; height: 100vh; position: sticky; display: flex; flex-direction: column; padding: 20px; overflow-y: auto; } }
     </style>
@@ -293,7 +300,8 @@
         </div>
     </div>
 
-    <div id="calc-bubble">🧮</div>
+    <div id="calc-bubble" class="floating-bubble" title="Calculatrice">🧮</div>
+    <div id="ai-bubble" class="floating-bubble" title="Assistant IA">✨</div>
 
     <div id="calc-popup" class="overlay-popup hidden">
         <div class="popup-box" style="width: 320px; padding: 25px 20px;">
@@ -328,6 +336,25 @@
                 <button class="calc-btn" onclick="window.calcInput('0')" style="grid-column: span 2;">0</button>
                 <button class="calc-btn" onclick="window.calcInput('.')">.</button>
                 <button class="calc-btn eq" onclick="window.calcResult()">=</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="ai-popup" class="overlay-popup hidden">
+        <div class="popup-box" style="width: 90%; max-width: 450px; padding: 25px 20px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <h3 style="margin:0; font-size:1.2rem; display:flex; align-items:center; gap:8px;">✨ Assistant Budget</h3>
+                <button style="border:none; background:none; font-size:1.5rem; cursor:pointer; color:var(--danger);" onclick="document.getElementById('ai-popup').classList.add('hidden')">✕</button>
+            </div>
+            
+            <div class="chat-container">
+                <div class="chat-messages" id="chat-messages">
+                    <div class="chat-msg ai">Bonjour ! Je suis votre assistant financier. Posez-moi vos questions sur le mois en cours, ou demandez-moi des conseils d'épargne ! 💰</div>
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" id="chat-input" placeholder="Écrivez votre message..." onkeypress="if(event.key === 'Enter') window.envoyerMessageIA()">
+                    <button onclick="window.envoyerMessageIA()">Envoyer</button>
+                </div>
             </div>
         </div>
     </div>
@@ -491,6 +518,15 @@
             </div>
 
             <div class="admin-section">
+                <h3>✨ Intelligence Artificielle</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Collez ici votre clé API Google Gemini. Elle sera chiffrée et partagée sur vos appareils.</p>
+                <div style="display:flex; gap:10px;">
+                    <input type="password" id="input-api-key" placeholder="AIzaSy..." style="flex:1; border:1px solid var(--border); padding:10px; border-radius:8px;">
+                    <button class="btn-small bg-primary" style="color:white;" onclick="window.sauvegarderConfig()">Enregistrer</button>
+                </div>
+            </div>
+
+            <div class="admin-section">
                 <h3>🔄 Outils Système</h3>
                 <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Forcer la mise à jour de l'application (vide le cache de la page).</p>
                 <button class="btn-action" style="background:var(--secondary);" onclick="window.location.reload(true)">Forcer le rechargement</button>
@@ -535,9 +571,7 @@
                     <div class="color-circle" style="background:#AF52DE;" onclick="window.changerCouleur('theme-purple')" title="Violet"></div>
                     <div class="color-circle" style="background:#34C759;" onclick="window.changerCouleur('theme-green')" title="Vert"></div>
                     <div class="color-circle" style="background:#FF2D55;" onclick="window.changerCouleur('theme-rose')" title="Rose"></div>
-                    
                     <div class="color-circle" style="background: linear-gradient(135deg, rgba(125,125,125,0.4), rgba(125,125,125,0.1)); border: 1px solid rgba(125,125,125,0.5);" onclick="window.changerCouleur('theme-glass')" title="Glassmorphism (Adaptatif)"></div>
-                    
                     <div class="color-circle" style="background:#C47335;" onclick="window.changerCouleur('theme-latte')" title="Café Latte"></div>
                     <div class="color-circle" style="background:#3E7C59;" onclick="window.changerCouleur('theme-botanic')" title="Jardin Botanique"></div>
                     <div class="color-circle" style="background:#D4AF37;" onclick="window.changerCouleur('theme-gatsby')" title="Gatsby / Art Déco"></div>
@@ -565,30 +599,13 @@
             </div>
 
             <div style="text-align: right; color: var(--text-muted); font-size: 0.85rem; margin-top: 30px; font-weight: bold; padding-bottom: 20px;">
-                Version 2.1 (Débits stricts & Thèmes adaptatifs)
+                Version 2.2 (Assistant Gemini 🤖)
             </div>
 
         </div>
     </main>
 
     <div id="toast"><span id="toast-msg">Ligne supprimée</span><button id="btn-undo" onclick="window.annulerSuppression()">Annuler</button></div>
-
-    <div id="offline-popup" class="overlay-popup hidden">
-        <div class="popup-box">
-            <h2 style="color:var(--danger); margin-bottom:15px; font-size:2rem;">⚠️</h2>
-            <h3 style="margin-bottom:10px;">Connexion Perdue</h3>
-            <p style="color:var(--text-muted); font-size:0.95rem; line-height:1.4;">Vous n'avez plus de réseau internet.<br><strong style="color:var(--text-main);">Aucune donnée ne sera sauvegardée</strong> tant que la connexion ne sera pas rétablie.</p>
-            <button class="btn-action bg-primary" style="margin-top:20px; width:auto; padding:10px 25px;" onclick="document.getElementById('offline-popup').classList.add('hidden')">J'ai compris</button>
-        </div>
-    </div>
-
-    <div id="wrapped-popup" class="overlay-popup hidden">
-        <div class="popup-box" style="background: linear-gradient(135deg, var(--card-bg), var(--primary-light));">
-            <h2 style="font-size:2rem; margin-bottom:10px;">🎁 Bilan <span id="wrap-annee"></span></h2>
-            <div id="wrap-content" style="font-size:1.1rem; line-height:1.8; text-align:left; margin:20px 0;"></div>
-            <button class="btn-action bg-primary" onclick="document.getElementById('wrapped-popup').classList.add('hidden')">Super !</button>
-        </div>
-    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
@@ -616,6 +633,7 @@
         let categories = ["🏠 Loyer", "⚡ Électricité", "💧 Eau", "🛡️ Assurance", "🌐 Internet", "🛒 Courses", "🍽️ Restaurant", "🎬 Loisirs", "🏥 Santé", "✈️ Vacances", "🛠️ Travaux", "❓ Autre"];
         let corbeille = [];
         let objectifsProvisions = [{ nom: "Assurance", montant: 600 }];
+        let geminiApiKey = ""; // Stockage local de la clé
         
         let moisActifId = null;
         let termeRecherche = "";
@@ -659,71 +677,61 @@
             }
         }
 
-        // --- GESTION DE LA CALCULATRICE FLOTTANTE ---
-        const calcBubble = document.getElementById('calc-bubble');
-        let isDraggingCalc = false;
-        let calcStartX, calcStartY, calcInitialX, calcInitialY;
+        // --- GESTION DES BULLES FLOTTANTES (DRAG & DROP GENERIQUE) ---
+        function applyDrag(elId) {
+            const bubble = document.getElementById(elId);
+            let isDragging = false;
+            let startX, startY, initialX, initialY;
 
-        function calcDragStart(e) {
-            isDraggingCalc = false;
-            if (e.type === 'touchstart') {
-                calcStartX = e.touches[0].clientX;
-                calcStartY = e.touches[0].clientY;
-            } else {
-                calcStartX = e.clientX;
-                calcStartY = e.clientY;
+            function dragStart(e) {
+                isDragging = false;
+                if (e.type === 'touchstart') { startX = e.touches[0].clientX; startY = e.touches[0].clientY; } 
+                else { startX = e.clientX; startY = e.clientY; }
+                const rect = bubble.getBoundingClientRect();
+                initialX = rect.left; initialY = rect.top;
+                document.addEventListener('mousemove', dragMove);
+                document.addEventListener('mouseup', dragEnd);
+                document.addEventListener('touchmove', dragMove, {passive: false});
+                document.addEventListener('touchend', dragEnd);
             }
-            const rect = calcBubble.getBoundingClientRect();
-            calcInitialX = rect.left;
-            calcInitialY = rect.top;
-            
-            document.addEventListener('mousemove', calcDragMove);
-            document.addEventListener('mouseup', calcDragEnd);
-            document.addEventListener('touchmove', calcDragMove, {passive: false});
-            document.addEventListener('touchend', calcDragEnd);
-        }
 
-        function calcDragMove(e) {
-            let clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
-            let clientY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
-            
-            const dx = clientX - calcStartX;
-            const dy = clientY - calcStartY;
-            
-            if (Math.abs(dx) > 5 || Math.abs(dy) > 5) isDraggingCalc = true;
+            function dragMove(e) {
+                let clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+                let clientY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
+                const dx = clientX - startX; const dy = clientY - startY;
+                if (Math.abs(dx) > 5 || Math.abs(dy) > 5) isDragging = true;
 
-            if (isDraggingCalc) {
-                e.preventDefault(); 
-                let newX = calcInitialX + dx;
-                let newY = calcInitialY + dy;
-                
-                newX = Math.max(0, Math.min(window.innerWidth - calcBubble.offsetWidth, newX));
-                newY = Math.max(0, Math.min(window.innerHeight - calcBubble.offsetHeight, newY));
-
-                calcBubble.style.left = newX + 'px';
-                calcBubble.style.top = newY + 'px';
-                calcBubble.style.bottom = 'auto';
-                calcBubble.style.right = 'auto';
+                if (isDragging) {
+                    e.preventDefault(); 
+                    let newX = initialX + dx; let newY = initialY + dy;
+                    newX = Math.max(0, Math.min(window.innerWidth - bubble.offsetWidth, newX));
+                    newY = Math.max(0, Math.min(window.innerHeight - bubble.offsetHeight, newY));
+                    bubble.style.left = newX + 'px'; bubble.style.top = newY + 'px';
+                    bubble.style.bottom = 'auto'; bubble.style.right = 'auto';
+                }
             }
+
+            function dragEnd(e) {
+                document.removeEventListener('mousemove', dragMove); document.removeEventListener('mouseup', dragEnd);
+                document.removeEventListener('touchmove', dragMove); document.removeEventListener('touchend', dragEnd);
+                if (!isDragging) {
+                    if(elId === 'calc-bubble') document.getElementById('calc-popup').classList.remove('hidden');
+                    if(elId === 'ai-bubble') document.getElementById('ai-popup').classList.remove('hidden');
+                }
+            }
+
+            bubble.addEventListener('mousedown', dragStart);
+            bubble.addEventListener('touchstart', dragStart, {passive: false});
         }
 
-        function calcDragEnd(e) {
-            document.removeEventListener('mousemove', calcDragMove);
-            document.removeEventListener('mouseup', calcDragEnd);
-            document.removeEventListener('touchmove', calcDragMove);
-            document.removeEventListener('touchend', calcDragEnd);
-            
-            if (!isDraggingCalc) { document.getElementById('calc-popup').classList.remove('hidden'); }
-        }
+        applyDrag('calc-bubble');
+        applyDrag('ai-bubble');
 
-        calcBubble.addEventListener('mousedown', calcDragStart);
-        calcBubble.addEventListener('touchstart', calcDragStart, {passive: false});
-
+        // --- CALCULATRICE LOGIC ---
         window.fermerCalculatrice = function() { document.getElementById('calc-popup').classList.add('hidden'); };
         window.calcInput = function(val) {
             const display = document.getElementById('calc-display');
-            if (display.value === "Erreur") display.value = "";
-            display.value += val;
+            if (display.value === "Erreur") display.value = ""; display.value += val;
         };
         window.calcClear = function() { document.getElementById('calc-display').value = ''; };
         window.calcResult = function() {
@@ -732,13 +740,9 @@
                 let expression = display.value.replace(/×/g, '*').replace(/÷/g, '/').replace(/,/g, '.');
                 let res = Function('"use strict";return (' + expression + ')')();
                 display.value = Math.round(res * 100) / 100;
-            } catch(e) {
-                display.value = 'Erreur';
-                setTimeout(window.calcClear, 1500);
-            }
+            } catch(e) { display.value = 'Erreur'; setTimeout(window.calcClear, 1500); }
         };
 
-        // GESTION DU CLAVIER PC POUR LA CALCULATRICE
         document.addEventListener('keydown', function(e) {
             const popup = document.getElementById('calc-popup');
             if (popup && !popup.classList.contains('hidden')) {
@@ -755,6 +759,81 @@
                 if (key === 'Escape') window.fermerCalculatrice();
             }
         });
+
+        // --- ASSISTANT IA (GEMINI) ---
+        window.envoyerMessageIA = async function() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            if (!message) return;
+
+            const chatBox = document.getElementById('chat-messages');
+            
+            // Afficher message utilisateur
+            const userDiv = document.createElement('div');
+            userDiv.className = 'chat-msg user';
+            userDiv.innerText = message;
+            chatBox.appendChild(userDiv);
+            input.value = '';
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            if (!geminiApiKey) {
+                afficherReponseIA("⚠️ Veuillez coller votre clé API Gemini dans l'onglet Admin (Paramètres) pour m'activer !");
+                return;
+            }
+
+            // Préparation du Contexte (Cerveau)
+            const moisActuel = donnees.find(m => m.id === moisActifId);
+            let contexte = "Tu es l'assistant financier virtuel de l'application 'Budget L&C' appartenant à Lisa et Corentin. Tu es amical, bienveillant, clair et tu utilises des emojis. ";
+            if(moisActuel) {
+                const rav = document.getElementById('reste-a-vivre') ? document.getElementById('reste-a-vivre').innerText : "Inconnu";
+                const dep = document.getElementById('total-depenses') ? document.getElementById('total-depenses').innerText : "Inconnu";
+                const epargne = document.getElementById('total-epargne') ? document.getElementById('total-epargne').innerText : "Inconnu";
+                contexte += `\nCe mois-ci (${moisActuel.nom}): Leurs revenus sont de ${moisActuel.revenus}€. Le Reste à vivre actuel du compte commun est de ${rav}. Ils ont dépensé ${dep}€ et mis de côté ${epargne}€ d'épargne.`;
+            }
+            contexte += `\nRéponds directement à leur question de manière naturelle, sans faire de longues introductions. Voici leur question : ${message}`;
+
+            // Afficher statut chargement
+            const loadDiv = document.createElement('div');
+            loadDiv.className = 'chat-msg ai';
+            loadDiv.id = 'chat-loading';
+            loadDiv.innerText = "Je réfléchis...";
+            chatBox.appendChild(loadDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            try {
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`;
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: contexte }] }] })
+                });
+
+                document.getElementById('chat-loading').remove(); // Retirer le loader
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const texteReponse = data.candidates[0].content.parts[0].text;
+                    afficherReponseIA(texteReponse);
+                } else {
+                    afficherReponseIA("Désolé, il y a eu un problème de connexion avec l'IA. Vérifiez votre clé API.");
+                }
+            } catch (error) {
+                if(document.getElementById('chat-loading')) document.getElementById('chat-loading').remove();
+                afficherReponseIA("Erreur réseau. Vérifiez votre connexion.");
+            }
+        };
+
+        function afficherReponseIA(texte) {
+            const chatBox = document.getElementById('chat-messages');
+            const aiDiv = document.createElement('div');
+            aiDiv.className = 'chat-msg ai';
+            // Conversion basique du gras Markdown vers HTML pour un bel affichage
+            let htmlTexte = texte.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            htmlTexte = htmlTexte.replace(/\n/g, '<br>');
+            aiDiv.innerHTML = htmlTexte;
+            chatBox.appendChild(aiDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
 
         // --- THEME & NOEL ---
         window.toggleDarkMode = function() {
@@ -779,7 +858,6 @@
             const circles = document.querySelectorAll('.color-circle');
             circles.forEach(c => c.classList.remove('active'));
             
-            // Ordre : 0:Default, 1:Purple, 2:Green, 3:Rose, 4:Glass, 5:Latte, 6:Botanic, 7:Gatsby, 8:Terracotta, 9:Moleskine, 10:Watercolor
             const mapThemes = {
                 'default': 0, 'theme-purple': 1, 'theme-green': 2, 'theme-rose': 3,
                 'theme-glass': 4, 'theme-latte': 5, 'theme-botanic': 6,
@@ -902,6 +980,12 @@
                     if(conf.categories) categories = conf.categories;
                     if(conf.corbeille) corbeille = conf.corbeille;
                     if(conf.objectifsProvisions) objectifsProvisions = conf.objectifsProvisions;
+                    
+                    // Chargement de la clé API si elle existe
+                    if(conf.geminiApiKey) {
+                        geminiApiKey = conf.geminiApiKey;
+                        document.getElementById('input-api-key').value = geminiApiKey;
+                    }
 
                     if(!document.getElementById('vue-admin').classList.contains('hidden')) window.rendreAdmin();
                     if(!document.getElementById('vue-annuelle').classList.contains('hidden')) window.rendreVueAnnuelle();
@@ -914,7 +998,14 @@
             localStorage.setItem('budgetLocalCacheLC', JSON.stringify(donnees));
             set(budgetRef, donnees).then(() => setTimeout(() => updateSyncDot('online'), 500)).catch(e => console.log("Erreur", e)); 
         }
-        window.sauvegarderConfig = function() { set(configRef, { categories, corbeille, objectifsProvisions }); }
+        
+        // Sauvegarde de la configuration + Clé API
+        window.sauvegarderConfig = function() { 
+            const inputKey = document.getElementById('input-api-key').value.trim();
+            geminiApiKey = inputKey;
+            set(configRef, { categories, corbeille, objectifsProvisions, geminiApiKey }); 
+            if(!document.getElementById('vue-admin').classList.contains('hidden')) alert("Paramètres enregistrés avec succès !");
+        }
 
         window.initDefaut = function() {
             donnees = [{ id: Date.now(), nom: "Mars 2026", annee: 2026, revenus: 4500, revenus_add: 0, charges: [], depenses: [], epargne: [], provisions: [] }];
