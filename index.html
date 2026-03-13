@@ -122,17 +122,36 @@
             background: var(--card-w) !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important; border: 1px solid var(--border) !important;
         }
 
+        /* STYLES DE BASE */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; transition: background-color 0.3s, color 0.3s, border-color 0.3s; }
         body { background-color: var(--bg-color); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
 
-        #login-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--bg-color); z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; transition: opacity 0.5s; }
-        .login-box { background: var(--card-bg); padding: 40px 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
+        /* ÉCRAN DE CONNEXION */
+        #login-screen {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: var(--bg-color); z-index: 10000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 20px; transition: opacity 0.5s;
+        }
+        .login-box {
+            background: var(--card-bg); padding: 40px 30px; border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 400px;
+            text-align: center;
+        }
         .login-box h1 { margin-bottom: 5px; font-size: 1.8rem; }
         .login-box p { color: var(--text-muted); margin-bottom: 25px; font-size: 0.9rem; }
-        .login-box input { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg-color); margin-bottom: 15px; font-size: 1rem; color: var(--text-main); }
-        .login-btn { width: 100%; padding: 15px; border-radius: 12px; border: none; background: var(--primary); color: white; font-weight: bold; font-size: 1.1rem; cursor: pointer; margin-top: 10px; }
+        .login-box input {
+            width: 100%; padding: 15px; border-radius: 12px; border: 1px solid var(--border);
+            background: var(--bg-color); margin-bottom: 15px; font-size: 1rem; color: var(--text-main);
+        }
+        .login-btn {
+            width: 100%; padding: 15px; border-radius: 12px; border: none;
+            background: var(--primary); color: white; font-weight: bold; font-size: 1.1rem;
+            cursor: pointer; margin-top: 10px;
+        }
         #login-error { color: var(--danger); font-size: 0.9rem; margin-top: 15px; display: none; }
 
+        /* RESTE DE L'APP */
         .top-nav { background-color: var(--card-bg); border-bottom: 1px solid var(--border); padding: 15px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
         .nav-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .nav-header h2 { font-size: 1.4rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
@@ -330,7 +349,7 @@
             
             <div class="chat-container">
                 <div class="chat-messages" id="chat-messages">
-                    <div class="chat-msg ai">Bonjour ! Je suis votre assistant financier. Posez-moi vos questions sur le mois en cours, ou demandez-moi des conseils d'épargne ! 💰</div>
+                    <div class="chat-msg ai">Bonjour ! Je suis votre assistant financier propulsé par Gemini 3.1 Pro. Posez-moi vos questions sur le mois en cours ! 💰</div>
                 </div>
                 <div class="chat-input-area">
                     <input type="text" id="chat-input" placeholder="Écrivez votre message..." onkeypress="if(event.key === 'Enter') window.envoyerMessageIA()">
@@ -506,10 +525,10 @@
                 
                 <div style="display:flex; gap:10px; align-items: center;">
                     <select id="input-ai-model" style="flex:1; border:1px solid var(--border); padding:10px; border-radius:8px; font-size: 0.9rem;">
-                        <option value="gemini-1.5-flash">Modèle : 1.5 Flash (Défaut)</option>
-                        <option value="gemini-1.5-pro">Modèle : 1.5 Pro</option>
-                        <option value="gemini-1.0-pro">Modèle : 1.0 Pro</option>
+                        <option value="gemini-3.1-pro">Modèle : 3.1 Pro (Défaut - 2026)</option>
                         <option value="gemini-2.0-flash">Modèle : 2.0 Flash</option>
+                        <option value="gemini-1.5-pro">Modèle : 1.5 Pro</option>
+                        <option value="gemini-1.5-flash">Modèle : 1.5 Flash</option>
                     </select>
                     <button class="btn-small bg-primary" style="color:white; padding: 10px 20px;" onclick="window.sauvegarderConfig()">Enregistrer</button>
                 </div>
@@ -590,7 +609,7 @@
             </div>
 
             <div style="text-align: right; color: var(--text-muted); font-size: 0.85rem; margin-top: 30px; font-weight: bold; padding-bottom: 20px;">
-                Version 2.3 (Sélecteur IA Google)
+                Version 2.4 (Gemini 3.1 Pro Update)
             </div>
 
         </div>
@@ -625,7 +644,7 @@
         let corbeille = [];
         let objectifsProvisions = [{ nom: "Assurance", montant: 600 }];
         let geminiApiKey = ""; 
-        let geminiModelName = "gemini-1.5-flash"; 
+        let geminiModelName = "gemini-3.1-pro"; // DÉFAUT MIS À JOUR EN 3.1 PRO !
         
         let moisActifId = null;
         let termeRecherche = "";
@@ -752,7 +771,7 @@
             }
         });
 
-        // --- ASSISTANT IA (GEMINI) MULTI-MODELES ---
+        // --- ASSISTANT IA (GEMINI) ---
         window.envoyerMessageIA = async function() {
             const input = document.getElementById('chat-input');
             const message = input.value.trim();
@@ -790,7 +809,7 @@
             chatBox.scrollTop = chatBox.scrollHeight;
 
             try {
-                // Utilisation du modèle sélectionné dynamiquement dans les paramètres
+                // Utilisation de la version d'API v1beta compatible avec les modèles récents comme le 3.1 Pro
                 const url = `https://generativelanguage.googleapis.com/v1beta/models/${geminiModelName}:generateContent?key=${geminiApiKey}`;
                 const response = await fetch(url, {
                     method: 'POST',
