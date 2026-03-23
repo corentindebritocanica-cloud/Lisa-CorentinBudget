@@ -202,7 +202,7 @@
 
         .card { background-color: var(--card-bg); border-radius: 16px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); margin-bottom: 20px; min-width: 0; }
         .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--border); cursor: pointer; }
-        .card-header h3 { font-size: 1.05rem; font-weight: 700; user-select: none; }
+        .card-header h3 { font-size: 1.05rem; font-weight: 700; user-select: none; display:flex; align-items:center; gap:8px;}
         .card-header::after { content: '▼'; font-size: 0.8rem; color: var(--text-muted); transition: 0.3s; }
         .card-header.collapsed::after { transform: rotate(-90deg); }
         .section-content { overflow: hidden; transition: max-height 0.3s ease-out; }
@@ -225,6 +225,13 @@
         .item-top select { min-width: 0; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; font-size:0.9rem !important; }
         
         .btn-delete { color: var(--danger); background: none; border: none; font-size: 1.3rem; padding-left: 10px; flex-shrink: 0;}
+
+        /* NOUVEAU BOUTON MOYEN DE PAIEMENT */
+        .btn-pay-method {
+            background: var(--bg-color); border: 1px solid var(--border); border-radius: 6px;
+            padding: 2px 6px; font-size: 1rem; cursor: pointer; margin-left: 5px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+        }
 
         .summary-card { background: linear-gradient(135deg, var(--primary), var(--info)); color: white; text-align: center; border-radius: 16px; padding: 20px 15px; position: relative; }
         .total-amount { font-size: 2.6rem; font-weight: 800; margin: 5px 0; letter-spacing: -1px; }
@@ -255,7 +262,7 @@
         .color-circle { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s; }
         .color-circle.active { border-color: var(--text-main); transform: scale(1.15); }
 
-        /* --- BULLE CALCULATRICE --- */
+        /* --- BULLES FLOTTANTES --- */
         .floating-bubble {
             position: fixed; width: 60px; height: 60px; border-radius: 50%; 
             display: flex; align-items: center; justify-content: center; font-size: 1.8rem; 
@@ -407,7 +414,9 @@
                 </div>
 
                 <div class="card">
-                    <div class="card-header" onclick="window.toggleSection('conteneur-depenses', this)"><h3>🛒 Dépenses (<span id="total-depenses">0</span> €)</h3></div>
+                    <div class="card-header" onclick="window.toggleSection('conteneur-depenses', this)">
+                        <h3 id="titre-total-depenses">🛒 Dépenses (0 €)</h3>
+                    </div>
                     <div id="conteneur-depenses" class="section-content" style="max-height: 5000px;"></div>
                     <button class="btn-action bg-primary btn-add" onclick="window.ajouterLigne('depenses')">+ Nouvelle dépense</button>
                 </div>
@@ -561,7 +570,7 @@
             </div>
 
             <div style="text-align: right; color: var(--text-muted); font-size: 0.85rem; margin-top: 30px; font-weight: bold; padding-bottom: 20px;">
-                Version 2.5 (Rollback IA - Sans Gemini)
+                Version 2.6 (Tickets Resto & Espèces)
             </div>
 
         </div>
@@ -936,18 +945,38 @@
             });
         }
 
-        // --- CALCUL DU SOLDE REPORTE AVEC DEBIT TOTAL ---
+        // --- GESTION DU MOYEN DE PAIEMENT ---
+        window.togglePayMethod = function(id) {
+            const mois = donnees.find(m => m.id === moisActifId);
+            const item = (mois.depenses||[]).find(i => i.id === id);
+            if(!item) return;
+            
+            if(!item.moyenPaiement || item.moyenPaiement === 'CB') item.moyenPaiement = 'TR';
+            else if(item.moyenPaiement === 'TR') item.moyenPaiement = 'ESPECES';
+            else item.moyenPaiement = 'CB';
+            
+            window.sauvegarderDonnees();
+            window.rendreInterface();
+        }
+
+        // --- CALCUL DU SOLDE REPORTE (UNIQUEMENT REVOLUT) ---
         window.calculerSoldeReporte = function(cibleIdx) {
             let solde = 0;
             for (let i = 0; i < cibleIdx; i++) {
                 const m = donnees[i];
                 const tc = (Array.isArray(m.charges)?m.charges:[]).reduce((s,item)=>s+(parseFloat(item.montant)||0),0);
-                const td = (Array.isArray(m.depenses)?m.depenses:[]).reduce((s,item)=>s+(parseFloat(item.montant)||0),0);
+                
+                // Pour le report, on ne déduit que ce qui sort du compte Revolut (CB)
+                const tdRevolut = (Array.isArray(m.depenses)?m.depenses:[]).reduce((s,item)=> {
+                    if(!item.moyenPaiement || item.moyenPaiement === 'CB') return s+(parseFloat(item.montant)||0);
+                    return s;
+                },0);
+                
                 const te = (Array.isArray(m.epargne)?m.epargne:[]).reduce((s,item)=>s+(parseFloat(item.montant)||0),0);
                 const tprov = (Array.isArray(m.provisions)?m.provisions:[]).reduce((s,item)=>s+(parseFloat(item.montant)||0),0);
                 const rev = (parseFloat(m.revenus)||0) + (parseFloat(m.revenus_add)||0);
                 
-                solde += (rev - tc - td - te - tprov);
+                solde += (rev - tc - tdRevolut - te - tprov);
             }
             return solde; 
         }
@@ -1000,15 +1029,23 @@
                 const row = document.createElement('div'); row.className = 'item-row'; row.dataset.id = item.id;
                 
                 const isRetrait = item.isRetrait || parseFloat(item.montant) < 0;
-                const colorVal = isRetrait ? 'color:var(--danger);' : '';
+                let colorVal = isRetrait ? 'color:var(--danger);' : '';
                 const mSign = isRetrait ? '<span style="font-weight:bold; color:var(--danger);">-</span> ' : '';
                 const valAffichee = isRetrait ? (item.montant === 0 ? '' : Math.abs(item.montant)) : item.montant;
+
+                let payBtnHtml = '';
+                if(type === 'depenses') {
+                    const method = item.moyenPaiement || 'CB';
+                    const icon = method === 'TR' ? '🎟️' : (method === 'ESPECES' ? '💵' : '💳');
+                    payBtnHtml = `<button class="btn-pay-method" onclick="window.togglePayMethod('${item.id}')" title="Changer le moyen de paiement">${icon}</button>`;
+                    if(method !== 'CB') colorVal = 'color: var(--secondary);'; // Met en évidence visuellement que ce n'est pas le compte principal
+                }
 
                 let html = (type === 'depenses' || type === 'charges' || type === 'provisions' || type === 'epargne') ? 
                     `<div class="item-top">
                         <textarea placeholder="Achat ou note détaillée..." style="${colorVal}" oninput="window.autoResize(this)" onchange="window.majValeur('${type}','${item.id}','libelle',this.value)">${item.libelle||''}</textarea>
                         <div style="display:flex; align-items:center;">
-                            ${mSign}<input type="number" style="${colorVal}" value="${valAffichee}" onchange="window.majValeur('${type}','${item.id}','montant',this.value)">
+                            ${mSign}<input type="number" style="${colorVal}" value="${valAffichee}" onchange="window.majValeur('${type}','${item.id}','montant',this.value)">${payBtnHtml}
                         </div>
                      </div>
                      <div class="item-bottom"><input type="date" value="${item.date||''}" onchange="window.majValeur('${type}','${item.id}','date',this.value)"><select id="sel-${item.id}" onchange="window.majValeur('${type}','${item.id}','categorie',this.value)">${categories.map(c=>`<option value="${c}" ${c===item.categorie?'selected':''}>${c}</option>`).join('')}</select></div>` :
@@ -1076,7 +1113,7 @@
             if(type === 'epargne' && categories) catDefaut = categories.find(c => c.toLowerCase().includes("vacance")) || catDefaut;
             else if(type === 'provisions' && categories) catDefaut = categories.find(c => c.toLowerCase().includes("assurance")) || catDefaut;
 
-            mois[type].unshift({ id: Math.random().toString(36).substr(2,9), date:"", libelle:"", categorie: catDefaut, montant:0 }); 
+            mois[type].unshift({ id: Math.random().toString(36).substr(2,9), date:"", libelle:"", categorie: catDefaut, montant:0, moyenPaiement: (type === 'depenses' ? 'CB' : null) }); 
             
             if(type === 'epargne') {
                 if(document.body.classList.contains('theme-christmas') && typeof window.neigeNoel === 'function') window.neigeNoel();
@@ -1110,37 +1147,51 @@
             document.getElementById('solde_reporte').value = report.toFixed(2);
 
             const tc = (Array.isArray(m.charges)?m.charges:[]).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
-            const td = (Array.isArray(m.depenses)?m.depenses:[]).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
+            
+            // Calculs séparés pour les Dépenses (Global VS Revolut uniquement)
+            const tdGlobal = (Array.isArray(m.depenses)?m.depenses:[]).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
+            const tdRevolut = (Array.isArray(m.depenses)?m.depenses:[]).reduce((s,i)=> {
+                if(!i.moyenPaiement || i.moyenPaiement === 'CB') return s+(parseFloat(i.montant)||0);
+                return s;
+            },0);
+            const tdAutres = tdGlobal - tdRevolut;
+
             const te = (Array.isArray(m.epargne)?m.epargne:[]).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
             const tprov = (Array.isArray(m.provisions)?m.provisions:[]).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
             
             const totalRevenus = report + (parseFloat(m.revenus)||0) + (parseFloat(m.revenus_add)||0);
             
-            const r = totalRevenus - tc - td - te - tprov;
+            // Le Reste à vivre ne déduit QUE ce qui a été payé en CB (Revolut)
+            const r = totalRevenus - tc - tdRevolut - te - tprov;
             
             document.getElementById('total-charges').innerText = tc.toFixed(2);
-            document.getElementById('total-depenses').innerText = td.toFixed(2);
             document.getElementById('total-epargne').innerText = te.toFixed(2);
             document.getElementById('total-provisions').innerText = tprov.toFixed(2);
             document.getElementById('reste-a-vivre').innerText = r.toFixed(2) + " €";
+            
+            // Mise à jour visuelle du Header Dépenses
+            let detailDepenses = tdAutres > 0 ? ` <span style="font-size:0.8rem; font-weight:normal; color:var(--text-muted);">(dont ${tdAutres.toFixed(2)}€ 🎟️/💵)</span>` : '';
+            const headerDepenses = document.querySelector('#conteneur-depenses').previousElementSibling.querySelector('h3');
+            headerDepenses.innerHTML = `🛒 Dépenses (<span id="total-depenses">${tdGlobal.toFixed(2)}</span> €)${detailDepenses}`;
             
             const compEl = document.getElementById('comparaison-n1');
             if(compEl) {
                 if(idxMoisActuel > 0) {
                     const mPrec = donnees[idxMoisActuel - 1];
                     const depPrec = (Array.isArray(mPrec.depenses)?mPrec.depenses:[]).reduce((s,i)=>s+(parseFloat(i.montant)||0),0);
-                    const diff = td - depPrec;
+                    const diff = tdGlobal - depPrec;
                     compEl.style.display = 'inline-block';
                     if(diff > 0) { compEl.innerText = `↗ +${diff.toFixed(0)}€ de dépenses / mois préc.`; compEl.className = 'comparison comp-bad'; }
                     else { compEl.innerText = `↘ ${diff.toFixed(0)}€ de dépenses / mois préc.`; compEl.className = 'comparison comp-good'; }
                 } else { compEl.style.display = 'none'; }
             }
 
-            let t = Math.abs(tc) + Math.abs(td) + Math.abs(te) + Math.abs(tprov) + (r>0?r:0); if(t===0) return;
+            // Barres de progression avec le VRAI total dépensé
+            let t = Math.abs(tc) + Math.abs(tdGlobal) + Math.abs(te) + Math.abs(tprov) + (r>0?r:0); if(t===0) return;
             document.getElementById(`bar-charges-m`).style.width = (tc/t*100)+'%'; 
             document.getElementById(`pct-charges-m`).innerText = Math.round(tc/t*100)+'%';
-            document.getElementById(`bar-depenses-m`).style.width = (td/t*100)+'%'; 
-            document.getElementById(`pct-depenses-m`).innerText = Math.round(td/t*100)+'%';
+            document.getElementById(`bar-depenses-m`).style.width = (tdGlobal/t*100)+'%'; 
+            document.getElementById(`pct-depenses-m`).innerText = Math.round(tdGlobal/t*100)+'%';
             document.getElementById(`bar-epargne-m`).style.width = (te > 0 ? (te/t*100) : 0)+'%'; 
             document.getElementById(`pct-epargne-m`).innerText = Math.round(te > 0 ? (te/t*100) : 0)+'%';
             document.getElementById(`bar-provisions-m`).style.width = (tprov/t*100)+'%'; 
