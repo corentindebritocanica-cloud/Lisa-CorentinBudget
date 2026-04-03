@@ -226,7 +226,7 @@
         
         .btn-delete { color: var(--danger); background: none; border: none; font-size: 1.3rem; padding-left: 10px; flex-shrink: 0;}
 
-        /* NOUVEAU BOUTON MOYEN DE PAIEMENT */
+        /* BOUTON MOYEN DE PAIEMENT */
         .btn-pay-method {
             background: var(--bg-color); border: 1px solid var(--border); border-radius: 6px;
             padding: 2px 6px; font-size: 1rem; cursor: pointer; margin-left: 5px; flex-shrink: 0;
@@ -262,7 +262,7 @@
         .color-circle { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s; }
         .color-circle.active { border-color: var(--text-main); transform: scale(1.15); }
 
-        /* --- BULLES FLOTTANTES --- */
+        /* --- BULLE CALCULATRICE --- */
         .floating-bubble {
             position: fixed; width: 60px; height: 60px; border-radius: 50%; 
             display: flex; align-items: center; justify-content: center; font-size: 1.8rem; 
@@ -570,7 +570,7 @@
             </div>
 
             <div style="text-align: right; color: var(--text-muted); font-size: 0.85rem; margin-top: 30px; font-weight: bold; padding-bottom: 20px;">
-                Version 2.6 (Tickets Resto & Espèces)
+                Version 2.7 (Sans IA + Épargne Isolée)
             </div>
 
         </div>
@@ -959,7 +959,7 @@
             window.rendreInterface();
         }
 
-        // --- CALCUL DU SOLDE REPORTE (UNIQUEMENT REVOLUT) ---
+        // --- CALCUL DU SOLDE REPORTE AVEC DEBIT ISOLÉ ---
         window.calculerSoldeReporte = function(cibleIdx) {
             let solde = 0;
             for (let i = 0; i < cibleIdx; i++) {
@@ -972,11 +972,11 @@
                     return s;
                 },0);
                 
-                const te = (Array.isArray(m.epargne)?m.epargne:[]).reduce((s,item)=>s+(parseFloat(item.montant)||0),0);
                 const tprov = (Array.isArray(m.provisions)?m.provisions:[]).reduce((s,item)=>s+(parseFloat(item.montant)||0),0);
                 const rev = (parseFloat(m.revenus)||0) + (parseFloat(m.revenus_add)||0);
                 
-                solde += (rev - tc - tdRevolut - te - tprov);
+                // L'épargne (te) a été retirée du calcul car elle est gérée sur un compte externe
+                solde += (rev - tc - tdRevolut - tprov);
             }
             return solde; 
         }
@@ -1161,8 +1161,8 @@
             
             const totalRevenus = report + (parseFloat(m.revenus)||0) + (parseFloat(m.revenus_add)||0);
             
-            // Le Reste à vivre ne déduit QUE ce qui a été payé en CB (Revolut)
-            const r = totalRevenus - tc - tdRevolut - te - tprov;
+            // Le Reste à vivre ne déduit QUE ce qui a été payé en CB (Revolut) et on IGNORE l'Épargne
+            const r = totalRevenus - tc - tdRevolut - tprov;
             
             document.getElementById('total-charges').innerText = tc.toFixed(2);
             document.getElementById('total-epargne').innerText = te.toFixed(2);
