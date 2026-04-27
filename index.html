@@ -1081,18 +1081,18 @@
         document.getElementById('select-annee').onchange = () => rendreVueAnnuelle();
         document.getElementById('btn-logout').onclick = () => signOut(auth).then(() => window.location.reload());
         
-        // Logique de Login
+                // Logique de Login (MODE DEBUG)
         const handleLogin = () => {
-            const e = document.getElementById('login-email').value;
+            const e = document.getElementById('login-email').value.trim(); // Retire les espaces cachés
             const p = document.getElementById('login-password').value;
-            signInWithEmailAndPassword(auth, e, p).catch(() => {
-                document.getElementById('login-error').style.display = 'block';
+            signInWithEmailAndPassword(auth, e, p).catch((error) => {
+                // Affiche l'erreur exacte renvoyée par les serveurs de Google
+                const errBox = document.getElementById('login-error');
+                errBox.innerText = "Erreur Google : " + error.message; 
+                errBox.style.display = 'block';
             });
         };
-        document.getElementById('btn-login').onclick = handleLogin;
-        document.getElementById('login-password').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') handleLogin();
-        });
+
 
         // Formulaires & Inputs spécifiques
         const setupTableListeners = (containerId) => {
