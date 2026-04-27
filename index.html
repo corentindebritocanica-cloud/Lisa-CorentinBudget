@@ -472,7 +472,7 @@
             </div>
 
             <div style="text-align: right; color: var(--text-muted); font-size: 0.85rem; margin-top: 30px; font-weight: bold; padding-bottom: 20px;">
-                Version 2.9.4 (Correctif Bug Provisions)
+                Version 2.9.5 (Correctif Calculatrice Drag)
             </div>
         </div>
     </main>
@@ -917,7 +917,6 @@
                 <div class="progress-container"><div class="progress-header"><span>🛡️ Provisions</span><span>${eur(tp)}</span></div></div>
             `;
 
-            // CORRECTIF BUG: Utilisation stricte de obj.montant pour préserver la rétrocompatibilité Firebase
             state.objectifsProvisions.forEach(obj => {
                 let totalObj = 0;
                 const search = sansAccents(obj.nom);
@@ -946,7 +945,6 @@
             `).join('');
 
             const objDiv = document.getElementById('admin-objectifs');
-            // CORRECTIF BUG: On utilise bien o.montant à l'affichage
             objDiv.innerHTML = state.objectifsProvisions.map((o, i) => `
                 <div class="month-pill" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
                     <span>${o.nom} (${o.montant}€)</span><button class="btn-delete" data-del-obj="${i}">✕</button>
@@ -968,7 +966,72 @@
             ts.innerHTML = THEMES.map(t => `<div class="color-circle ${localStorage.getItem(LS_THEME) === t.id ? 'active' : ''}" style="background:${t.color}" data-set-theme="${t.id}"></div>`).join('');
         };
 
-        // --- Gestionnaires d'événements ---
+        // --- Gestionnaires d'événements (BULLES FLOTTANTES CORRIGÉES) ---
+        
+        const setupDrag = (id) => {
+            const bubble = document.getElementById(id);
+            if (!bubble) return;
+            let isDragging = false;
+            let startX, startY, initialX, initialY;
+
+            const dragStart = (e) => {
+                isDragging = false;
+                if (e.type === 'touchstart') {
+                    startX = e.touches[0].clientX;
+                    startY = e.touches[0].clientY;
+                } else {
+                    startX = e.clientX;
+                    startY = e.clientY;
+                }
+                const rect = bubble.getBoundingClientRect();
+                initialX = rect.left;
+                initialY = rect.top;
+                
+                document.addEventListener('mousemove', dragMove);
+                document.addEventListener('mouseup', dragEnd);
+                document.addEventListener('touchmove', dragMove, {passive: false});
+                document.addEventListener('touchend', dragEnd);
+            };
+
+            const dragMove = (e) => {
+                let clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+                let clientY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
+                
+                const dx = clientX - startX;
+                const dy = clientY - startY;
+                
+                if (Math.abs(dx) > 5 || Math.abs(dy) > 5) isDragging = true;
+
+                if (isDragging) {
+                    e.preventDefault(); 
+                    let newX = initialX + dx;
+                    let newY = initialY + dy;
+                    
+                    newX = Math.max(0, Math.min(window.innerWidth - bubble.offsetWidth, newX));
+                    newY = Math.max(0, Math.min(window.innerHeight - bubble.offsetHeight, newY));
+
+                    bubble.style.left = newX + 'px';
+                    bubble.style.top = newY + 'px';
+                    bubble.style.bottom = 'auto';
+                    bubble.style.right = 'auto';
+                }
+            };
+
+            const dragEnd = (e) => {
+                document.removeEventListener('mousemove', dragMove);
+                document.removeEventListener('mouseup', dragEnd);
+                document.removeEventListener('touchmove', dragMove);
+                document.removeEventListener('touchend', dragEnd);
+                
+                if (!isDragging && id === 'calc-bubble') {
+                    document.getElementById('calc-popup').classList.remove('hidden');
+                }
+            };
+
+            bubble.addEventListener('mousedown', dragStart);
+            bubble.addEventListener('touchstart', dragStart, {passive: false});
+        };
+        setupDrag('calc-bubble');
         
         // 1. Bouton Login
         document.getElementById('btn-login').onclick = () => {
@@ -1121,31 +1184,6 @@
             rafraichirTouteLInterface();
         };
 
-        // 8. Calculatrice
-        const calcDisp = document.getElementById('calc-display');
-        document.getElementById('calc-popup').onclick = (e) => {
-            const input = e.target.dataset.input;
-            const action = e.target.dataset.action;
-            if (input) calcDisp.value += input;
-            if (action === 'clear') calcDisp.value = '';
-            if (action === 'result') {
-                try { calcDisp.value = eval(calcDisp.value.replace(/×/g, '*').replace(/÷/g, '/')); }
-                catch { calcDisp.value = "Erreur"; }
-            }
-        };
-
-        // 9. Bulles flottantes (Drag)
-        const setupDrag = (id) => {
-            const el = document.getElementById(id);
-            let x = 0, y = 0, isDown = false;
-            const start = (e) => { isDown = true; x = (e.pageX || e.touches[0].pageX) - el.offsetLeft; y = (e.pageY || e.touches[0].pageY) - el.offsetTop; };
-            const move = (e) => { if (!isDown) return; e.preventDefault(); el.style.left = ((e.pageX || e.touches[0].pageX) - x) + 'px'; el.style.top = ((e.pageY || e.touches[0].pageY) - y) + 'px'; el.style.bottom = 'auto'; el.style.right = 'auto'; };
-            const end = () => { if(isDown && id === 'calc-bubble') document.getElementById('calc-popup').classList.remove('hidden'); isDown = false; };
-            el.onmousedown = start; el.ontouchstart = start;
-            window.onmousemove = move; window.ontouchmove = move;
-            el.onmouseup = end; el.ontouchend = end;
-        };
-        setupDrag('calc-bubble');
         document.getElementById('btn-close-calc').onclick = () => document.getElementById('calc-popup').classList.add('hidden');
 
         // 10. Initialisation Thème
@@ -1178,16 +1216,6 @@
                 off(ref(db, 'budgetDataLC'));
             }
         });
-
-        // 12. Admin Actions REPAREES
-        const viderCorbeille = () => { if (confirm("Vider la corbeille ?")) { state.corbeille = []; sauvegarderConfig(); } };
-        const restaurerCorbeille = (i) => {
-            const item = state.corbeille.splice(i, 1)[0];
-            const mois = getMoisActif();
-            mois[item.typeOriginal].unshift(item);
-            delete item.typeOriginal;
-            sauvegarderDonnees(); sauvegarderConfig(); rafraichirTouteLInterface();
-        };
 
         // Nouveau mois manuel
         document.getElementById('btn-creer-mois').onclick = () => {
@@ -1250,7 +1278,6 @@
         document.getElementById('btn-add-obj').onclick = () => {
             const nom = document.getElementById('new-obj-nom').value;
             const montant = parseFloat(document.getElementById('new-obj-mnt').value);
-            // CORRECTIF BUG : On insère bien "montant" (et pas "mnt") dans l'objet pour préserver la base de données existante.
             if (nom && montant) { state.objectifsProvisions.push({ nom, montant }); sauvegarderConfig(); rendreAdmin(); }
         };
 
