@@ -103,7 +103,7 @@
         body { background-color: var(--bg-color); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
 
         /* 7. ECRAN DE CONNEXION */
-        #login-screen { position: fixed; inset: 0; background: var(--bg-color); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        #login-screen { position: fixed; inset: 0; background: var(--bg-color); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 20px; transition: opacity 0.4s ease; }
         .login-box { background: var(--card-bg); padding: 40px 30px; border-radius: var(--radius-card); box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
         .login-box h1 { margin-bottom: 5px; font-size: 1.8rem; }
         .login-box p { color: var(--text-muted); margin-bottom: 25px; font-size: 0.9rem; }
@@ -466,7 +466,7 @@
             
             <div class="admin-section">
                 <div class="card-header" data-target="admin-corbeille-wrapper" style="padding:0; border:none; margin:0;">
-                    <h3 style="margin:0;">🗑️ Corbeille (Lignes supprimées)</h3>
+                    <h3 style="margin:0; pointer-events:none;">🗑️ Corbeille (Lignes supprimées)</h3>
                 </div>
                 <div id="admin-corbeille-wrapper" class="section-content" style="margin-top:15px;">
                     <div id="admin-corbeille"></div>
@@ -481,7 +481,7 @@
             </div>
 
             <div style="text-align: right; color: var(--text-muted); font-size: 0.85rem; margin-top: 30px; font-weight: bold; padding-bottom: 20px;">
-                Version 2.9.6 (Accordéons & Répartition en €)
+                Version 2.9.7 (Code Fixé)
             </div>
         </div>
     </main>
@@ -692,6 +692,12 @@
             rafraichirTouteLInterface();
         };
 
+        const toggleSection = (id, header) => {
+            const el = document.getElementById(id);
+            el.classList.toggle('collapsed');
+            if (header) header.classList.toggle('collapsed');
+        };
+
         const rafraichirTouteLInterface = () => {
             rendreMenu();
             if (state.vueActuelle === 'mensuelle') rendreVueMensuelle();
@@ -759,7 +765,6 @@
                 const style = isNeg ? 'color:var(--danger);' : '';
                 const mntFinal = isNeg ? Math.abs(item.montant || 0) : (item.montant || 0);
 
-                // CONDITION SPECIALE: ONGLET FIXES MINIMALISTE
                 if (type === 'fixes') {
                     row.innerHTML = `
                         <div class="drag-handle">☰</div>
@@ -774,7 +779,6 @@
                         <button class="btn-delete" data-del-type="${type}" data-del-id="${item.id}">✕</button>
                     `;
                 } 
-                // AFFICHAGE CLASSIQUE POUR LES AUTRES ONGLETS
                 else {
                     let payIcon = '';
                     if (type === 'depenses') {
@@ -808,7 +812,6 @@
                 if(type !== 'fixes') autoResize(row.querySelector('textarea'));
             });
 
-            // Drag and Drop
             if (container._sortable) container._sortable.destroy();
             container._sortable = new Sortable(container, {
                 handle: '.drag-handle', animation: 150,
@@ -850,7 +853,7 @@
             const tprov = somme(m.provisions);
             const totalRev = report + (parseFloat(m.revenus) || 0) + (parseFloat(m.revenus_add) || 0);
 
-            const reste = totalRev - tc - tdCB - tprov; 
+            const reste = totalRev - tc - tdCB - tprov;
 
             document.getElementById('total-charges').innerText = tc.toFixed(0);
             document.getElementById('total-epargne').innerText = te.toFixed(0);
@@ -860,17 +863,14 @@
             const tdDiff = tdTotal - tdCB;
             document.getElementById('titre-depenses').innerHTML = `🛒 Dépenses (${tdTotal.toFixed(0)}€) ${tdDiff > 0 ? `<small style="font-weight:normal; opacity:0.6;">(dont ${tdDiff.toFixed(0)}€ 🎟️/💵)</small>` : ''}`;
 
-            // Jauges avec affichage du montant ET du pourcentage
             const globalTotal = tc + tdTotal + Math.abs(te) + tprov + (reste > 0 ? reste : 0);
             const setBar = (id, val) => {
                 const p = globalTotal > 0 ? Math.round((val / globalTotal) * 100) : 0;
                 document.getElementById(`bar-${id}-m`).style.width = p + '%';
-                // CORRECTIF: Affiche Montant € (Pourcentage %)
                 document.getElementById(`pct-${id}-m`).innerText = `${val.toFixed(0)} € (${p}%)`;
             };
             setBar('charges', tc); setBar('depenses', tdTotal); setBar('epargne', Math.abs(te)); setBar('provisions', tprov); setBar('reste', reste > 0 ? reste : 0);
 
-            // Jours restants
             const [n, a] = m.nom.split(' ');
             const mIdx = NOMS_MOIS.indexOf(n);
             const today = new Date();
@@ -970,9 +970,9 @@
             ts.innerHTML = THEMES.map(t => `<div class="color-circle ${localStorage.getItem(LS_THEME) === t.id ? 'active' : ''}" style="background:${t.color}" data-set-theme="${t.id}"></div>`).join('');
         };
 
-        // --- Écouteurs globaux centralisés (Clics & Accordéons) ---
+        // --- Écouteurs globaux centralisés ---
         document.body.addEventListener('click', (e) => {
-            // 1. Accordéons (Réparés !)
+            // 1. Accordéons (Réparés)
             const header = e.target.closest('.card-header[data-target]');
             if (header) {
                 const targetId = header.dataset.target;
@@ -1001,7 +1001,7 @@
                 return;
             }
 
-            // 3. Actions Admin (Catégories, Objectifs, Thème)
+            // 3. Actions Admin
             if (e.target.dataset.setTheme) { applyTheme(e.target.dataset.setTheme); return; }
             const delCat = e.target.closest('[data-del-cat]');
             if (delCat) { state.categories.splice(parseInt(delCat.dataset.delCat), 1); sauvegarderConfig(true); rendreAdmin(); return; }
@@ -1081,11 +1081,26 @@
         document.getElementById('select-annee').onchange = () => rendreVueAnnuelle();
         document.getElementById('btn-logout').onclick = () => signOut(auth).then(() => window.location.reload());
         
+        // Logique de Login
+        const handleLogin = () => {
+            const e = document.getElementById('login-email').value;
+            const p = document.getElementById('login-password').value;
+            signInWithEmailAndPassword(auth, e, p).catch(() => {
+                document.getElementById('login-error').style.display = 'block';
+            });
+        };
+        document.getElementById('btn-login').onclick = handleLogin;
+        document.getElementById('login-password').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleLogin();
+        });
+
         // Formulaires & Inputs spécifiques
         const setupTableListeners = (containerId) => {
             document.getElementById(containerId).addEventListener('input', (e) => {
                 const mois = getMoisActif();
                 const { id, type, field } = e.target.dataset;
+                if(!id || !type || !field) return;
+
                 const item = mois[type].find(x => x.id === id);
                 if (item) {
                     if (field === 'montant') {
