@@ -472,7 +472,7 @@
             </div>
 
             <div style="text-align: right; color: var(--text-muted); font-size: 0.85rem; margin-top: 30px; font-weight: bold; padding-bottom: 20px;">
-                Version 2.9.3 (Retour du Changelog)
+                Version 2.9.4 (Correctif Bug Provisions)
             </div>
         </div>
     </main>
@@ -640,7 +640,6 @@
                     localStorage.setItem(LS_CACHE, JSON.stringify(state.donnees));
                     rafraichirTouteLInterface();
                 } else {
-                    // Init if empty
                     if (state.firstLoad) {
                         state.donnees = [normaliserMois({ id: genId(), nom: "Mars 2026", annee: 2026, revenus: 4500, revenus_add: 0 })];
                         state.moisActifId = state.donnees[0].id;
@@ -918,6 +917,7 @@
                 <div class="progress-container"><div class="progress-header"><span>🛡️ Provisions</span><span>${eur(tp)}</span></div></div>
             `;
 
+            // CORRECTIF BUG: Utilisation stricte de obj.montant pour préserver la rétrocompatibilité Firebase
             state.objectifsProvisions.forEach(obj => {
                 let totalObj = 0;
                 const search = sansAccents(obj.nom);
@@ -926,10 +926,10 @@
                         if (sansAccents(line.categorie || "").includes(search)) totalObj += (parseFloat(line.montant) || 0);
                     });
                 });
-                const pct = Math.min(Math.round((totalObj / obj.mnt) * 100), 100);
+                const pct = Math.min(Math.round((totalObj / obj.montant) * 100), 100);
                 bloc.innerHTML += `
                     <div style="margin-top:20px;">
-                        <div class="progress-header"><span>🎯 ${obj.nom}</span><span>${totalObj.toFixed(0)} / ${obj.mnt}€</span></div>
+                        <div class="progress-header"><span>🎯 ${obj.nom}</span><span>${totalObj.toFixed(0)} / ${obj.montant}€</span></div>
                         <div class="progress-track"><div class="progress-fill" style="background:var(--secondary); width:${pct}%"></div></div>
                     </div>
                 `;
@@ -946,9 +946,10 @@
             `).join('');
 
             const objDiv = document.getElementById('admin-objectifs');
+            // CORRECTIF BUG: On utilise bien o.montant à l'affichage
             objDiv.innerHTML = state.objectifsProvisions.map((o, i) => `
                 <div class="month-pill" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
-                    <span>${o.nom} (${o.mnt}€)</span><button class="btn-delete" data-del-obj="${i}">✕</button>
+                    <span>${o.nom} (${o.montant}€)</span><button class="btn-delete" data-del-obj="${i}">✕</button>
                 </div>
             `).join('');
 
@@ -1248,8 +1249,9 @@
 
         document.getElementById('btn-add-obj').onclick = () => {
             const nom = document.getElementById('new-obj-nom').value;
-            const mnt = parseFloat(document.getElementById('new-obj-mnt').value);
-            if (nom && mnt) { state.objectifsProvisions.push({ nom, mnt }); sauvegarderConfig(); rendreAdmin(); }
+            const montant = parseFloat(document.getElementById('new-obj-mnt').value);
+            // CORRECTIF BUG : On insère bien "montant" (et pas "mnt") dans l'objet pour préserver la base de données existante.
+            if (nom && montant) { state.objectifsProvisions.push({ nom, montant }); sauvegarderConfig(); rendreAdmin(); }
         };
 
         document.getElementById('btn-logout').onclick = () => signOut(auth).then(() => window.location.reload());
