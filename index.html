@@ -149,7 +149,7 @@
         .section-content { overflow: hidden; transition: max-height 0.4s ease-out; }
         .section-content.collapsed { max-height: 0 !important; }
 
-        /* 13. LIGNES D'ARTICLES (DÉPENSES) */
+        /* 13. LIGNES D'ARTICLES */
         .item-row { display: flex; align-items: center; background: var(--card-bg); padding: 12px 0; border-bottom: 1px solid var(--border); touch-action: none; }
         .item-row:last-child { border-bottom: none; }
         .drag-handle { padding: 10px 10px 10px 0; color: var(--text-muted); cursor: grab; font-size: 1.1rem; }
@@ -363,7 +363,7 @@
 
             <div class="card">
                 <div id="conteneur-fixes"></div>
-                <button class="btn-action bg-primary" data-add="fixes" style="margin-top:15px;">+ Ajouter une charge fixe (Loyer, Eau...)</button>
+                <button class="btn-action bg-primary" data-add="fixes" style="margin-top:15px;">+ Ajouter une charge fixe</button>
             </div>
         </div>
 
@@ -481,7 +481,7 @@
             depenses: Array.isArray(m.depenses) ? m.depenses : (m.depenses ? Object.values(m.depenses) : []),
             epargne: Array.isArray(m.epargne) ? m.epargne : (m.epargne ? Object.values(m.epargne) : []),
             provisions: Array.isArray(m.provisions) ? m.provisions : (m.provisions ? Object.values(m.provisions) : []),
-            fixes: Array.isArray(m.fixes) ? m.fixes : (m.fixes ? Object.values(m.fixes) : []), // Nouveau tableau
+            fixes: Array.isArray(m.fixes) ? m.fixes : (m.fixes ? Object.values(m.fixes) : []),
             revenus_add: m.revenus_add || 0,
             annee: m.annee || parseInt(m.nom.split(' ')[1])
         });
@@ -592,7 +592,7 @@
             });
         };
 
-        // --- Logique du Reste à Vivre (Calcul du report exclusif Revolut) ---
+        // --- Logique du Reste à Vivre ---
         const calculerSoldeReporte = (cibleIdx) => {
             let solde = 0;
             for (let i = 0; i < cibleIdx; i++) {
@@ -601,7 +601,6 @@
                 const tc = somme(m.charges);
                 const tdCB = sommeCB(m.depenses);
                 const tprov = somme(m.provisions);
-                // On ne déduit PAS l'épargne (te) car elle sort du compte Revolut vers un livret externe
                 solde += (rev - tc - tdCB - tprov);
             }
             return solde;
@@ -613,7 +612,7 @@
             if (!container) return;
             container.innerHTML = '';
 
-            const filtered = (tableau || []).filter(i => sansAccents(i.libelle || "").includes(state.termeRecherche));
+            const filtered = (tableau || []).filter(i => sansAccents(i.libelle || i.categorie || "").includes(state.termeRecherche));
 
             filtered.forEach(item => {
                 const row = document.createElement('div');
@@ -624,34 +623,53 @@
                 const style = isNeg ? 'color:var(--danger);' : '';
                 const mntFinal = isNeg ? Math.abs(item.montant || 0) : (item.montant || 0);
 
-                let payIcon = '';
-                if (type === 'depenses') {
-                    const meth = item.moyenPaiement || 'CB';
-                    const icon = meth === 'TR' ? '🎟️' : (meth === 'ESPECES' ? '💵' : '💳');
-                    payIcon = `<button class="btn-pay-method" data-pay="${item.id}">${icon}</button>`;
-                }
-
-                row.innerHTML = `
-                    <div class="drag-handle">☰</div>
-                    <div class="item-content">
-                        <div class="item-top">
-                            <textarea data-id="${item.id}" data-type="${type}" data-field="libelle" placeholder="Note...">${item.libelle || ''}</textarea>
-                            <div style="display:flex; align-items:center;">
-                                ${isNeg ? '-' : ''}<input type="number" value="${mntFinal}" style="${style}" data-id="${item.id}" data-type="${type}" data-field="montant">
-                                ${payIcon}
-                            </div>
-                        </div>
-                        <div class="item-bottom">
-                            <input type="date" value="${item.date || ''}" data-id="${item.id}" data-type="${type}" data-field="date">
-                            <select data-id="${item.id}" data-type="${type}" data-field="categorie">
+                // CONDITION SPECIALE POUR L'ONGLET FIXES (Minimaliste)
+                if (type === 'fixes') {
+                    row.innerHTML = `
+                        <div class="drag-handle">☰</div>
+                        <div class="item-content" style="flex-direction: row; align-items: center; justify-content: space-between;">
+                            <select data-id="${item.id}" data-type="${type}" data-field="categorie" style="flex:1; font-weight:600; background:none; border:none; padding:0;">
                                 ${state.categories.map(c => `<option value="${c}" ${item.categorie === c ? 'selected' : ''}>${c}</option>`).join('')}
                             </select>
+                            <div style="display:flex; align-items:center;">
+                                <input type="number" value="${mntFinal}" style="${style} width:85px; text-align:right; font-weight:700; border:none; background:var(--bg-color); padding:6px; border-radius:8px;" data-id="${item.id}" data-type="${type}" data-field="montant">
+                            </div>
                         </div>
-                    </div>
-                    <button class="btn-delete" data-del-type="${type}" data-del-id="${item.id}">✕</button>
-                `;
+                        <button class="btn-delete" data-del-type="${type}" data-del-id="${item.id}">✕</button>
+                    `;
+                } 
+                // AFFICHAGE COMPLET POUR LE RESTE (Dépenses, Epargne, etc.)
+                else {
+                    let payIcon = '';
+                    if (type === 'depenses') {
+                        const meth = item.moyenPaiement || 'CB';
+                        const icon = meth === 'TR' ? '🎟️' : (meth === 'ESPECES' ? '💵' : '💳');
+                        payIcon = `<button class="btn-pay-method" data-pay="${item.id}">${icon}</button>`;
+                    }
+
+                    row.innerHTML = `
+                        <div class="drag-handle">☰</div>
+                        <div class="item-content">
+                            <div class="item-top">
+                                <textarea data-id="${item.id}" data-type="${type}" data-field="libelle" placeholder="Note...">${item.libelle || ''}</textarea>
+                                <div style="display:flex; align-items:center;">
+                                    ${isNeg ? '-' : ''}<input type="number" value="${mntFinal}" style="${style}" data-id="${item.id}" data-type="${type}" data-field="montant">
+                                    ${payIcon}
+                                </div>
+                            </div>
+                            <div class="item-bottom">
+                                <input type="date" value="${item.date || ''}" data-id="${item.id}" data-type="${type}" data-field="date">
+                                <select data-id="${item.id}" data-type="${type}" data-field="categorie">
+                                    ${state.categories.map(c => `<option value="${c}" ${item.categorie === c ? 'selected' : ''}>${c}</option>`).join('')}
+                                </select>
+                            </div>
+                        </div>
+                        <button class="btn-delete" data-del-type="${type}" data-del-id="${item.id}">✕</button>
+                    `;
+                }
+                
                 container.appendChild(row);
-                autoResize(row.querySelector('textarea'));
+                if(type !== 'fixes') autoResize(row.querySelector('textarea'));
             });
 
             // Drag and Drop
@@ -696,7 +714,7 @@
             const tprov = somme(m.provisions);
             const totalRev = report + (parseFloat(m.revenus) || 0) + (parseFloat(m.revenus_add) || 0);
 
-            const reste = totalRev - tc - tdCB - tprov; // L'épargne (te) n'est plus soustraite car c'est un compte à part
+            const reste = totalRev - tc - tdCB - tprov;
 
             document.getElementById('total-charges').innerText = tc.toFixed(0);
             document.getElementById('total-epargne').innerText = te.toFixed(0);
@@ -727,7 +745,7 @@
             }
         };
 
-        // --- Vue Charges Fixes (NOUVEAU) ---
+        // --- Vue Charges Fixes ---
         const rendreVueFixes = () => {
             const mois = getMoisActif();
             if (!mois) return;
@@ -911,7 +929,6 @@
                     const idx = mois[delType].findIndex(x => x.id === delId);
                     const item = mois[delType].splice(idx, 1)[0];
                     
-                    // Toast Annuler
                     state.suppressionEnAttente = { type: delType, item, moisId: state.moisActifId, index: idx };
                     const toast = document.getElementById('toast');
                     toast.classList.add('show');
