@@ -143,8 +143,8 @@
         /* 12. CARTES ET BOITES */
         .card { background-color: var(--card-bg); border-radius: var(--radius-card); padding: 15px; box-shadow: var(--shadow-card); margin-bottom: 20px; }
         .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--border); cursor: pointer; }
-        .card-header h3 { font-size: 1rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-        .card-header::after { content: '▼'; font-size: 0.7rem; color: var(--text-muted); transition: 0.3s; }
+        .card-header h3 { font-size: 1rem; font-weight: 700; display: flex; align-items: center; gap: 8px; pointer-events: none; }
+        .card-header::after { content: '▼'; font-size: 0.7rem; color: var(--text-muted); transition: 0.3s; pointer-events: none; }
         .card-header.collapsed::after { transform: rotate(-90deg); }
         .section-content { overflow: hidden; transition: max-height 0.4s ease-out; }
         .section-content.collapsed { max-height: 0 !important; }
@@ -338,11 +338,11 @@
                 <div class="card">
                     <div class="card-header" data-target="repartition-m"><h3>📊 Répartition</h3></div>
                     <div id="repartition-m" class="section-content">
-                        <div class="progress-container"><div class="progress-header"><span>🏠 Charges Fixes</span><span id="pct-charges-m">0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--danger);" id="bar-charges-m"></div></div></div>
-                        <div class="progress-container"><div class="progress-header"><span>🛒 Dépenses</span><span id="pct-depenses-m">0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--secondary);" id="bar-depenses-m"></div></div></div>
-                        <div class="progress-container"><div class="progress-header"><span>✈️ Épargne</span><span id="pct-epargne-m">0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--info);" id="bar-epargne-m"></div></div></div>
-                        <div class="progress-container"><div class="progress-header"><span>🛡️ Provisions</span><span id="pct-provisions-m">0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--warn);" id="bar-provisions-m"></div></div></div>
-                        <div class="progress-container"><div class="progress-header"><span>✅ Reste</span><span id="pct-reste-m">0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--success);" id="bar-reste-m"></div></div></div>
+                        <div class="progress-container"><div class="progress-header"><span>🏠 Charges Fixes</span><span id="pct-charges-m">0 € (0%)</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--danger);" id="bar-charges-m"></div></div></div>
+                        <div class="progress-container"><div class="progress-header"><span>🛒 Dépenses</span><span id="pct-depenses-m">0 € (0%)</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--secondary);" id="bar-depenses-m"></div></div></div>
+                        <div class="progress-container"><div class="progress-header"><span>✈️ Épargne</span><span id="pct-epargne-m">0 € (0%)</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--info);" id="bar-epargne-m"></div></div></div>
+                        <div class="progress-container"><div class="progress-header"><span>🛡️ Provisions</span><span id="pct-provisions-m">0 € (0%)</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--warn);" id="bar-provisions-m"></div></div></div>
+                        <div class="progress-container"><div class="progress-header"><span>✅ Reste</span><span id="pct-reste-m">0 € (0%)</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--success);" id="bar-reste-m"></div></div></div>
                     </div>
                 </div>
 
@@ -361,7 +361,10 @@
                 <div class="card">
                     <div class="card-header" data-target="conteneur-epargne"><h3>✈️ Projets / Épargne (<span id="total-epargne">0</span> €)</h3></div>
                     <div id="conteneur-epargne" class="section-content"></div>
-                    <button class="btn-action bg-primary" data-add="epargne" data-special="epargne">+ Épargner</button>
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn-action bg-primary" data-add="epargne" data-special="epargne" style="flex:1; margin-bottom:0;">+ Épargner</button>
+                        <button class="btn-action bg-danger" id="btn-retirer-epargne" style="flex:1; margin-bottom:0;">- Utiliser</button>
+                    </div>
                 </div>
                 
                 <div class="card">
@@ -383,7 +386,8 @@
             </div>
 
             <div class="card">
-                <div id="conteneur-fixes"></div>
+                <div class="card-header" data-target="conteneur-fixes"><h3>📝 Détail des factures</h3></div>
+                <div id="conteneur-fixes" class="section-content"></div>
                 <button class="btn-action bg-primary" data-add="fixes" style="margin-top:15px;">+ Ajouter une charge fixe</button>
             </div>
         </div>
@@ -398,7 +402,8 @@
                 <div class="total-amount" id="annuel-total-epargne">0 €</div>
             </div>
             <div class="card">
-                <div id="bloc-annuel-stats"></div>
+                <div class="card-header" data-target="bloc-annuel-stats"><h3>📈 Statistiques</h3></div>
+                <div id="bloc-annuel-stats" class="section-content"></div>
             </div>
         </div>
 
@@ -460,9 +465,13 @@
             </div>
             
             <div class="admin-section">
-                <h3>🗑️ Corbeille (Lignes supprimées)</h3>
-                <div id="admin-corbeille"></div>
-                <button class="btn-action bg-danger" id="btn-vider-corbeille" style="margin-top:15px; font-size:0.9rem; padding:10px; margin-bottom: 0;">Vider définitivement la corbeille</button>
+                <div class="card-header" data-target="admin-corbeille-wrapper" style="padding:0; border:none; margin:0;">
+                    <h3 style="margin:0;">🗑️ Corbeille (Lignes supprimées)</h3>
+                </div>
+                <div id="admin-corbeille-wrapper" class="section-content" style="margin-top:15px;">
+                    <div id="admin-corbeille"></div>
+                    <button class="btn-action bg-danger" id="btn-vider-corbeille" style="margin-top:15px; font-size:0.9rem; padding:10px; margin-bottom: 0;">Vider définitivement la corbeille</button>
+                </div>
             </div>
 
             <div class="admin-section">
@@ -472,7 +481,7 @@
             </div>
 
             <div style="text-align: right; color: var(--text-muted); font-size: 0.85rem; margin-top: 30px; font-weight: bold; padding-bottom: 20px;">
-                Version 2.9.5 (Correctif Calculatrice Drag)
+                Version 2.9.6 (Accordéons & Répartition en €)
             </div>
         </div>
     </main>
@@ -683,12 +692,6 @@
             rafraichirTouteLInterface();
         };
 
-        const toggleSection = (id, header) => {
-            const el = document.getElementById(id);
-            el.classList.toggle('collapsed');
-            if (header) header.classList.toggle('collapsed');
-        };
-
         const rafraichirTouteLInterface = () => {
             rendreMenu();
             if (state.vueActuelle === 'mensuelle') rendreVueMensuelle();
@@ -847,7 +850,7 @@
             const tprov = somme(m.provisions);
             const totalRev = report + (parseFloat(m.revenus) || 0) + (parseFloat(m.revenus_add) || 0);
 
-            const reste = totalRev - tc - tdCB - tprov; // L'épargne (te) n'est plus soustraite car c'est un compte à part
+            const reste = totalRev - tc - tdCB - tprov; 
 
             document.getElementById('total-charges').innerText = tc.toFixed(0);
             document.getElementById('total-epargne').innerText = te.toFixed(0);
@@ -857,12 +860,13 @@
             const tdDiff = tdTotal - tdCB;
             document.getElementById('titre-depenses').innerHTML = `🛒 Dépenses (${tdTotal.toFixed(0)}€) ${tdDiff > 0 ? `<small style="font-weight:normal; opacity:0.6;">(dont ${tdDiff.toFixed(0)}€ 🎟️/💵)</small>` : ''}`;
 
-            // Jauges
+            // Jauges avec affichage du montant ET du pourcentage
             const globalTotal = tc + tdTotal + Math.abs(te) + tprov + (reste > 0 ? reste : 0);
             const setBar = (id, val) => {
                 const p = globalTotal > 0 ? Math.round((val / globalTotal) * 100) : 0;
                 document.getElementById(`bar-${id}-m`).style.width = p + '%';
-                document.getElementById(`pct-${id}-m`).innerText = p + '%';
+                // CORRECTIF: Affiche Montant € (Pourcentage %)
+                document.getElementById(`pct-${id}-m`).innerText = `${val.toFixed(0)} € (${p}%)`;
             };
             setBar('charges', tc); setBar('depenses', tdTotal); setBar('epargne', Math.abs(te)); setBar('provisions', tprov); setBar('reste', reste > 0 ? reste : 0);
 
@@ -935,7 +939,7 @@
             });
         };
 
-        // --- Vue Admin RESTAURÉE ---
+        // --- Vue Admin ---
         const rendreAdmin = () => {
             const catDiv = document.getElementById('admin-categories');
             catDiv.innerHTML = state.categories.map((c, i) => `
@@ -966,8 +970,65 @@
             ts.innerHTML = THEMES.map(t => `<div class="color-circle ${localStorage.getItem(LS_THEME) === t.id ? 'active' : ''}" style="background:${t.color}" data-set-theme="${t.id}"></div>`).join('');
         };
 
-        // --- Gestionnaires d'événements (BULLES FLOTTANTES CORRIGÉES) ---
-        
+        // --- Écouteurs globaux centralisés (Clics & Accordéons) ---
+        document.body.addEventListener('click', (e) => {
+            // 1. Accordéons (Réparés !)
+            const header = e.target.closest('.card-header[data-target]');
+            if (header) {
+                const targetId = header.dataset.target;
+                const targetEl = document.getElementById(targetId);
+                if (targetEl) {
+                    targetEl.classList.toggle('collapsed');
+                    header.classList.toggle('collapsed');
+                }
+                return;
+            }
+
+            // 2. Ajouter une ligne (+ Dépense, + Charge...)
+            const addType = e.target.dataset.add;
+            if (addType) {
+                const mois = getMoisActif();
+                const nouv = { id: genId(), libelle: "", montant: 0, date: new Date().toISOString().split('T')[0], categorie: state.categories[0] };
+                if (addType === 'epargne') {
+                    if (e.target.dataset.special === 'epargne') confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+                    else nouv.isRetrait = true;
+                }
+                if (addType === 'depenses') nouv.moyenPaiement = 'CB';
+                
+                mois[addType].unshift(nouv);
+                sauvegarderDonnees();
+                rafraichirTouteLInterface();
+                return;
+            }
+
+            // 3. Actions Admin (Catégories, Objectifs, Thème)
+            if (e.target.dataset.setTheme) { applyTheme(e.target.dataset.setTheme); return; }
+            const delCat = e.target.closest('[data-del-cat]');
+            if (delCat) { state.categories.splice(parseInt(delCat.dataset.delCat), 1); sauvegarderConfig(true); rendreAdmin(); return; }
+            const delObj = e.target.closest('[data-del-obj]');
+            if (delObj) { state.objectifsProvisions.splice(parseInt(delObj.dataset.delObj), 1); sauvegarderConfig(true); rendreAdmin(); return; }
+            const restore = e.target.closest('[data-restore]');
+            if (restore) {
+                const item = state.corbeille.splice(parseInt(restore.dataset.restore), 1)[0];
+                const mois = getMoisActif();
+                mois[item.typeOriginal].unshift(item);
+                delete item.typeOriginal;
+                sauvegarderDonnees(); sauvegarderConfig(); rafraichirTouteLInterface();
+                return;
+            }
+            if (e.target.id === 'btn-vider-corbeille') { 
+                if(confirm("Vider définitivement la corbeille ?")) { state.corbeille = []; sauvegarderConfig(); rendreAdmin(); }
+                return; 
+            }
+            if (e.target.id === 'btn-retirer-epargne') {
+                const mois = getMoisActif();
+                let catDefaut = state.categories.find(c => c.toLowerCase().includes("vacance")) || state.categories[0];
+                mois.epargne.unshift({ id: genId(), date: "", libelle: "Retrait...", categorie: catDefaut, montant: 0, isRetrait: true });
+                sauvegarderDonnees(); rafraichirTouteLInterface();
+            }
+        });
+
+        // --- Gestion des draggers calculatrice ---
         const setupDrag = (id) => {
             const bubble = document.getElementById(id);
             if (!bubble) return;
@@ -976,16 +1037,10 @@
 
             const dragStart = (e) => {
                 isDragging = false;
-                if (e.type === 'touchstart') {
-                    startX = e.touches[0].clientX;
-                    startY = e.touches[0].clientY;
-                } else {
-                    startX = e.clientX;
-                    startY = e.clientY;
-                }
+                if (e.type === 'touchstart') { startX = e.touches[0].clientX; startY = e.touches[0].clientY; } 
+                else { startX = e.clientX; startY = e.clientY; }
                 const rect = bubble.getBoundingClientRect();
-                initialX = rect.left;
-                initialY = rect.top;
+                initialX = rect.left; initialY = rect.top;
                 
                 document.addEventListener('mousemove', dragMove);
                 document.addEventListener('mouseup', dragEnd);
@@ -997,101 +1052,36 @@
                 let clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
                 let clientY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
                 
-                const dx = clientX - startX;
-                const dy = clientY - startY;
-                
+                const dx = clientX - startX; const dy = clientY - startY;
                 if (Math.abs(dx) > 5 || Math.abs(dy) > 5) isDragging = true;
 
                 if (isDragging) {
                     e.preventDefault(); 
-                    let newX = initialX + dx;
-                    let newY = initialY + dy;
-                    
+                    let newX = initialX + dx; let newY = initialY + dy;
                     newX = Math.max(0, Math.min(window.innerWidth - bubble.offsetWidth, newX));
                     newY = Math.max(0, Math.min(window.innerHeight - bubble.offsetHeight, newY));
-
-                    bubble.style.left = newX + 'px';
-                    bubble.style.top = newY + 'px';
-                    bubble.style.bottom = 'auto';
-                    bubble.style.right = 'auto';
+                    bubble.style.left = newX + 'px'; bubble.style.top = newY + 'px';
+                    bubble.style.bottom = 'auto'; bubble.style.right = 'auto';
                 }
             };
 
             const dragEnd = (e) => {
-                document.removeEventListener('mousemove', dragMove);
-                document.removeEventListener('mouseup', dragEnd);
-                document.removeEventListener('touchmove', dragMove);
-                document.removeEventListener('touchend', dragEnd);
-                
-                if (!isDragging && id === 'calc-bubble') {
-                    document.getElementById('calc-popup').classList.remove('hidden');
-                }
+                document.removeEventListener('mousemove', dragMove); document.removeEventListener('mouseup', dragEnd);
+                document.removeEventListener('touchmove', dragMove); document.removeEventListener('touchend', dragEnd);
+                if (!isDragging && id === 'calc-bubble') document.getElementById('calc-popup').classList.remove('hidden');
             };
 
             bubble.addEventListener('mousedown', dragStart);
             bubble.addEventListener('touchstart', dragStart, {passive: false});
         };
         setupDrag('calc-bubble');
+
+        // Initialisation divers listeners manuels
+        document.getElementById('btn-close-calc').onclick = () => document.getElementById('calc-popup').classList.add('hidden');
+        document.getElementById('select-annee').onchange = () => rendreVueAnnuelle();
+        document.getElementById('btn-logout').onclick = () => signOut(auth).then(() => window.location.reload());
         
-        // 1. Bouton Login
-        document.getElementById('btn-login').onclick = () => {
-            const e = document.getElementById('login-email').value;
-            const p = document.getElementById('login-password').value;
-            signInWithEmailAndPassword(auth, e, p).catch(() => {
-                document.getElementById('login-error').style.display = 'block';
-            });
-        };
-
-        // 2. Navigation Tabs
-        document.querySelector('.tab-buttons').addEventListener('click', (e) => {
-            const btn = e.target.closest('[data-view]');
-            if (btn) changerVue(btn.dataset.view);
-        });
-
-        // 3. Barre Latérale (Mois/Années)
-        document.getElementById('month-list').addEventListener('click', (e) => {
-            const header = e.target.closest('.year-header');
-            if (header) {
-                const an = parseInt(header.dataset.year);
-                if (state.anneesOuvertes.has(an)) state.anneesOuvertes.delete(an);
-                else state.anneesOuvertes.add(an);
-                rendreMenu();
-            }
-        });
-
-        // 4. Actions Mois
-        document.getElementById('btn-next-month').onclick = () => {
-            const last = state.donnees[state.donnees.length - 1];
-            let idx = NOMS_MOIS.indexOf(last.nom.split(' ')[0]) + 1;
-            let an = last.annee;
-            if (idx > 11) { idx = 0; an++; }
-            
-            const nouveau = normaliserMois({
-                id: genId(),
-                nom: NOMS_MOIS[idx] + " " + an,
-                annee: an,
-                revenus: last.revenus,
-                revenus_add: 0,
-                charges: last.charges.map(c => ({ ...c, id: genId(), montant: 0 })),
-                depenses: [],
-                epargne: [],
-                provisions: last.provisions.map(p => ({ ...p, id: genId(), montant: 0 })),
-                fixes: last.fixes ? last.fixes.map(f => ({ ...f, id: genId(), montant: 0 })) : []
-            });
-            state.donnees.push(nouveau);
-            state.moisActifId = nouveau.id;
-            sauvegarderDonnees();
-        };
-
-        document.getElementById('btn-del-month').onclick = () => {
-            if (confirm("Supprimer ce mois définitivement ?")) {
-                state.donnees = state.donnees.filter(m => m.id !== state.moisActifId);
-                state.moisActifId = state.donnees.length ? state.donnees[state.donnees.length - 1].id : null;
-                sauvegarderDonnees();
-            }
-        };
-
-        // 5. Manipulation des lignes (Délégation d'événements)
+        // Formulaires & Inputs spécifiques
         const setupTableListeners = (containerId) => {
             document.getElementById(containerId).addEventListener('input', (e) => {
                 const mois = getMoisActif();
@@ -1101,9 +1091,7 @@
                     if (field === 'montant') {
                         let val = parseFloat(e.target.value) || 0;
                         item.montant = item.isRetrait ? -Math.abs(val) : val;
-                    } else {
-                        item[field] = e.target.value;
-                    }
+                    } else { item[field] = e.target.value; }
                     
                     if (field === 'libelle' && type === 'depenses' && REGEX_SUPERMARCHE.test(item.libelle)) {
                         item.categorie = "🛒 Courses";
@@ -1114,10 +1102,7 @@
                 }
             });
 
-            document.getElementById(containerId).addEventListener('change', () => {
-                sauvegarderDonnees();
-                rafraichirTouteLInterface();
-            });
+            document.getElementById(containerId).addEventListener('change', () => { sauvegarderDonnees(); rafraichirTouteLInterface(); });
 
             document.getElementById(containerId).addEventListener('click', (e) => {
                 const delBtn = e.target.closest('[data-del-id]');
@@ -1127,7 +1112,6 @@
                     const idx = mois[delType].findIndex(x => x.id === delId);
                     const item = mois[delType].splice(idx, 1)[0];
                     
-                    // Toast Annuler
                     state.suppressionEnAttente = { type: delType, item, moisId: state.moisActifId, index: idx };
                     const toast = document.getElementById('toast');
                     toast.classList.add('show');
@@ -1141,9 +1125,7 @@
                         }
                     }, 4000);
                     
-                    sauvegarderDonnees();
-                    rafraichirTouteLInterface();
-                    return;
+                    sauvegarderDonnees(); rafraichirTouteLInterface(); return;
                 }
 
                 const payBtn = e.target.closest('[data-pay]');
@@ -1151,8 +1133,7 @@
                     const item = getMoisActif().depenses.find(x => x.id === payBtn.dataset.pay);
                     const meths = ['CB', 'TR', 'ESPECES'];
                     item.moyenPaiement = meths[(meths.indexOf(item.moyenPaiement || 'CB') + 1) % 3];
-                    sauvegarderDonnees();
-                    rafraichirTouteLInterface();
+                    sauvegarderDonnees(); rafraichirTouteLInterface();
                 }
             });
         };
@@ -1160,33 +1141,18 @@
         setupTableListeners('mois-content-wrapper');
         setupTableListeners('vue-fixes');
 
-        // 6. Ajout de lignes
-        document.body.addEventListener('click', (e) => {
-            const type = e.target.dataset.add;
-            if (type) {
-                const mois = getMoisActif();
-                const nouv = { id: genId(), libelle: "", montant: 0, date: new Date().toISOString().split('T')[0], categorie: state.categories[0] };
-                if (type === 'epargne') {
-                    if (e.target.dataset.special === 'epargne') confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-                    else nouv.isRetrait = true;
-                }
-                if (type === 'depenses') nouv.moyenPaiement = 'CB';
-                
-                mois[type].unshift(nouv);
-                sauvegarderDonnees();
-                rafraichirTouteLInterface();
+        // Inputs Revenus
+        document.querySelectorAll('[data-field]').forEach(inp => {
+            if(inp.id === 'revenus' || inp.id === 'revenus_add') {
+                inp.onchange = (e) => {
+                    const mois = getMoisActif();
+                    mois[e.target.dataset.field] = parseFloat(e.target.value) || 0;
+                    sauvegarderDonnees(); rafraichirTouteLInterface();
+                };
             }
         });
 
-        // 7. Recherche
-        document.getElementById('search-bar').oninput = (e) => {
-            state.termeRecherche = sansAccents(e.target.value);
-            rafraichirTouteLInterface();
-        };
-
-        document.getElementById('btn-close-calc').onclick = () => document.getElementById('calc-popup').classList.add('hidden');
-
-        // 10. Initialisation Thème
+        // --- Thème Init ---
         const toggleDark = () => {
             document.body.classList.toggle('dark-mode');
             const isDark = document.body.classList.contains('dark-mode');
@@ -1203,21 +1169,9 @@
             localStorage.setItem(LS_THEME, t);
             rendreAdmin();
         };
-        
         if (localStorage.getItem(LS_THEME)) applyTheme(localStorage.getItem(LS_THEME));
 
-        // 11. Auth Listener
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                document.getElementById('login-screen').classList.add('hidden');
-                attacherEcouteurs();
-            } else {
-                document.getElementById('login-screen').classList.remove('hidden');
-                off(ref(db, 'budgetDataLC'));
-            }
-        });
-
-        // Nouveau mois manuel
+        // --- Admin Boutons Création Mois & Sauvegarde ---
         document.getElementById('btn-creer-mois').onclick = () => {
             const val = document.getElementById('input-new-month').value;
             if(!val) { alert("Veuillez sélectionner un mois et une année."); return; }
@@ -1241,7 +1195,6 @@
             document.getElementById('input-new-month').value = "";
         };
 
-        // Sauvegarde Mail
         document.getElementById('btn-sauvegarde-mail').onclick = (e) => {
             const btn = e.target;
             const originalText = btn.innerText; btn.innerText = "⏳ Envoi..."; btn.disabled = true;
@@ -1251,7 +1204,6 @@
             .catch(() => { alert("❌ Erreur"); btn.innerText = originalText; btn.disabled = false; });
         };
 
-        // Importation manuelle
         const importInput = document.getElementById('import-json');
         if(importInput) {
             importInput.addEventListener('change', function(e) {
@@ -1270,19 +1222,6 @@
             });
         }
 
-        document.getElementById('btn-add-cat').onclick = () => {
-            const v = document.getElementById('new-cat-input').value;
-            if (v) { state.categories.push(v); sauvegarderConfig(); rendreAdmin(); }
-        };
-
-        document.getElementById('btn-add-obj').onclick = () => {
-            const nom = document.getElementById('new-obj-nom').value;
-            const montant = parseFloat(document.getElementById('new-obj-mnt').value);
-            if (nom && montant) { state.objectifsProvisions.push({ nom, montant }); sauvegarderConfig(); rendreAdmin(); }
-        };
-
-        document.getElementById('btn-logout').onclick = () => signOut(auth).then(() => window.location.reload());
-
         document.getElementById('btn-undo').onclick = () => {
             if (state.suppressionEnAttente) {
                 const { type, item, moisId, index } = state.suppressionEnAttente;
@@ -1294,52 +1233,9 @@
             }
         };
 
-        // Inputs de revenus (Vue Mensuelle)
-        document.querySelectorAll('[data-field]').forEach(inp => {
-            inp.onchange = (e) => {
-                const mois = getMoisActif();
-                mois[e.target.dataset.field] = parseFloat(e.target.value) || 0;
-                sauvegarderDonnees();
-                rafraichirTouteLInterface();
-            };
-        });
-
-        // 13. Events globaux
-        document.getElementById('select-annee').onchange = (e) => rendreVueAnnuelle();
-
-        document.getElementById('vue-admin').addEventListener('click', (e) => {
-            // Choix du thème
-            if (e.target.dataset.setTheme) { applyTheme(e.target.dataset.setTheme); return; }
-
-            // Supprimer catégorie
-            const delCat = e.target.closest('[data-del-cat]');
-            if (delCat) { state.categories.splice(parseInt(delCat.dataset.delCat), 1); sauvegarderConfig(true); rendreAdmin(); return; }
-
-            // Supprimer objectif
-            const delObj = e.target.closest('[data-del-obj]');
-            if (delObj) { state.objectifsProvisions.splice(parseInt(delObj.dataset.delObj), 1); sauvegarderConfig(true); rendreAdmin(); return; }
-
-            // Restaurer depuis corbeille
-            const restore = e.target.closest('[data-restore]');
-            if (restore) { restaurerCorbeille(parseInt(restore.dataset.restore)); return; }
-
-            // Vider corbeille
-            if (e.target.id === 'btn-vider-corbeille') { viderCorbeille(); return; }
-
-            // Accordéon corbeille
-            const header = e.target.closest('.card-header[data-target]');
-            if (header) toggleSection(header.dataset.target, header);
-        });
-
         // --- Hors-ligne ---
-        window.addEventListener('offline', () => {
-            setSyncDot('offline');
-            document.getElementById('offline-popup').classList.remove('hidden');
-        });
-        window.addEventListener('online', () => {
-            setSyncDot('online');
-            document.getElementById('offline-popup').classList.add('hidden');
-        });
+        window.addEventListener('offline', () => { setSyncDot('offline'); document.getElementById('offline-popup').classList.remove('hidden'); });
+        window.addEventListener('online', () => { setSyncDot('online'); document.getElementById('offline-popup').classList.add('hidden'); });
 
     </script>
 </body>
