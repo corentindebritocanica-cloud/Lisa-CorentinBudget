@@ -545,7 +545,7 @@
 
             <div class="admin-section">
                 <div class="card-header" data-target="admin-corbeille-wrapper" style="padding:0; border:none; margin:0;">
-                    <h3 style="margin:0;">🗑️ Corbeille (Lignes supprimées)</h3>
+                    <h3 style="margin:0; pointer-events:none;">🗑️ Corbeille (Lignes supprimées)</h3>
                 </div>
                 <div id="admin-corbeille-wrapper" class="section-content" style="margin-top:15px;">
                     <div id="admin-corbeille"></div>
@@ -556,11 +556,11 @@
             <div class="admin-section">
                 <h3 style="color:var(--danger);">⚠️ Restauration Manuelle</h3>
                 <p style="font-size:0.85rem; margin-top:5px; font-weight:bold;">Écraser les données actuelles avec un .json</p>
-                <input type="file" id="import-json" accept=".json" style="margin-top:5px; font-size:0.9rem !important;">
+                <input type="file" id="import-json" accept=".json" style="margin-top:10px; font-size: 0.9rem !important; width: 100%;">
             </div>
 
             <div style="text-align:right; color:var(--text-muted); font-size:0.85rem; margin-top:30px; font-weight:bold; padding-bottom:20px;">
-                Version 3.0 (Sans Connexion Firebase)
+                Version 3.1 (Code stable - Accès Libre)
             </div>
         </div>
     </main>
@@ -650,9 +650,10 @@
             revenus_add: m.revenus_add ?? 0
         });
 
+        // BUG CORRIGÉ ICI (b.nom.split au lieu de b.split)
         const trierMois = (arr) => [...arr].sort((a, b) => {
             if (a.annee !== b.annee) return a.annee - b.annee;
-            return NOMS_MOIS.indexOf(a.nom.split(' ')[0]) - NOMS_MOIS.indexOf(b.split(' ')[0]);
+            return NOMS_MOIS.indexOf(a.nom.split(' ')[0]) - NOMS_MOIS.indexOf(b.nom.split(' ')[0]);
         });
 
         const toggleSection = (id, headerEl) => {
@@ -1084,6 +1085,7 @@
                 conteneur.appendChild(row);
             });
 
+            // Initialiser SortableJS
             if (conteneur._sortable) conteneur._sortable.destroy();
             if (typeof Sortable !== 'undefined') {
                 conteneur._sortable = new Sortable(conteneur, {
@@ -1725,10 +1727,10 @@
                 sauvegarderDonnees(); sauvegarderConfig(); rafraichirTouteLInterface();
                 return;
             }
-            if (e.target.id === 'btn-vider-corbeille') { 
-                if(confirm("Vider définitivement la corbeille ?")) { state.corbeille = []; sauvegarderConfig(); rendreAdmin(); }
-                return; 
-            }
+            if (e.target.id === 'btn-vider-corbeille') { viderCorbeille(); return; }
+
+            const header = e.target.closest('.card-header[data-target]');
+            if (header) toggleSection(header.dataset.target, header);
         });
 
         // --- Hors-ligne ---
@@ -1747,8 +1749,6 @@
         if (localStorage.getItem(LS_DARK) === 'true') toggleDark();
         if (localStorage.getItem(LS_THEME)) applyTheme(localStorage.getItem(LS_THEME));
         else majSelecteursCouleur();
-
-        document.getElementById('login-screen').style.display = 'none'; // Sécurité visuelle
 
         // Démarrer la synchro DB immédiatement
         attacherEcouteursDB();
