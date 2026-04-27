@@ -115,7 +115,7 @@
         .top-nav { background-color: var(--card-bg); border-bottom: 1px solid var(--border); padding: 15px; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-card); }
         .nav-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .nav-header h2 { font-size: 1.3rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-        .btn-theme { background: none; border: none; font-size: 1.4rem; cursor: pointer; }
+        .btn-theme { background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--text-main); }
         
         .tab-buttons { display: flex; gap: 4px; background: var(--border); padding: 4px; border-radius: 12px; margin-bottom: 15px; }
         .btn-tab { flex: 1; padding: 8px 2px; border-radius: 9px; border: none; background: transparent; font-weight: 600; font-size: 0.75rem; color: var(--text-muted); cursor: pointer; white-space: nowrap; }
@@ -165,6 +165,7 @@
         .btn-action { padding: 14px; color: white; border-radius: var(--radius-input); font-weight: 700; font-size: 1rem; cursor: pointer; border: none; width: 100%; margin-bottom: 10px; }
         .bg-primary { background: var(--primary); } 
         .bg-danger  { background: var(--danger); }
+        .btn-small { padding: 6px 12px; border-radius: 8px; border: none; background: var(--bg-color); color: var(--text-main); font-weight: 600; cursor:pointer;}
         .btn-pay-method { background: var(--bg-color); border: 1px solid var(--border); border-radius: 6px; padding: 4px 8px; font-size: 0.9rem; cursor: pointer; margin-left: 5px; }
 
         /* 15. RÉSUMÉS ET CHIFFRES CLÉS */
@@ -208,13 +209,23 @@
         .status-dot.saving  { background-color: var(--secondary); animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
 
-        /* 22. RESPONSIVE DESKTOP */
+        /* 22. RESPONSIVE DESKTOP ET ADMIN */
+        .admin-section { background: var(--card-bg); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--border); }
+        .color-selector { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+        .color-circle { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s; }
+        .color-circle.active { border-color: var(--text-main); transform: scale(1.15); }
+
         @media (min-width: 768px) {
             body { flex-direction: row; }
             .top-nav { width: 280px; height: 100vh; position: sticky; padding: 25px; border-bottom: none; border-right: 1px solid var(--border); }
             .tab-buttons { flex-direction: column; }
             .main-content { padding: 40px; }
         }
+        
+        /* TOAST */
+        #toast { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 12px 20px; border-radius: 20px; font-weight: 600; display: flex; align-items: center; gap: 15px; transition: bottom 0.3s ease; z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        #toast.show { bottom: 25px; }
+        #btn-undo { background: var(--secondary); color: white; border: none; padding: 6px 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body class="theme-glass">
@@ -382,36 +393,76 @@
         </div>
 
         <div id="vue-admin" class="hidden">
-            <h1>Paramètres</h1>
-            <div class="admin-section" style="border-color:var(--danger);">
+            <h1 style="margin-bottom: 20px;">Paramètres</h1>
+            
+            <div class="admin-section" style="border-color:var(--danger); background: rgba(255,59,48,0.05);">
                 <h3 style="color:var(--danger);">🔒 Sécurité</h3>
-                <button class="btn-action bg-danger" id="btn-logout">Se déconnecter</button>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Déconnectez cet appareil pour empêcher l'accès aux comptes.</p>
+                <button class="btn-action bg-danger" id="btn-logout" style="margin-bottom: 0;">Se déconnecter</button>
             </div>
+
+            <div class="admin-section">
+                <h3>🔄 Outils Système</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Forcer la mise à jour de l'application (vide le cache de la page).</p>
+                <button class="btn-action" style="background:var(--secondary); margin-bottom: 0;" onclick="window.location.reload(true)">Forcer le rechargement</button>
+            </div>
+
+            <div class="admin-section">
+                <h3>📅 Créer un mois spécifique</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Ajouter un mois manuellement (ex: Février 2026).</p>
+                <div style="display:flex; gap:10px;">
+                    <input type="month" id="input-new-month" style="flex:1; border:1px solid var(--border); padding:10px; border-radius:8px;">
+                    <button class="btn-small bg-primary" id="btn-creer-mois" style="color:white; padding:10px 20px;">Créer</button>
+                </div>
+            </div>
+
             <div class="admin-section">
                 <h3>🛠️ Gestion des Catégories</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Gérez vos catégories de dépenses par défaut.</p>
                 <div id="admin-categories"></div>
                 <div style="display:flex; gap:10px; margin-top:10px;">
                     <input type="text" id="new-cat-input" placeholder="Nouvelle catégorie..." style="flex:1; border:1px solid var(--border); padding:10px; border-radius:8px;">
-                    <button class="btn-small bg-primary" id="btn-add-cat" style="color:white; padding:10px;">Ajouter</button>
+                    <button class="btn-small bg-primary" id="btn-add-cat" style="color:white; padding:10px 20px;">Ajouter</button>
                 </div>
             </div>
+
             <div class="admin-section">
-                <h3>🎯 Objectifs (Bilan Annuel)</h3>
+                <h3>🎯 Budgets de Provisions (Annuel)</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Créez des objectifs. Le bilan calculera les lignes dont la catégorie contient le mot-clé.</p>
                 <div id="admin-objectifs"></div>
                 <div style="display:flex; gap:10px; margin-top:10px;">
-                    <input type="text" id="new-obj-nom" placeholder="Mot-clé" style="flex:1; border:1px solid var(--border); padding:10px; border-radius:8px;">
-                    <input type="number" id="new-obj-mnt" placeholder="€" style="width:70px; border:1px solid var(--border); padding:10px; border-radius:8px;">
-                    <button class="btn-small bg-primary" id="btn-add-obj" style="color:white; padding:10px;">Ajouter</button>
+                    <input type="text" id="new-obj-nom" placeholder="Mot-clé" style="flex:1; border:1px solid var(--border); padding:10px; border-radius:8px; min-width:0;">
+                    <input type="number" id="new-obj-mnt" placeholder="€" style="width:70px; border:1px solid var(--border); padding:10px; border-radius:8px; min-width:0;">
+                    <button class="btn-small bg-primary" id="btn-add-obj" style="color:white; padding:10px 20px;">Ajouter</button>
                 </div>
             </div>
+
             <div class="admin-section">
-                <h3>🎨 Thème de l'application</h3>
+                <h3>🎨 Garde-robe (Thèmes)</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Changez l'ambiance. <strong>S'adapte au Soleil ☀️ et à la Lune 🌙 !</strong></p>
                 <div class="color-selector" id="theme-selector"></div>
             </div>
+
             <div class="admin-section">
-                <h3>🗑️ Corbeille</h3>
+                <h3>📧 Sauvegarde Automatique</h3>
+                <p style="font-size: 0.9rem; color: var(--text-muted); margin: 10px 0;">Le dimanche à minuit, un e-mail est envoyé automatiquement.</p>
+                <button class="btn-action" id="btn-sauvegarde-mail" style="background:#5856D6; margin-bottom: 0;">✉️ Envoyer fichier .json par mail</button>
+            </div>
+            
+            <div class="admin-section">
+                <h3>🗑️ Corbeille (Lignes supprimées)</h3>
                 <div id="admin-corbeille"></div>
-                <button class="btn-action bg-danger" id="btn-vider-corbeille" style="margin-top:15px; font-size:0.8rem; padding:8px;">Vider définitivement</button>
+                <button class="btn-action bg-danger" id="btn-vider-corbeille" style="margin-top:15px; font-size:0.9rem; padding:10px; margin-bottom: 0;">Vider définitivement la corbeille</button>
+            </div>
+
+            <div class="admin-section">
+                <h3 style="color: var(--danger);">⚠️ Restauration Manuelle</h3>
+                <p style="font-size: 0.85rem; margin-top:5px; font-weight:bold;">Écraser les données actuelles avec un .json</p>
+                <input type="file" id="import-json" accept=".json" style="margin-top:10px; font-size: 0.9rem !important; width: 100%;">
+            </div>
+
+            <div style="text-align: right; color: var(--text-muted); font-size: 0.85rem; margin-top: 30px; font-weight: bold; padding-bottom: 20px;">
+                Version 2.9.2 (Réparation intégrale Admin)
             </div>
         </div>
     </main>
@@ -481,7 +532,7 @@
             depenses: Array.isArray(m.depenses) ? m.depenses : (m.depenses ? Object.values(m.depenses) : []),
             epargne: Array.isArray(m.epargne) ? m.epargne : (m.epargne ? Object.values(m.epargne) : []),
             provisions: Array.isArray(m.provisions) ? m.provisions : (m.provisions ? Object.values(m.provisions) : []),
-            fixes: Array.isArray(m.fixes) ? m.fixes : (m.fixes ? Object.values(m.fixes) : []),
+            fixes: Array.isArray(m.fixes) ? m.fixes : (m.fixes ? Object.values(m.fixes) : []), 
             revenus_add: m.revenus_add || 0,
             annee: m.annee || parseInt(m.nom.split(' ')[1])
         });
@@ -592,7 +643,7 @@
             });
         };
 
-        // --- Logique du Reste à Vivre ---
+        // --- Logique du Reste à Vivre (Calcul du report exclusif Revolut) ---
         const calculerSoldeReporte = (cibleIdx) => {
             let solde = 0;
             for (let i = 0; i < cibleIdx; i++) {
@@ -601,6 +652,7 @@
                 const tc = somme(m.charges);
                 const tdCB = sommeCB(m.depenses);
                 const tprov = somme(m.provisions);
+                // L'épargne et les Tickets Restos/Especes sont exclus
                 solde += (rev - tc - tdCB - tprov);
             }
             return solde;
@@ -623,22 +675,22 @@
                 const style = isNeg ? 'color:var(--danger);' : '';
                 const mntFinal = isNeg ? Math.abs(item.montant || 0) : (item.montant || 0);
 
-                // CONDITION SPECIALE POUR L'ONGLET FIXES (Minimaliste)
+                // CONDITION SPECIALE: ONGLET FIXES MINIMALISTE
                 if (type === 'fixes') {
                     row.innerHTML = `
                         <div class="drag-handle">☰</div>
                         <div class="item-content" style="flex-direction: row; align-items: center; justify-content: space-between;">
-                            <select data-id="${item.id}" data-type="${type}" data-field="categorie" style="flex:1; font-weight:600; background:none; border:none; padding:0;">
+                            <select data-id="${item.id}" data-type="${type}" data-field="categorie" style="flex:1; font-weight:600; background:none; border:none; padding:0; font-size:1rem !important;">
                                 ${state.categories.map(c => `<option value="${c}" ${item.categorie === c ? 'selected' : ''}>${c}</option>`).join('')}
                             </select>
                             <div style="display:flex; align-items:center;">
-                                <input type="number" value="${mntFinal}" style="${style} width:85px; text-align:right; font-weight:700; border:none; background:var(--bg-color); padding:6px; border-radius:8px;" data-id="${item.id}" data-type="${type}" data-field="montant">
+                                <input type="number" value="${mntFinal}" style="${style} width:85px; text-align:right; font-weight:700; border:none; background:var(--bg-color); padding:8px; border-radius:8px;" data-id="${item.id}" data-type="${type}" data-field="montant">
                             </div>
                         </div>
                         <button class="btn-delete" data-del-type="${type}" data-del-id="${item.id}">✕</button>
                     `;
                 } 
-                // AFFICHAGE COMPLET POUR LE RESTE (Dépenses, Epargne, etc.)
+                // AFFICHAGE CLASSIQUE POUR LES AUTRES ONGLETS
                 else {
                     let payIcon = '';
                     if (type === 'depenses') {
@@ -714,7 +766,7 @@
             const tprov = somme(m.provisions);
             const totalRev = report + (parseFloat(m.revenus) || 0) + (parseFloat(m.revenus_add) || 0);
 
-            const reste = totalRev - tc - tdCB - tprov;
+            const reste = totalRev - tc - tdCB - tprov; // L'épargne (te) n'est plus soustraite car c'est un compte à part
 
             document.getElementById('total-charges').innerText = tc.toFixed(0);
             document.getElementById('total-epargne').innerText = te.toFixed(0);
@@ -802,7 +854,7 @@
             });
         };
 
-        // --- Vue Admin ---
+        // --- Vue Admin RESTAURÉE ---
         const rendreAdmin = () => {
             const catDiv = document.getElementById('admin-categories');
             catDiv.innerHTML = state.categories.map((c, i) => `
@@ -929,6 +981,7 @@
                     const idx = mois[delType].findIndex(x => x.id === delId);
                     const item = mois[delType].splice(idx, 1)[0];
                     
+                    // Toast Annuler
                     state.suppressionEnAttente = { type: delType, item, moisId: state.moisActifId, index: idx };
                     const toast = document.getElementById('toast');
                     toast.classList.add('show');
@@ -1029,9 +1082,7 @@
             localStorage.setItem(LS_THEME, t);
             rendreAdmin();
         };
-        document.getElementById('vue-admin').addEventListener('click', (e) => {
-            if (e.target.dataset.setTheme) applyTheme(e.target.dataset.setTheme);
-        });
+        
         if (localStorage.getItem(LS_THEME)) applyTheme(localStorage.getItem(LS_THEME));
 
         // 11. Auth Listener
@@ -1045,7 +1096,7 @@
             }
         });
 
-        // 12. Admin Actions
+        // 12. Admin Actions REPAREES
         const viderCorbeille = () => { if (confirm("Vider la corbeille ?")) { state.corbeille = []; sauvegarderConfig(); } };
         const restaurerCorbeille = (i) => {
             const item = state.corbeille.splice(i, 1)[0];
@@ -1054,6 +1105,59 @@
             delete item.typeOriginal;
             sauvegarderDonnees(); sauvegarderConfig(); rafraichirTouteLInterface();
         };
+
+        // Nouveau mois manuel
+        document.getElementById('btn-creer-mois').onclick = () => {
+            const val = document.getElementById('input-new-month').value;
+            if(!val) { alert("Veuillez sélectionner un mois et une année."); return; }
+            const parts = val.split('-'); const an = parseInt(parts[0]); const moisIdx = parseInt(parts[1]) - 1;
+            const nomMois = NOMS_MOIS[moisIdx] + " " + an;
+            
+            if(state.donnees.find(m => m.nom === nomMois)) { alert("Ce mois existe déjà !"); return; }
+            
+            let lastRevenus = 0;
+            if(state.donnees.length > 0) lastRevenus = state.donnees[state.donnees.length-1].revenus;
+            
+            const nouveau = normaliserMois({
+                id: genId(), nom: nomMois, annee: an, revenus: lastRevenus, revenus_add: 0,
+                charges: [], depenses: [], epargne: [], provisions: [], fixes: []
+            });
+            
+            state.donnees.push(nouveau);
+            state.donnees = trierMois(state.donnees);
+            state.moisActifId = nouveau.id;
+            sauvegarderDonnees(); changerVue('mensuelle');
+            document.getElementById('input-new-month').value = "";
+        };
+
+        // Sauvegarde Mail
+        document.getElementById('btn-sauvegarde-mail').onclick = (e) => {
+            const btn = e.target;
+            const originalText = btn.innerText; btn.innerText = "⏳ Envoi..."; btn.disabled = true;
+            const urlScript = "https://script.google.com/macros/s/AKfycbwW3w-ScyWzRousgkNA7tdUeifNqB_kr2fXbGH1AqUSduOEdqjegbllEcxkkhVAko3ZIA/exec";
+            fetch(urlScript, { method: 'POST', mode: 'no-cors', body: JSON.stringify(state.donnees) })
+            .then(() => { alert("✅ Sauvegarde envoyée !"); btn.innerText = originalText; btn.disabled = false; })
+            .catch(() => { alert("❌ Erreur"); btn.innerText = originalText; btn.disabled = false; });
+        };
+
+        // Importation manuelle
+        const importInput = document.getElementById('import-json');
+        if(importInput) {
+            importInput.addEventListener('change', function(e) {
+                const file = e.target.files[0]; if(!file) return; const reader = new FileReader();
+                reader.onload = function(evt) {
+                    try {
+                        const imported = JSON.parse(evt.target.result);
+                        if(confirm("Écraser les données actuelles avec ce fichier ?")) { 
+                            state.donnees = trierMois(imported.map(normaliserMois)); 
+                            state.moisActifId = state.donnees.length ? state.donnees[state.donnees.length-1].id : null; 
+                            sauvegarderDonnees(); alert("Restauration réussie !"); 
+                            changerVue('mensuelle');
+                        }
+                    } catch(err) { alert("Fichier invalide."); }
+                }; reader.readAsText(file);
+            });
+        }
 
         document.getElementById('btn-add-cat').onclick = () => {
             const v = document.getElementById('new-cat-input').value;
@@ -1093,6 +1197,9 @@
         document.getElementById('select-annee').onchange = (e) => rendreVueAnnuelle();
 
         document.getElementById('vue-admin').addEventListener('click', (e) => {
+            // Choix du thème
+            if (e.target.dataset.setTheme) { applyTheme(e.target.dataset.setTheme); return; }
+
             // Supprimer catégorie
             const delCat = e.target.closest('[data-del-cat]');
             if (delCat) { state.categories.splice(parseInt(delCat.dataset.delCat), 1); sauvegarderConfig(true); rendreAdmin(); return; }
