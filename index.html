@@ -264,7 +264,7 @@
         /* 18. BULLES FLOTTANTES */
         .floating-bubble { position: fixed; width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; box-shadow: 0 5px 15px rgba(0,0,0,0.2); cursor: grab; z-index: 9000; touch-action: none; background: linear-gradient(135deg, var(--primary), var(--info)); color: white; }
         .floating-bubble:active { cursor: grabbing; transform: scale(0.95); }
-        #calc-bubble { bottom: 25px; right: 20px; }
+        #calc-bubble { bottom: calc(25px + env(safe-area-inset-bottom)); left: 20px; }
 
         /* 19. CALCULATRICE */
         .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px; }
@@ -667,13 +667,14 @@
     <div id="bottom-sheet" style="position:fixed; bottom:0; left:0; right:0; background:var(--card-bg); border-radius:20px 20px 0 0; padding:0 20px calc(20px + env(safe-area-inset-bottom)); z-index:8001; transform:translateY(100%); transition:transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94); box-shadow:0 -4px 30px rgba(0,0,0,0.15);">
         <div style="width:40px; height:4px; background:var(--border); border-radius:4px; margin:12px auto 20px;"></div>
         <h3 style="margin-bottom:18px; font-size:1.1rem;">➕ Nouvelle entrée</h3>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px;">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px;">
             <button class="bs-type-btn active" data-type="depenses" onclick="bsSelectType(this)">🛒 Dépense</button>
             <button class="bs-type-btn" data-type="charges" onclick="bsSelectType(this)">🏠 Charge</button>
             <button class="bs-type-btn" data-type="epargne" onclick="bsSelectType(this)">✈️ Épargne</button>
             <button class="bs-type-btn" data-type="provisions" onclick="bsSelectType(this)">🛡️ Provision</button>
         </div>
-        <input type="text" id="bs-libelle" placeholder="Description..." style="width:100%; padding:14px; border-radius:12px; border:1px solid var(--border); background:var(--bg-color); color:var(--text-main); font-size:1rem; margin-bottom:10px;">
+        <input type="text" id="bs-libelle" placeholder="Description..." oninput="bsAutoCategorie(this.value)" style="width:100%; padding:14px; border-radius:12px; border:1px solid var(--border); background:var(--bg-color); color:var(--text-main); font-size:1rem; margin-bottom:10px;">
+        <select id="bs-categorie" style="width:100%; padding:14px; border-radius:12px; border:1px solid var(--border); background:var(--bg-color); color:var(--text-main); font-size:0.95rem; margin-bottom:10px;"></select>
         <input type="number" inputmode="decimal" id="bs-montant" placeholder="Montant €" style="width:100%; padding:14px; border-radius:12px; border:1px solid var(--border); background:var(--bg-color); color:var(--text-main); font-size:1.2rem; font-weight:700; margin-bottom:16px; text-align:right;">
         <button onclick="bsValider()" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:12px; font-size:1.1rem; font-weight:700; cursor:pointer;">Ajouter</button>
         <button onclick="bsFermer()" style="width:100%; padding:12px; background:none; color:var(--text-muted); border:none; font-size:0.9rem; cursor:pointer; margin-top:6px;">Annuler</button>
@@ -1756,8 +1757,32 @@
 
         // --- Bottom Sheet ---
         let bsTypeActif = 'depenses';
+
+        const bsPeuplerCategories = () => {
+            const sel = document.getElementById('bs-categorie');
+            if (!sel) return;
+            sel.innerHTML = state.categories.map(c => `<option value="${c}">${c}</option>`).join('');
+        };
+
+        window.bsAutoCategorie = (libelle) => {
+            const sel = document.getElementById('bs-categorie');
+            if (!sel) return;
+            if (REGEX_SUPERMARCHE.test(libelle)) {
+                sel.value = "🛒 Courses";
+                return;
+            }
+            // Cherche une catégorie dont le mot-clé (sans emoji) est dans le libellé
+            const lib = sansAccents(libelle);
+            const match = state.categories.find(c => {
+                const motCle = sansAccents(c.replace(/[\u{1F300}-\u{1FFFF}]/gu, '').trim());
+                return motCle.length > 2 && lib.includes(motCle);
+            });
+            if (match) sel.value = match;
+        };
+
         window.bsOuvrir = () => {
             haptic('light');
+            bsPeuplerCategories();
             document.getElementById('bottom-sheet').style.transform = 'translateY(0)';
             const overlay = document.getElementById('bs-overlay');
             overlay.style.pointerEvents = 'auto';
@@ -1784,15 +1809,15 @@
             if (!mois) { alert("Aucun mois actif sélectionné."); return; }
             const libelle = document.getElementById('bs-libelle').value.trim();
             const montant = parseMontant(document.getElementById('bs-montant').value);
+            const categorie = document.getElementById('bs-categorie').value || state.categories[0];
             if (!montant) { haptic('error'); return; }
-            const nouv = { id: genId(), libelle, montant, date: new Date().toISOString().split('T')[0], categorie: state.categories[0] };
+            const nouv = { id: genId(), libelle, montant, categorie, date: new Date().toISOString().split('T')[0] };
             if (bsTypeActif === 'depenses') nouv.moyenPaiement = 'CB';
             if (bsTypeActif === 'epargne') confetti({ particleCount: 80, spread: 60, origin: { y: 0.7 } });
             mois[bsTypeActif].unshift(nouv);
             haptic('success');
             bsFermer();
             sauvegarderDonnees();
-            // Basculer sur la vue mensuelle si on n'y est pas déjà
             if (state.vueActuelle !== 'mensuelle') changerVue('mensuelle');
             else rafraichirTouteLInterface();
         };
