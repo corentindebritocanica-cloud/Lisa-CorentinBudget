@@ -54,49 +54,92 @@
         }
 
         /* 3. THEMES — Adaptatif Jour/Nuit */
-        body.theme-purple { --primary: #AF52DE; --primary-light: #F2E6FA; }
-        body.dark-mode.theme-purple { --primary-light: #3A1D4A; }
-        body.theme-green  { --primary: #34C759; --primary-light: #E6F8EA; }
-        body.dark-mode.theme-green { --primary-light: #1A3B24; }
-        body.theme-rose   { --primary: #FF2D55; --primary-light: #FFE5EA; }
-        body.dark-mode.theme-rose { --primary-light: #4A1A24; }
+        /* purple : violet foncé assez saturé → texte blanc OK sur boutons */
+        body.theme-purple { --primary: #9B38CC; --primary-light: #F2E6FA; }
+        body.dark-mode.theme-purple { --primary: #BF5AF2; --primary-light: #3A1D4A; }
+
+        /* green : vert vif trop clair en jour → on assombrit pour avoir du blanc lisible dessus */
+        body.theme-green  { --primary: #248A3D; --primary-light: #E6F8EA; }
+        body.dark-mode.theme-green { --primary: #30D158; --primary-light: #1A3B24; }
+
+        /* rose : rouge-rose vif, OK en jour */
+        body.theme-rose   { --primary: #D70040; --primary-light: #FFE5EA; }
+        body.dark-mode.theme-rose { --primary: #FF375F; --primary-light: #4A1A24; }
 
         /* 4. THEME GLASSMORPHISM */
         body.theme-glass {
-            --primary: #007AFF; --primary-light: rgba(0, 122, 255, 0.1);
-            --bg-color: #F5F5F7; --text-main: #1D1D1F; --text-muted: rgba(60, 60, 67, 0.6); --border: rgba(255, 255, 255, 0.6);
-            --glass-bg: radial-gradient(circle at 20% 30%, rgba(255, 182, 193, 0.4), transparent 50%), radial-gradient(circle at 80% 70%, rgba(173, 216, 230, 0.4), transparent 50%);
-            --card-glass: rgba(255, 255, 255, 0.6); --glass-blur: blur(30px) saturate(150%);
+            --primary: #0066DD;
+            --primary-light: rgba(0, 102, 221, 0.12);
+            --bg-color: #F0F0F5;
+            --card-bg: rgba(255,255,255,0.72);
+            --text-main: #1D1D1F;
+            --text-muted: rgba(60, 60, 67, 0.65);
+            --border: rgba(180, 180, 200, 0.45);
+            --glass-bg: radial-gradient(circle at 20% 30%, rgba(255, 182, 193, 0.35), transparent 50%),
+                        radial-gradient(circle at 80% 70%, rgba(173, 216, 230, 0.35), transparent 50%);
+            --card-glass: rgba(255, 255, 255, 0.72);
+            --glass-blur: blur(30px) saturate(150%);
         }
         body.dark-mode.theme-glass {
             --primary: #0a84ff; --primary-light: rgba(10, 132, 255, 0.2);
-            --bg-color: #000000; --text-main: #ffffff; --text-muted: rgba(235, 235, 245, 0.6); --border: rgba(255, 255, 255, 0.1);
+            --bg-color: #000000; --card-bg: rgba(30,30,35,0.5); --text-main: #ffffff; --text-muted: rgba(235, 235, 245, 0.6); --border: rgba(255, 255, 255, 0.1);
             --glass-bg: radial-gradient(circle at 15% 50%, rgba(70, 20, 150, 0.35), transparent 50%), radial-gradient(circle at 85% 30%, rgba(10, 100, 200, 0.35), transparent 50%);
             --card-glass: rgba(30, 30, 35, 0.5); --glass-blur: blur(25px) saturate(200%);
         }
         body.theme-glass::before { content: ''; position: fixed; inset: 0; background: var(--glass-bg); z-index: -1; pointer-events: none; }
-        body.theme-glass .card, body.theme-glass .revenus-box, body.theme-glass .admin-section, body.theme-glass .top-nav, body.theme-glass .popup-box {
+        body.theme-glass .card:not(.summary-card), body.theme-glass .revenus-box, body.theme-glass .admin-section, body.theme-glass .top-nav, body.theme-glass .popup-box {
             background: var(--card-glass) !important; backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border: 1px solid var(--border) !important;
         }
 
         /* 5. THEMES HORS TECH */
-        body.theme-latte { --primary: #C47335; --bg-color: #F9F6F0; --card-bg: #EFEBE0; --text-main: #4A3B32; --border: #D8D0C5; }
-        body.dark-mode.theme-latte { --bg-color: #2E251F; --card-bg: #3D322A; --text-main: #EAE0D5; --border: #4D4036; }
-        
-        body.theme-botanic { --primary: #3E7C59; --bg-color: #E8EFE9; --card-bg: #F4F9F5; --text-main: #2C4A3B; --border: #CDE0D5; }
-        body.dark-mode.theme-botanic { --bg-color: #1A2620; --card-bg: #24362D; --text-main: #E2EDE7; --border: #314A3E; }
 
-        body.theme-gatsby { --primary: #D4AF37; --bg-color: #FDFBF7; --card-bg: #FFFFFF; --text-main: #1A1F29; --border: #D4AF37; }
-        body.dark-mode.theme-gatsby { --bg-color: #12151C; --card-bg: #1A1F29; --text-main: #E5C37E; }
+        /* latte : fond crème, texte brun foncé → OK */
+        body.theme-latte {
+            --primary: #A85C20; --primary-light: #F5E6D5;
+            --bg-color: #F9F6F0; --card-bg: #EFEBE0;
+            --text-main: #3A2A1E; --text-muted: #7A6251; --border: #D8D0C5;
+        }
+        body.dark-mode.theme-latte { --bg-color: #2E251F; --card-bg: #3D322A; --text-main: #EAE0D5; --text-muted: #B8A898; --border: #4D4036; }
 
-        body.theme-terracotta { --primary: #C0573E; --bg-color: #F4E8E1; --card-bg: #FCF7F4; --text-main: #5C3A21; --border: #E8D0C3; }
-        body.dark-mode.theme-terracotta { --bg-color: #3B241A; --card-bg: #4A3024; --text-main: #F4E8E1; }
+        /* botanic : fond vert pâle, primary vert foncé → texte blanc lisible */
+        body.theme-botanic {
+            --primary: #2D6644; --primary-light: #D4EDDA;
+            --bg-color: #E8EFE9; --card-bg: #F4F9F5;
+            --text-main: #1E3828; --text-muted: #507060; --border: #C0D9CC;
+        }
+        body.dark-mode.theme-botanic { --primary: #3E9E68; --bg-color: #1A2620; --card-bg: #24362D; --text-main: #E2EDE7; --text-muted: #8AADA0; --border: #314A3E; }
 
-        body.theme-moleskine { --primary: #B22222; --bg-color: #F1EAD7; --card-bg: #F8F3E6; --text-main: #1C2B4B; --border: #A2B5CD; }
-        body.dark-mode.theme-moleskine { --bg-color: #21252B; --card-bg: #2C313C; --text-main: #ABB2BF; --border: #4B5363; }
+        /* gatsby : doré sur blanc cassé → on évite le jaune trop clair comme couleur de texte actif */
+        body.theme-gatsby {
+            --primary: #B8960C; --primary-light: #FDF5D0;
+            --bg-color: #FDFBF7; --card-bg: #FFFFFF;
+            --text-main: #1A1F29; --text-muted: #6B6030; --border: #E8D88A;
+        }
+        body.dark-mode.theme-gatsby { --primary: #D4AF37; --primary-light: #3A3010; --bg-color: #12151C; --card-bg: #1A1F29; --text-main: #E5C37E; --text-muted: #9A8840; --border: #3A3520; }
 
-        body.theme-watercolor { --primary: #FF8DA1; --bg-color: #FAFAFA; --text-main: #555555; --border: rgba(0,0,0,0.05); }
-        body.dark-mode.theme-watercolor { --bg-color: #121212; --text-main: #E0E0E0; --border: rgba(255,255,255,0.05); }
+        /* terracotta : fond saumon clair, primary brique → bon contraste */
+        body.theme-terracotta {
+            --primary: #A83D26; --primary-light: #FAE0D8;
+            --bg-color: #F4E8E1; --card-bg: #FCF7F4;
+            --text-main: #4A2810; --text-muted: #8A5A42; --border: #E0C4B5;
+        }
+        body.dark-mode.theme-terracotta { --primary: #E06848; --bg-color: #3B241A; --card-bg: #4A3024; --text-main: #F4E8E1; --text-muted: #C09880; --border: #6A4030; }
+
+        /* moleskine : fond papier ivoire, primary rouge bordeaux, texte bleu marine → élégant */
+        body.theme-moleskine {
+            --primary: #8B1A1A; --primary-light: #F5DDDD;
+            --bg-color: #F1EAD7; --card-bg: #F8F3E6;
+            --text-main: #1C2B4B; --text-muted: #5A6A8A; --border: #C8C0A8;
+        }
+        body.dark-mode.theme-moleskine { --primary: #CC4444; --bg-color: #21252B; --card-bg: #2C313C; --text-main: #ABB2BF; --text-muted: #6A7080; --border: #4B5363; }
+
+        /* watercolor : fond blanc, primary rose vif trop clair → on assombrit le primary pour le texte */
+        body.theme-watercolor {
+            --primary: #D4506A; --primary-light: #FFE8ED;
+            --bg-color: #FAFAFA; --card-bg: #FFFFFF;
+            --text-main: #444444; --text-muted: #888888; --border: #EEEEEE;
+        }
+        body.dark-mode.theme-watercolor { --primary: #FF8DA1; --primary-light: #4A1A28; --bg-color: #121212; --card-bg: #1E1E1E; --text-main: #E0E0E0; --text-muted: #909090; --border: rgba(255,255,255,0.08); }
 
         /* 6. LAYOUT GLOBAL */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; transition: var(--transition); }
@@ -146,8 +189,8 @@
         .card-header h3 { font-size: 1rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
         .card-header::after { content: '▼'; font-size: 0.7rem; color: var(--text-muted); transition: 0.3s; }
         .card-header.collapsed::after { transform: rotate(-90deg); }
-        .section-content { overflow: hidden; transition: max-height 0.4s ease-out; }
-        .section-content.collapsed { max-height: 0 !important; }
+        .section-content { overflow: hidden; transition: max-height 0.4s ease-out; max-height: 2000px; }
+        .section-content.collapsed { max-height: 0; }
 
         /* 13. LIGNES D'ARTICLES */
         .item-row { display: flex; align-items: center; background: var(--card-bg); padding: 12px 0; border-bottom: 1px solid var(--border); touch-action: none; }
@@ -173,6 +216,19 @@
         .total-amount { font-size: 2.4rem; font-weight: 800; margin: 5px 0; letter-spacing: -1px; }
         .sub-text { font-size: 0.85rem; opacity: 0.9; }
         .comparison { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; margin-top: 10px; background: rgba(255,255,255,0.2); }
+
+        /* Empêche le thème glass d'écraser le fond coloré des summary-cards */
+        body.theme-glass .summary-card {
+            background: linear-gradient(135deg, var(--primary), var(--info)) !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            border: none !important;
+            color: white !important;
+        }
+        /* Idem pour la summary-card des charges fixes (gradient secondaire) */
+        body.theme-glass .summary-card--warm {
+            background: linear-gradient(135deg, var(--secondary), var(--warn)) !important;
+        }
 
         /* 16. REVENUS BOX */
         .revenus-box { background: var(--card-bg); padding: 15px; border-radius: var(--radius-card); display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; border: 1px solid var(--border); }
@@ -210,10 +266,45 @@
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
 
         /* 22. RESPONSIVE DESKTOP ET ADMIN */
-        .admin-section { background: var(--card-bg); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--border); }
-        .color-selector { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
-        .color-circle { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s; }
-        .color-circle.active { border-color: var(--text-main); transform: scale(1.15); }
+        .admin-section { background: var(--card-bg); padding: 16px; border-radius: 14px; margin-bottom: 10px; border: 1px solid var(--border); }
+        .admin-section-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; font-weight:700; font-size:0.95rem; }
+        .admin-section-desc { font-size:0.8rem; color:var(--text-muted); margin-bottom:12px; line-height:1.4; }
+        .admin-group-label { font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); margin:20px 0 8px; padding-left:2px; }
+        .admin-badge { font-size:0.7rem; font-weight:700; background:var(--border); color:var(--text-muted); padding:2px 8px; border-radius:20px; }
+        .admin-badge--danger { background:rgba(255,59,48,0.12); color:var(--danger); }
+
+        /* Sélecteur de thèmes */
+        .theme-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(88px, 1fr)); gap: 10px; margin-top: 14px; }
+        .theme-card {
+            border-radius: 14px; overflow: hidden; cursor: pointer;
+            border: 2px solid transparent;
+            transition: transform 0.18s, border-color 0.18s, box-shadow 0.18s;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.07);
+        }
+        .theme-card:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0,0,0,0.13); }
+        .theme-card.active { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light), 0 4px 12px rgba(0,0,0,0.12); transform: translateY(-2px); }
+        .theme-card__swatch { height: 48px; width: 100%; }
+        .theme-card__label {
+            background: var(--card-bg); padding: 5px 6px 6px;
+            font-size: 0.68rem; font-weight: 600; text-align: center;
+            color: var(--text-main); line-height: 1.2; white-space: nowrap;
+            overflow: hidden; text-overflow: ellipsis;
+            border-top: 1px solid var(--border);
+        }
+        .theme-card.active .theme-card__label { color: var(--primary); }
+        .theme-card__check {
+            display: none; position: absolute; top: 4px; right: 5px;
+            background: var(--primary); color: white;
+            border-radius: 50%; width: 18px; height: 18px;
+            font-size: 0.6rem; align-items: center; justify-content: center;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+        }
+        .theme-card { position: relative; }
+        .theme-card.active .theme-card__check { display: flex; }
+
+        /* vieille classe conservée pour compatibilité */
+        .color-selector { display: none; }
+        .color-circle { display: none; }
 
         @media (min-width: 768px) {
             body { flex-direction: row; }
@@ -338,11 +429,11 @@
                 <div class="card">
                     <div class="card-header" data-target="repartition-m"><h3>📊 Répartition</h3></div>
                     <div id="repartition-m" class="section-content">
-                        <div class="progress-container"><div class="progress-header"><span>🏠 Charges Fixes</span><span id="pct-charges-m">0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--danger);" id="bar-charges-m"></div></div></div>
-                        <div class="progress-container"><div class="progress-header"><span>🛒 Dépenses</span><span id="pct-depenses-m">0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--secondary);" id="bar-depenses-m"></div></div></div>
-                        <div class="progress-container"><div class="progress-header"><span>✈️ Épargne</span><span id="pct-epargne-m">0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--info);" id="bar-epargne-m"></div></div></div>
-                        <div class="progress-container"><div class="progress-header"><span>🛡️ Provisions</span><span id="pct-provisions-m">0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--warn);" id="bar-provisions-m"></div></div></div>
-                        <div class="progress-container"><div class="progress-header"><span>✅ Reste</span><span id="pct-reste-m">0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--success);" id="bar-reste-m"></div></div></div>
+                        <div class="progress-container"><div class="progress-header"><span>🏠 Charges Fixes</span><span id="pct-charges-m" style="font-variant-numeric:tabular-nums;">0 € · 0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--danger);" id="bar-charges-m"></div></div></div>
+                        <div class="progress-container"><div class="progress-header"><span>🛒 Dépenses</span><span id="pct-depenses-m" style="font-variant-numeric:tabular-nums;">0 € · 0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--secondary);" id="bar-depenses-m"></div></div></div>
+                        <div class="progress-container"><div class="progress-header"><span>✈️ Épargne</span><span id="pct-epargne-m" style="font-variant-numeric:tabular-nums;">0 € · 0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--info);" id="bar-epargne-m"></div></div></div>
+                        <div class="progress-container"><div class="progress-header"><span>🛡️ Provisions</span><span id="pct-provisions-m" style="font-variant-numeric:tabular-nums;">0 € · 0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--warn);" id="bar-provisions-m"></div></div></div>
+                        <div class="progress-container"><div class="progress-header"><span>✅ Reste</span><span id="pct-reste-m" style="font-variant-numeric:tabular-nums;">0 € · 0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--success);" id="bar-reste-m"></div></div></div>
                     </div>
                 </div>
 
@@ -376,7 +467,7 @@
             <h1>Charges Fixes Mensuelles</h1>
             <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:15px;">Cet onglet vous aide à calculer le montant à virer sur le compte commun chaque mois.</p>
             
-            <div class="card summary-card" style="background: linear-gradient(135deg, var(--secondary), var(--warn));">
+            <div class="card summary-card summary-card--warm" style="background: linear-gradient(135deg, var(--secondary), var(--warn));">
                 <h3>Total à diviser</h3>
                 <div class="total-amount" id="total-fixes-calcul">0 €</div>
                 <div class="sub-text" style="font-weight:bold; font-size:1.1rem; margin-top:5px;">Soit <span id="part-individuelle">0</span> € par personne</div>
@@ -393,87 +484,139 @@
                 <h1>Bilan Annuel</h1>
                 <select id="select-annee" style="padding:8px; border-radius:8px; background:var(--card-bg); font-weight:bold;"></select>
             </div>
-            <div class="card summary-card" style="background: linear-gradient(135deg, #FF9500, #FF2D55);">
-                <h3>Total Épargné</h3>
-                <div class="total-amount" id="annuel-total-epargne">0 €</div>
+
+            <!-- Sous-onglets Annuel / Mensuel -->
+            <div style="display:flex; gap:4px; background:var(--border); padding:4px; border-radius:12px; margin-bottom:18px;">
+                <button id="btn-vue-annuel" class="btn-tab active" style="flex:1;" onclick="switchVueAnnuelle('annuel')">📊 Bilan annuel</button>
+                <button id="btn-vue-mensuel" class="btn-tab" style="flex:1;" onclick="switchVueAnnuelle('mensuel')">📅 Détail mensuel</button>
             </div>
-            <div class="card">
-                <div id="bloc-annuel-stats"></div>
+
+            <!-- VUE ANNUELLE -->
+            <div id="panneau-annuel">
+                <div class="card summary-card" style="background: linear-gradient(135deg, #FF9500, #FF2D55);">
+                    <h3>🛒 Total Dépenses Annuel</h3>
+                    <div class="total-amount" id="annuel-total-epargne">0 €</div>
+                </div>
+                <div class="card">
+                    <div id="bloc-annuel-stats"></div>
+                </div>
+            </div>
+
+            <!-- VUE MENSUELLE DÉTAILLÉE -->
+            <div id="panneau-mensuel" class="hidden">
+                <div id="bloc-mensuel-detail"></div>
             </div>
         </div>
 
         <div id="vue-admin" class="hidden">
-            <h1 style="margin-bottom: 20px;">Paramètres</h1>
-            
-            <div class="admin-section" style="border-color:var(--danger); background: rgba(255,59,48,0.05);">
-                <h3 style="color:var(--danger);">🔒 Sécurité</h3>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Déconnectez cet appareil pour empêcher l'accès aux comptes.</p>
-                <button class="btn-action bg-danger" id="btn-logout" style="margin-bottom: 0;">Se déconnecter</button>
+
+            <!-- En-tête -->
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:24px;">
+                <div>
+                    <h1 style="margin:0; font-size:1.6rem;">⚙️ Paramètres</h1>
+                    <p style="color:var(--text-muted); font-size:0.82rem; margin-top:3px;">Budget L&amp;C · <span id="admin-version-label">v2.9.6</span></p>
+                </div>
+                <button class="btn-action bg-danger" id="btn-logout" style="width:auto; padding:10px 18px; margin:0; font-size:0.85rem;">🔒 Déconnexion</button>
             </div>
 
-            <div class="admin-section">
-                <h3>🔄 Outils Système</h3>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Forcer la mise à jour de l'application (vide le cache de la page).</p>
-                <button class="btn-action" style="background:var(--secondary); margin-bottom: 0;" onclick="window.location.reload(true)">Forcer le rechargement</button>
-            </div>
+            <!-- GROUPE 1 : Personnalisation -->
+            <p class="admin-group-label">🎨 Personnalisation</p>
 
             <div class="admin-section">
-                <h3>📅 Créer un mois spécifique</h3>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Ajouter un mois manuellement (ex: Février 2026).</p>
-                <div style="display:flex; gap:10px;">
-                    <input type="month" id="input-new-month" style="flex:1; border:1px solid var(--border); padding:10px; border-radius:8px;">
-                    <button class="btn-small bg-primary" id="btn-creer-mois" style="color:white; padding:10px 20px;">Créer</button>
+                <div class="admin-section-header">
+                    <span>🎨 Garde-robe</span>
+                    <span class="admin-badge">Thèmes</span>
+                </div>
+                <p class="admin-section-desc">S'adapte au Soleil ☀️ et à la Lune 🌙 automatiquement.</p>
+                <div class="theme-grid" id="theme-selector"></div>
+            </div>
+
+            <!-- GROUPE 2 : Données -->
+            <p class="admin-group-label">📂 Données</p>
+
+            <div class="admin-section">
+                <div class="admin-section-header">
+                    <span>🏷️ Catégories</span>
+                    <span class="admin-badge" id="badge-cat-count">0</span>
+                </div>
+                <p class="admin-section-desc">Catégories disponibles dans les listes déroulantes.</p>
+                <div id="admin-categories" style="margin-bottom:10px;"></div>
+                <div style="display:flex; gap:8px;">
+                    <input type="text" id="new-cat-input" placeholder="✚ Nouvelle catégorie..." style="flex:1; border:1px solid var(--border); padding:10px; border-radius:8px; background:var(--bg-color); color:var(--text-main);">
+                    <button class="btn-small bg-primary" id="btn-add-cat" style="color:white; padding:10px 16px; white-space:nowrap;">Ajouter</button>
                 </div>
             </div>
 
             <div class="admin-section">
-                <h3>🛠️ Gestion des Catégories</h3>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Gérez vos catégories de dépenses par défaut.</p>
-                <div id="admin-categories"></div>
-                <div style="display:flex; gap:10px; margin-top:10px;">
-                    <input type="text" id="new-cat-input" placeholder="Nouvelle catégorie..." style="flex:1; border:1px solid var(--border); padding:10px; border-radius:8px;">
-                    <button class="btn-small bg-primary" id="btn-add-cat" style="color:white; padding:10px 20px;">Ajouter</button>
+                <div class="admin-section-header">
+                    <span>🎯 Objectifs de Provisions</span>
+                    <span class="admin-badge" id="badge-obj-count">0</span>
+                </div>
+                <p class="admin-section-desc">Le bilan annuel cumule les lignes dont la catégorie contient le mot-clé.</p>
+                <div id="admin-objectifs" style="margin-bottom:10px;"></div>
+                <div style="display:flex; gap:8px;">
+                    <input type="text" id="new-obj-nom" placeholder="Mot-clé (ex: Assurance)" style="flex:1; border:1px solid var(--border); padding:10px; border-radius:8px; background:var(--bg-color); color:var(--text-main); min-width:0;">
+                    <input type="number" id="new-obj-mnt" placeholder="Objectif €" style="width:90px; border:1px solid var(--border); padding:10px; border-radius:8px; background:var(--bg-color); color:var(--text-main); min-width:0;">
+                    <button class="btn-small bg-primary" id="btn-add-obj" style="color:white; padding:10px 16px; white-space:nowrap;">Ajouter</button>
                 </div>
             </div>
 
             <div class="admin-section">
-                <h3>🎯 Budgets de Provisions (Annuel)</h3>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Créez des objectifs. Le bilan calculera les lignes dont la catégorie contient le mot-clé.</p>
-                <div id="admin-objectifs"></div>
-                <div style="display:flex; gap:10px; margin-top:10px;">
-                    <input type="text" id="new-obj-nom" placeholder="Mot-clé" style="flex:1; border:1px solid var(--border); padding:10px; border-radius:8px; min-width:0;">
-                    <input type="number" id="new-obj-mnt" placeholder="€" style="width:70px; border:1px solid var(--border); padding:10px; border-radius:8px; min-width:0;">
-                    <button class="btn-small bg-primary" id="btn-add-obj" style="color:white; padding:10px 20px;">Ajouter</button>
+                <div class="admin-section-header">
+                    <span>📅 Créer un mois</span>
+                </div>
+                <p class="admin-section-desc">Ajouter un mois manuellement hors du flux automatique.</p>
+                <div style="display:flex; gap:8px;">
+                    <input type="month" id="input-new-month" style="flex:1; border:1px solid var(--border); padding:10px; border-radius:8px; background:var(--bg-color); color:var(--text-main);">
+                    <button class="btn-small bg-primary" id="btn-creer-mois" style="color:white; padding:10px 16px; white-space:nowrap;">Créer</button>
                 </div>
             </div>
 
+            <!-- GROUPE 3 : Sauvegarde -->
+            <p class="admin-group-label">💾 Sauvegarde &amp; Restauration</p>
+
             <div class="admin-section">
-                <h3>🎨 Garde-robe (Thèmes)</h3>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Changez l'ambiance. <strong>S'adapte au Soleil ☀️ et à la Lune 🌙 !</strong></p>
-                <div class="color-selector" id="theme-selector"></div>
+                <div class="admin-section-header">
+                    <span>📧 Sauvegarde par mail</span>
+                </div>
+                <p class="admin-section-desc">Envoi automatique chaque dimanche à minuit. Vous pouvez aussi déclencher manuellement.</p>
+                <button class="btn-action" id="btn-sauvegarde-mail" style="background:#5856D6; margin-bottom:0;">✉️ Envoyer le fichier .json maintenant</button>
             </div>
 
             <div class="admin-section">
-                <h3>📧 Sauvegarde Automatique</h3>
-                <p style="font-size: 0.9rem; color: var(--text-muted); margin: 10px 0;">Le dimanche à minuit, un e-mail est envoyé automatiquement.</p>
-                <button class="btn-action" id="btn-sauvegarde-mail" style="background:#5856D6; margin-bottom: 0;">✉️ Envoyer fichier .json par mail</button>
-            </div>
-            
-            <div class="admin-section">
-                <h3>🗑️ Corbeille (Lignes supprimées)</h3>
-                <div id="admin-corbeille"></div>
-                <button class="btn-action bg-danger" id="btn-vider-corbeille" style="margin-top:15px; font-size:0.9rem; padding:10px; margin-bottom: 0;">Vider définitivement la corbeille</button>
+                <div class="admin-section-header">
+                    <span>🗑️ Corbeille</span>
+                    <span class="admin-badge admin-badge--danger" id="badge-corbeille-count">0</span>
+                </div>
+                <p class="admin-section-desc">Lignes supprimées récemment, restaurables.</p>
+                <div id="admin-corbeille" style="margin-bottom:12px;"></div>
+                <button class="btn-action bg-danger" id="btn-vider-corbeille" style="font-size:0.85rem; padding:10px; margin-bottom:0;">🗑️ Vider définitivement la corbeille</button>
             </div>
 
-            <div class="admin-section">
-                <h3 style="color: var(--danger);">⚠️ Restauration Manuelle</h3>
-                <p style="font-size: 0.85rem; margin-top:5px; font-weight:bold;">Écraser les données actuelles avec un .json</p>
-                <input type="file" id="import-json" accept=".json" style="margin-top:10px; font-size: 0.9rem !important; width: 100%;">
+            <div class="admin-section" style="border-color:rgba(255,59,48,0.3); background:rgba(255,59,48,0.04);">
+                <div class="admin-section-header">
+                    <span style="color:var(--danger);">⚠️ Restauration manuelle</span>
+                </div>
+                <p class="admin-section-desc">Écrase <strong>toutes</strong> les données actuelles avec un fichier .json exporté.</p>
+                <input type="file" id="import-json" accept=".json" style="margin-top:6px; font-size:0.9rem !important; width:100%; color:var(--text-main);">
             </div>
 
-            <div style="text-align: right; color: var(--text-muted); font-size: 0.85rem; margin-top: 30px; font-weight: bold; padding-bottom: 20px;">
-                Version 2.9.5 (Correctif Calculatrice Drag)
+            <!-- GROUPE 4 : Système -->
+            <p class="admin-group-label">🛠️ Système</p>
+
+            <div class="admin-section">
+                <div class="admin-section-header">
+                    <span>🔄 Cache &amp; Rechargement</span>
+                </div>
+                <p class="admin-section-desc">Force le rechargement complet de l'application (vide le cache).</p>
+                <button class="btn-action" style="background:var(--secondary); margin-bottom:0;" onclick="window.location.reload(true)">🔄 Forcer le rechargement</button>
             </div>
+
+            <div style="text-align:center; color:var(--text-muted); font-size:0.78rem; margin-top:30px; padding-bottom:30px; line-height:1.8;">
+                Budget L&amp;C · <strong id="admin-version-footer">v2.9.7</strong><br>
+                Fait avec ❤️ pour Lisa &amp; Corentin
+            </div>
+
         </div>
     </main>
 
@@ -504,12 +647,17 @@
         const LS_CACHE = 'budgetLC_cache';
         const NOMS_MOIS = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
         const THEMES = [
-            { id:'default', color:'#007AFF' }, { id:'theme-purple', color:'#AF52DE' },
-            { id:'theme-green', color:'#34C759' }, { id:'theme-rose', color:'#FF2D55' },
-            { id:'theme-glass', color:'linear-gradient(135deg, #ccc, #eee)' },
-            { id:'theme-latte', color:'#C47335' }, { id:'theme-botanic', color:'#3E7C59' },
-            { id:'theme-gatsby', color:'#D4AF37' }, { id:'theme-terracotta', color:'#C0573E' },
-            { id:'theme-moleskine', color:'#1C2B4B' }, { id:'theme-watercolor', color:'#FF8DA1' }
+            { id:'default',         label:'Bleu iOS',     swatch:'linear-gradient(135deg,#007AFF,#5AC8FA)' },
+            { id:'theme-purple',    label:'Violet',       swatch:'linear-gradient(135deg,#9B38CC,#BF5AF2)' },
+            { id:'theme-green',     label:'Vert',         swatch:'linear-gradient(135deg,#248A3D,#34C759)' },
+            { id:'theme-rose',      label:'Rose',         swatch:'linear-gradient(135deg,#D70040,#FF6B8A)' },
+            { id:'theme-glass',     label:'Verre',        swatch:'linear-gradient(135deg,#e0e8ff,#ffd6e8,#d6f0ff)' },
+            { id:'theme-latte',     label:'Café Latte',   swatch:'linear-gradient(135deg,#A85C20,#D4A96A)' },
+            { id:'theme-botanic',   label:'Botanic',      swatch:'linear-gradient(135deg,#2D6644,#6AB187)' },
+            { id:'theme-gatsby',    label:'Gatsby',       swatch:'linear-gradient(135deg,#B8960C,#F0D060)' },
+            { id:'theme-terracotta',label:'Terracotta',   swatch:'linear-gradient(135deg,#A83D26,#E08060)' },
+            { id:'theme-moleskine', label:'Moleskine',    swatch:'linear-gradient(135deg,#1C2B4B,#8B1A1A)' },
+            { id:'theme-watercolor',label:'Aquarelle',    swatch:'linear-gradient(135deg,#D4506A,#FFB3C6)' },
         ];
         const REGEX_SUPERMARCHE = /leclerc|carrefour|auchan|intermarch|super\s*u|lidl|aldi|frais|cora|casino|netto/i;
 
@@ -529,12 +677,14 @@
         };
 
         // --- Utilitaires ---
-        const eur = (n) => (parseFloat(n) || 0).toFixed(2) + " €";
+        const fmt = (n) => { const v = parseFloat(n) || 0; return parseFloat(v.toFixed(2)).toString().replace('.', ','); };
+        const eur = (n) => fmt(n) + " €";
         const genId = () => Math.random().toString(36).substr(2, 9);
         const sansAccents = (str) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+        const parseMontant = (v) => parseFloat(String(v).replace(',', '.')) || 0;
         
-        const somme = (arr) => (arr || []).reduce((s, i) => s + (parseFloat(i.montant) || 0), 0);
-        const sommeCB = (arr) => (arr || []).reduce((s, i) => (!i.moyenPaiement || i.moyenPaiement === 'CB' ? s + (parseFloat(i.montant) || 0) : s), 0);
+        const somme = (arr) => (arr || []).reduce((s, i) => s + parseMontant(i.montant), 0);
+        const sommeCB = (arr) => (arr || []).reduce((s, i) => (!i.moyenPaiement || i.moyenPaiement === 'CB' ? s + parseMontant(i.montant) : s), 0);
 
         const normaliserMois = (m) => ({
             ...m,
@@ -685,8 +835,15 @@
 
         const toggleSection = (id, header) => {
             const el = document.getElementById(id);
-            el.classList.toggle('collapsed');
-            if (header) header.classList.toggle('collapsed');
+            const isCollapsed = el.classList.contains('collapsed');
+            if (isCollapsed) {
+                el.classList.remove('collapsed');
+                el.style.maxHeight = el.scrollHeight + 'px';
+            } else {
+                el.style.maxHeight = '0';
+                el.classList.add('collapsed');
+            }
+            if (header) header.classList.toggle('collapsed', !isCollapsed);
         };
 
         const rafraichirTouteLInterface = () => {
@@ -827,7 +984,7 @@
             
             const idx = state.donnees.indexOf(mois);
             const report = calculerSoldeReporte(idx);
-            document.getElementById('solde_reporte').value = report.toFixed(2);
+            document.getElementById('solde_reporte').value = parseFloat((parseFloat(report) || 0).toFixed(2));
             document.getElementById('revenus').value = mois.revenus || 0;
             document.getElementById('revenus_add').value = mois.revenus_add || 0;
 
@@ -849,20 +1006,20 @@
 
             const reste = totalRev - tc - tdCB - tprov; // L'épargne (te) n'est plus soustraite car c'est un compte à part
 
-            document.getElementById('total-charges').innerText = tc.toFixed(0);
-            document.getElementById('total-epargne').innerText = te.toFixed(0);
-            document.getElementById('total-provisions').innerText = tprov.toFixed(0);
+            document.getElementById('total-charges').innerText = fmt(tc);
+            document.getElementById('total-epargne').innerText = fmt(te);
+            document.getElementById('total-provisions').innerText = fmt(tprov);
             document.getElementById('reste-a-vivre').innerText = eur(reste);
 
             const tdDiff = tdTotal - tdCB;
-            document.getElementById('titre-depenses').innerHTML = `🛒 Dépenses (${tdTotal.toFixed(0)}€) ${tdDiff > 0 ? `<small style="font-weight:normal; opacity:0.6;">(dont ${tdDiff.toFixed(0)}€ 🎟️/💵)</small>` : ''}`;
+            document.getElementById('titre-depenses').innerHTML = `🛒 Dépenses (${fmt(tdTotal)}€) ${tdDiff > 0 ? `<small style="font-weight:normal; opacity:0.6;">(dont ${fmt(tdDiff)}€ 🎟️/💵)</small>` : ''}`;
 
             // Jauges
             const globalTotal = tc + tdTotal + Math.abs(te) + tprov + (reste > 0 ? reste : 0);
             const setBar = (id, val) => {
                 const p = globalTotal > 0 ? Math.round((val / globalTotal) * 100) : 0;
                 document.getElementById(`bar-${id}-m`).style.width = p + '%';
-                document.getElementById(`pct-${id}-m`).innerText = p + '%';
+                document.getElementById(`pct-${id}-m`).innerText = fmt(val) + ' € · ' + p + '%';
             };
             setBar('charges', tc); setBar('depenses', tdTotal); setBar('epargne', Math.abs(te)); setBar('provisions', tprov); setBar('reste', reste > 0 ? reste : 0);
 
@@ -890,6 +1047,17 @@
         };
 
         // --- Vue Annuelle ---
+        let vueAnnuelleMode = 'annuel';
+
+        window.switchVueAnnuelle = (mode) => {
+            vueAnnuelleMode = mode;
+            document.getElementById('panneau-annuel').classList.toggle('hidden', mode !== 'annuel');
+            document.getElementById('panneau-mensuel').classList.toggle('hidden', mode !== 'mensuel');
+            document.getElementById('btn-vue-annuel').classList.toggle('active', mode === 'annuel');
+            document.getElementById('btn-vue-mensuel').classList.toggle('active', mode === 'mensuel');
+            rendreVueAnnuelle();
+        };
+
         const rendreVueAnnuelle = () => {
             const sel = document.getElementById('select-annee');
             if (!sel.options.length) {
@@ -899,44 +1067,124 @@
             }
             const an = parseInt(sel.value);
             const mois = state.donnees.filter(m => m.annee === an);
-            
+
             let te = 0, tc = 0, td = 0, tp = 0;
             mois.forEach(m => {
-                te += (m.epargne || []).reduce((s, i) => s + (parseFloat(i.montant) || 0), 0);
+                te += somme(m.epargne);
                 tc += somme(m.charges);
                 td += somme(m.depenses);
                 tp += somme(m.provisions);
             });
 
-            document.getElementById('annuel-total-epargne').innerText = eur(te);
-            
+            // --- PANNEAU ANNUEL ---
+            document.getElementById('annuel-total-epargne').innerText = eur(tc + td);
+
             const bloc = document.getElementById('bloc-annuel-stats');
             bloc.innerHTML = `
                 <div class="progress-container"><div class="progress-header"><span>🏠 Charges Fixes</span><span>${eur(tc)}</span></div></div>
                 <div class="progress-container"><div class="progress-header"><span>🛒 Dépenses</span><span>${eur(td)}</span></div></div>
-                <div class="progress-container"><div class="progress-header"><span>🛡️ Provisions</span><span>${eur(tp)}</span></div></div>
+                <div class="progress-container"><div class="progress-header"><span>✈️ Projets / Épargne</span><span>${eur(te)}</span></div></div>
             `;
 
             state.objectifsProvisions.forEach(obj => {
                 let totalObj = 0;
-                const search = sansAccents(obj.nom);
+                const search = sansAccents(obj.nom).trim();
                 mois.forEach(m => {
                     [...(m.provisions||[]), ...(m.epargne||[])].forEach(line => {
-                        if (sansAccents(line.categorie || "").includes(search)) totalObj += (parseFloat(line.montant) || 0);
+                        const cat = sansAccents(line.categorie || "");
+                        if (cat.includes(search)) totalObj += parseMontant(line.montant);
                     });
                 });
                 const pct = Math.min(Math.round((totalObj / obj.montant) * 100), 100);
                 bloc.innerHTML += `
                     <div style="margin-top:20px;">
-                        <div class="progress-header"><span>🎯 ${obj.nom}</span><span>${totalObj.toFixed(0)} / ${obj.montant}€</span></div>
+                        <div class="progress-header"><span>🎯 ${obj.nom}</span><span>${fmt(totalObj)} / ${fmt(obj.montant)}€</span></div>
                         <div class="progress-track"><div class="progress-fill" style="background:var(--secondary); width:${pct}%"></div></div>
                     </div>
                 `;
             });
+
+            // --- PANNEAU MENSUEL ---
+            if (vueAnnuelleMode !== 'mensuel') return;
+            const detail = document.getElementById('bloc-mensuel-detail');
+            detail.innerHTML = '';
+
+            mois.forEach(m => {
+                const mtc  = somme(m.charges);
+                const mtd  = somme(m.depenses);
+                const mte  = somme(m.epargne);
+                const mtp  = somme(m.provisions);
+                const mRev = parseMontant(m.revenus) + parseMontant(m.revenus_add);
+                const idx  = state.donnees.indexOf(m);
+                const report = calculerSoldeReporte(idx);
+                const mReste = report + mRev - mtc - sommeCB(m.depenses) - mtp;
+
+                // Objectifs du mois
+                let objHtml = '';
+                state.objectifsProvisions.forEach(obj => {
+                    let totalObj = 0;
+                    const search = sansAccents(obj.nom).trim();
+                    [...(m.provisions||[]), ...(m.epargne||[])].forEach(line => {
+                        if (sansAccents(line.categorie || "").includes(search)) totalObj += parseMontant(line.montant);
+                    });
+                    if (totalObj > 0 || true) {
+                        const pct = Math.min(Math.round((totalObj / obj.montant) * 100), 100);
+                        objHtml += `
+                            <div class="progress-container">
+                                <div class="progress-header"><span>🎯 ${obj.nom}</span><span>${fmt(totalObj)} / ${fmt(obj.montant)}€</span></div>
+                                <div class="progress-track"><div class="progress-fill" style="background:var(--secondary); width:${pct}%"></div></div>
+                            </div>`;
+                    }
+                });
+
+                const id = 'detail-' + m.id;
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.style.marginBottom = '12px';
+                card.innerHTML = `
+                    <div class="card-header" data-target="${id}">
+                        <h3>${m.nom}</h3>
+                        <span style="font-size:0.85rem; color:var(--text-muted); font-weight:600;">🛒 ${eur(mtc + mtd)} dépensés</span>
+                    </div>
+                    <div id="${id}" class="section-content collapsed">
+
+                        <div class="progress-container">
+                            <div class="progress-header"><span>🏠 Charges Fixes</span><span>${eur(mtc)}</span></div>
+                            <div class="progress-track"><div class="progress-fill" style="background:var(--danger); width:${mRev > 0 ? Math.min(Math.round(mtc/mRev*100),100) : 0}%"></div></div>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-header"><span>🛒 Dépenses</span><span>${eur(mtd)}</span></div>
+                            <div class="progress-track"><div class="progress-fill" style="background:var(--secondary); width:${mRev > 0 ? Math.min(Math.round(mtd/mRev*100),100) : 0}%"></div></div>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-header"><span>✈️ Projets / Épargne</span><span>${eur(mte)}</span></div>
+                            <div class="progress-track"><div class="progress-fill" style="background:var(--info); width:${mRev > 0 ? Math.min(Math.round(mte/mRev*100),100) : 0}%"></div></div>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-header"><span>🛡️ Provisions</span><span>${eur(mtp)}</span></div>
+                            <div class="progress-track"><div class="progress-fill" style="background:var(--warn); width:${mRev > 0 ? Math.min(Math.round(mtp/mRev*100),100) : 0}%"></div></div>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-header"><span>✅ Reste à vivre</span><span style="color:${mReste >= 0 ? 'var(--success)' : 'var(--danger)'}; font-weight:800;">${eur(mReste)}</span></div>
+                            <div class="progress-track"><div class="progress-fill" style="background:var(--success); width:${mRev > 0 ? Math.min(Math.round(Math.max(mReste,0)/mRev*100),100) : 0}%"></div></div>
+                        </div>
+
+                        ${objHtml ? `<div style="margin-top:8px; padding-top:8px; border-top:1px dashed var(--border);">${objHtml}</div>` : ''}
+                    </div>
+                `;
+                detail.appendChild(card);
+            });
         };
 
-        // --- Vue Admin RESTAURÉE ---
+        // --- Vue Admin ---
         const rendreAdmin = () => {
+            // Badge counts
+            const badgeCat = document.getElementById('badge-cat-count');
+            const badgeObj = document.getElementById('badge-obj-count');
+            const badgeCorb = document.getElementById('badge-corbeille-count');
+            if (badgeCat) badgeCat.innerText = state.categories.length;
+            if (badgeObj) badgeObj.innerText = state.objectifsProvisions.length;
+            if (badgeCorb) badgeCorb.innerText = state.corbeille.length;
             const catDiv = document.getElementById('admin-categories');
             catDiv.innerHTML = state.categories.map((c, i) => `
                 <div class="month-pill" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
@@ -963,7 +1211,14 @@
             }
 
             const ts = document.getElementById('theme-selector');
-            ts.innerHTML = THEMES.map(t => `<div class="color-circle ${localStorage.getItem(LS_THEME) === t.id ? 'active' : ''}" style="background:${t.color}" data-set-theme="${t.id}"></div>`).join('');
+            const currentTheme = localStorage.getItem(LS_THEME) || 'default';
+            ts.innerHTML = THEMES.map(t => `
+                <div class="theme-card ${currentTheme === t.id ? 'active' : ''}" data-set-theme="${t.id}">
+                    <div class="theme-card__check">✓</div>
+                    <div class="theme-card__swatch" style="background:${t.swatch};"></div>
+                    <div class="theme-card__label">${t.label}</div>
+                </div>
+            `).join('');
         };
 
         // --- Gestionnaires d'événements (BULLES FLOTTANTES CORRIGÉES) ---
@@ -1186,6 +1441,46 @@
 
         document.getElementById('btn-close-calc').onclick = () => document.getElementById('calc-popup').classList.add('hidden');
 
+        // --- Calculatrice ---
+        const calcDisplay = document.getElementById('calc-display');
+        document.querySelector('.calc-grid').addEventListener('click', (e) => {
+            const btn = e.target.closest('.calc-btn');
+            if (!btn) return;
+
+            if (btn.dataset.action === 'clear') {
+                calcDisplay.value = '';
+                return;
+            }
+            if (btn.dataset.action === 'result') {
+                try {
+                    // Remplace les symboles affichés par les vrais opérateurs
+                    const expr = calcDisplay.value.replace(/×/g, '*').replace(/÷/g, '/');
+                    // eslint-disable-next-line no-eval
+                    const result = Function('"use strict"; return (' + expr + ')')();
+                    calcDisplay.value = parseFloat(result.toFixed(10)).toString();
+                } catch {
+                    calcDisplay.value = 'Erreur';
+                }
+                return;
+            }
+            if (btn.dataset.input !== undefined) {
+                // Afficher × et ÷ mais stocker * et /
+                const displayChar = btn.dataset.input === '*' ? '×' : btn.dataset.input === '/' ? '÷' : btn.dataset.input;
+                calcDisplay.value += displayChar;
+            }
+        });
+
+        // --- Accordéons (vue mensuelle et toutes vues) ---
+        document.querySelector('main').addEventListener('click', (e) => {
+            const header = e.target.closest('.card-header[data-target]');
+            if (header) {
+                // Ne pas déclencher si c'est déjà géré par vue-admin
+                if (!header.closest('#vue-admin')) {
+                    toggleSection(header.dataset.target, header);
+                }
+            }
+        });
+
         // 10. Initialisation Thème
         const toggleDark = () => {
             document.body.classList.toggle('dark-mode');
@@ -1270,15 +1565,47 @@
             });
         }
 
+        // --- Corbeille ---
+        const viderCorbeille = () => {
+            if (!state.corbeille.length) { alert("La corbeille est déjà vide."); return; }
+            if (confirm("Vider définitivement la corbeille ? Cette action est irréversible.")) {
+                state.corbeille = [];
+                sauvegarderConfig(true);
+                rendreAdmin();
+            }
+        };
+
+        const restaurerCorbeille = (index) => {
+            const item = state.corbeille[index];
+            if (!item) return;
+            const mois = getMoisActif();
+            if (!mois) { alert("Aucun mois actif. Sélectionnez un mois d'abord."); return; }
+            const type = item.typeOriginal;
+            const restored = { ...item };
+            delete restored.typeOriginal;
+            mois[type].unshift(restored);
+            state.corbeille.splice(index, 1);
+            sauvegarderDonnees();
+            sauvegarderConfig(true);
+            rendreAdmin();
+        };
+
         document.getElementById('btn-add-cat').onclick = () => {
-            const v = document.getElementById('new-cat-input').value;
-            if (v) { state.categories.push(v); sauvegarderConfig(); rendreAdmin(); }
+            const input = document.getElementById('new-cat-input');
+            const v = input.value.trim();
+            if (v) { state.categories.push(v); input.value = ''; sauvegarderConfig(); rendreAdmin(); }
         };
 
         document.getElementById('btn-add-obj').onclick = () => {
-            const nom = document.getElementById('new-obj-nom').value;
-            const montant = parseFloat(document.getElementById('new-obj-mnt').value);
-            if (nom && montant) { state.objectifsProvisions.push({ nom, montant }); sauvegarderConfig(); rendreAdmin(); }
+            const nomInput = document.getElementById('new-obj-nom');
+            const mntInput = document.getElementById('new-obj-mnt');
+            const nom = nomInput.value.trim();
+            const montant = parseFloat(mntInput.value);
+            if (nom && montant) {
+                state.objectifsProvisions.push({ nom, montant });
+                nomInput.value = ''; mntInput.value = '';
+                sauvegarderConfig(); rendreAdmin();
+            }
         };
 
         document.getElementById('btn-logout').onclick = () => signOut(auth).then(() => window.location.reload());
@@ -1309,7 +1636,8 @@
 
         document.getElementById('vue-admin').addEventListener('click', (e) => {
             // Choix du thème
-            if (e.target.dataset.setTheme) { applyTheme(e.target.dataset.setTheme); return; }
+            const themeCard = e.target.closest('[data-set-theme]');
+            if (themeCard) { applyTheme(themeCard.dataset.setTheme); return; }
 
             // Supprimer catégorie
             const delCat = e.target.closest('[data-del-cat]');
