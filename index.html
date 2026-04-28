@@ -2,12 +2,25 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Budget L&C">
     <meta name="theme-color" content="#F2F2F7" id="meta-theme-color">
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <!-- Splash screens iPhone -->
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)" href="splash/splash-1290x2796.png">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)" href="splash/splash-1179x2556.png">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)" href="splash/splash-1170x2532.png">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" href="splash/splash-1125x2436.png">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" href="splash/splash-750x1334.png">
+
+    <!-- Icônes Apple -->
+    <link rel="apple-touch-icon" sizes="180x180" href="icone.PNG">
+    <link rel="apple-touch-icon" sizes="152x152" href="icone.PNG">
+    <link rel="apple-touch-icon" sizes="120x120" href="icone.PNG">
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icone.PNG">
     <title>Budget L&C</title>
 
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
@@ -34,7 +47,7 @@
             --radius-card:   16px;
             --radius-input:  10px;
             --shadow-card:   0 2px 10px rgba(0,0,0,0.03);
-            --transition:    all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition:    all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         /* 2. MODE SOMBRE */
@@ -143,7 +156,9 @@
 
         /* 6. LAYOUT GLOBAL */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; transition: var(--transition); }
-        body { background-color: var(--bg-color); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
+        body { background-color: var(--bg-color); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; padding-bottom: env(safe-area-inset-bottom); }
+        .top-nav { padding-top: max(15px, env(safe-area-inset-top)); padding-left: max(15px, env(safe-area-inset-left)); }
+        #toast { bottom: max(25px, calc(env(safe-area-inset-bottom) + 10px)); }
 
         /* 7. ECRAN DE CONNEXION */
         #login-screen { position: fixed; inset: 0; background: var(--bg-color); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 20px; }
@@ -180,7 +195,9 @@
 
         /* 11. FORMULAIRES & INPUTS */
         input, select, textarea { font-size: 16px !important; outline: none; background: transparent; color: var(--text-main); border: none; }
-        input[type="number"] { background: var(--bg-color); border-radius: 6px; padding: 4px; }
+        input[type="number"] { background: var(--bg-color); border-radius: 6px; padding: 4px; -moz-appearance: textfield; }
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         .search-container input { width: 100%; padding: 12px 15px; border-radius: var(--radius-input); border: 1px solid var(--border); background: var(--card-bg); font-size: 1rem; margin-bottom: 15px; }
 
         /* 12. CARTES ET BOITES */
@@ -314,9 +331,16 @@
         }
         
         /* TOAST */
-        #toast { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 12px 20px; border-radius: 20px; font-weight: 600; display: flex; align-items: center; gap: 15px; transition: bottom 0.3s ease; z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-        #toast.show { bottom: 25px; }
+        #toast { position: fixed; bottom: max(25px, calc(env(safe-area-inset-bottom) + 10px)); left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 12px 20px; border-radius: 20px; font-weight: 600; display: flex; align-items: center; gap: 15px; transition: bottom 0.3s ease; z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        #toast.show { bottom: max(85px, calc(env(safe-area-inset-bottom) + 70px)); }
         #btn-undo { background: var(--secondary); color: white; border: none; padding: 6px 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+
+        /* BOTTOM SHEET */
+        .bs-type-btn { padding: 14px 8px; border-radius: 12px; border: 1.5px solid var(--border); background: var(--bg-color); color: var(--text-main); font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .bs-type-btn.active { border-color: var(--primary); background: var(--primary-light); color: var(--primary); }
+
+        /* FAB — caché en dehors de la vue mensuelle/fixes */
+        #fab-add.hidden { transform: scale(0); opacity: 0; pointer-events: none; }
     </style>
 </head>
 <body class="theme-glass">
@@ -414,9 +438,9 @@
 
             <div id="mois-content-wrapper">
                 <div class="revenus-box">
-                    <div class="revenus-row"><strong>Solde reporté (Revolut)</strong><input type="number" id="solde_reporte" readonly></div>
-                    <div class="revenus-row"><strong>Revenus initiaux</strong><input type="number" id="revenus" data-field="revenus"></div>
-                    <div class="revenus-row"><strong>Ajouts en cours</strong><input type="number" id="revenus_add" data-field="revenus_add"></div>
+                    <div class="revenus-row"><strong>Solde reporté (Revolut)</strong><input type="number" inputmode="decimal" id="solde_reporte" readonly></div>
+                    <div class="revenus-row"><strong>Revenus initiaux</strong><input type="number" inputmode="decimal" id="revenus" data-field="revenus"></div>
+                    <div class="revenus-row"><strong>Ajouts en cours</strong><input type="number" inputmode="decimal" id="revenus_add" data-field="revenus_add"></div>
                 </div>
 
                 <div class="card summary-card">
@@ -621,6 +645,31 @@
     </main>
 
     <div id="toast">Ligne supprimée <button id="btn-undo">Annuler</button></div>
+
+    <!-- PULL TO REFRESH -->
+    <div id="ptr-indicator" style="position:fixed; top:0; left:50%; transform:translateX(-50%) translateY(-60px); background:var(--card-bg); border-radius:50px; padding:8px 18px; font-size:0.85rem; font-weight:700; color:var(--primary); box-shadow:0 4px 15px rgba(0,0,0,0.15); z-index:9999; transition:transform 0.25s cubic-bezier(0.25,0.46,0.45,0.94); pointer-events:none;">
+        <span id="ptr-icon">↓</span> <span id="ptr-text">Tirer pour rafraîchir</span>
+    </div>
+
+    <!-- BOTTOM SHEET AJOUT RAPIDE -->
+    <div id="bs-overlay" style="position:fixed; inset:0; background:rgba(0,0,0,0); z-index:8000; pointer-events:none; transition:background 0.3s;"></div>
+    <div id="bottom-sheet" style="position:fixed; bottom:0; left:0; right:0; background:var(--card-bg); border-radius:20px 20px 0 0; padding:0 20px calc(20px + env(safe-area-inset-bottom)); z-index:8001; transform:translateY(100%); transition:transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94); box-shadow:0 -4px 30px rgba(0,0,0,0.15);">
+        <div style="width:40px; height:4px; background:var(--border); border-radius:4px; margin:12px auto 20px;"></div>
+        <h3 style="margin-bottom:18px; font-size:1.1rem;">➕ Nouvelle entrée</h3>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px;">
+            <button class="bs-type-btn active" data-type="depenses" onclick="bsSelectType(this)">🛒 Dépense</button>
+            <button class="bs-type-btn" data-type="charges" onclick="bsSelectType(this)">🏠 Charge</button>
+            <button class="bs-type-btn" data-type="epargne" onclick="bsSelectType(this)">✈️ Épargne</button>
+            <button class="bs-type-btn" data-type="provisions" onclick="bsSelectType(this)">🛡️ Provision</button>
+        </div>
+        <input type="text" id="bs-libelle" placeholder="Description..." style="width:100%; padding:14px; border-radius:12px; border:1px solid var(--border); background:var(--bg-color); color:var(--text-main); font-size:1rem; margin-bottom:10px;">
+        <input type="number" inputmode="decimal" id="bs-montant" placeholder="Montant €" style="width:100%; padding:14px; border-radius:12px; border:1px solid var(--border); background:var(--bg-color); color:var(--text-main); font-size:1.2rem; font-weight:700; margin-bottom:16px; text-align:right;">
+        <button onclick="bsValider()" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:12px; font-size:1.1rem; font-weight:700; cursor:pointer;">Ajouter</button>
+        <button onclick="bsFermer()" style="width:100%; padding:12px; background:none; color:var(--text-muted); border:none; font-size:0.9rem; cursor:pointer; margin-top:6px;">Annuler</button>
+    </div>
+
+    <!-- FAB bouton + -->
+    <div id="fab-add" style="position:fixed; bottom:calc(30px + env(safe-area-inset-bottom)); right:20px; width:56px; height:56px; border-radius:50%; background:var(--primary); color:white; font-size:1.8rem; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 15px rgba(0,122,255,0.4); cursor:pointer; z-index:7999; transition:transform 0.2s cubic-bezier(0.25,0.46,0.45,0.94);" onclick="bsOuvrir()">+</div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
@@ -831,6 +880,9 @@
             document.querySelectorAll('.btn-tab').forEach(b => b.classList.toggle('active', b.dataset.view === vue));
             document.getElementById('month-nav-group').classList.toggle('hidden', vue === 'annuelle' || vue === 'admin');
             rafraichirTouteLInterface();
+            // FAB visibility
+            const fab = document.getElementById('fab-add');
+            if (fab) fab.classList.toggle('hidden', vue !== 'mensuelle' && vue !== 'fixes');
         };
 
         const toggleSection = (id, header) => {
@@ -922,7 +974,7 @@
                                 ${state.categories.map(c => `<option value="${c}" ${item.categorie === c ? 'selected' : ''}>${c}</option>`).join('')}
                             </select>
                             <div style="display:flex; align-items:center;">
-                                <input type="number" value="${mntFinal}" style="${style} width:85px; text-align:right; font-weight:700; border:none; background:var(--bg-color); padding:8px; border-radius:8px;" data-id="${item.id}" data-type="${type}" data-field="montant">
+                                <input type="number" inputmode="decimal" value="${mntFinal}" style="${style} width:85px; text-align:right; font-weight:700; border:none; background:var(--bg-color); padding:8px; border-radius:8px;" data-id="${item.id}" data-type="${type}" data-field="montant">
                             </div>
                         </div>
                         <button class="btn-delete" data-del-type="${type}" data-del-id="${item.id}">✕</button>
@@ -943,7 +995,7 @@
                             <div class="item-top">
                                 <textarea data-id="${item.id}" data-type="${type}" data-field="libelle" placeholder="Note...">${item.libelle || ''}</textarea>
                                 <div style="display:flex; align-items:center;">
-                                    ${isNeg ? '-' : ''}<input type="number" value="${mntFinal}" style="${style}" data-id="${item.id}" data-type="${type}" data-field="montant">
+                                    ${isNeg ? '-' : ''}<input type="number" inputmode="decimal" value="${mntFinal}" style="${style}" data-id="${item.id}" data-type="${type}" data-field="montant">
                                     ${payIcon}
                                 </div>
                             </div>
@@ -1300,7 +1352,7 @@
         // 2. Navigation Tabs
         document.querySelector('.tab-buttons').addEventListener('click', (e) => {
             const btn = e.target.closest('[data-view]');
-            if (btn) changerVue(btn.dataset.view);
+            if (btn) { haptic('light'); changerVue(btn.dataset.view); }
         });
 
         // 3. Barre Latérale (Mois/Années)
@@ -1452,15 +1504,7 @@
                 return;
             }
             if (btn.dataset.action === 'result') {
-                try {
-                    // Remplace les symboles affichés par les vrais opérateurs
-                    const expr = calcDisplay.value.replace(/×/g, '*').replace(/÷/g, '/');
-                    // eslint-disable-next-line no-eval
-                    const result = Function('"use strict"; return (' + expr + ')')();
-                    calcDisplay.value = parseFloat(result.toFixed(10)).toString();
-                } catch {
-                    calcDisplay.value = 'Erreur';
-                }
+                calcEvaluer();
                 return;
             }
             if (btn.dataset.input !== undefined) {
@@ -1470,7 +1514,64 @@
             }
         });
 
-        // --- Accordéons (vue mensuelle et toutes vues) ---
+        // --- Calculatrice clavier ---
+        const calcEvaluer = () => {
+            try {
+                const expr = calcDisplay.value.replace(/×/g, '*').replace(/÷/g, '/');
+                const result = Function('"use strict"; return (' + expr + ')')();
+                calcDisplay.value = parseFloat(result.toFixed(10)).toString();
+            } catch {
+                calcDisplay.value = 'Erreur';
+            }
+        };
+
+        const calcHighlight = (selector) => {
+            const btn = document.querySelector(`.calc-btn[${selector}]`);
+            if (!btn) return;
+            btn.style.transform = 'scale(0.92)';
+            btn.style.opacity = '0.7';
+            setTimeout(() => { btn.style.transform = ''; btn.style.opacity = ''; }, 120);
+        };
+
+        document.addEventListener('keydown', (e) => {
+            const popup = document.getElementById('calc-popup');
+            if (popup.classList.contains('hidden')) return;
+
+            // Empêcher les comportements par défaut (scroll, etc.)
+            if (['Enter','=','Backspace','Escape'].includes(e.key) || /^[0-9+\-*/.(),]$/.test(e.key)) {
+                e.preventDefault();
+            }
+
+            if (e.key === 'Escape') {
+                popup.classList.add('hidden');
+                return;
+            }
+            if (e.key === 'Enter' || e.key === '=') {
+                calcEvaluer();
+                calcHighlight('data-action="result"');
+                return;
+            }
+            if (e.key === 'Backspace') {
+                if (calcDisplay.value === 'Erreur') { calcDisplay.value = ''; return; }
+                calcDisplay.value = calcDisplay.value.slice(0, -1);
+                return;
+            }
+            if (e.key === 'Delete' || (e.key === 'c' && !e.ctrlKey && !e.metaKey)) {
+                calcDisplay.value = '';
+                calcHighlight('data-action="clear"');
+                return;
+            }
+
+            const map = { '*': '×', '/': '÷' };
+            const allowed = '0123456789+-*/.()';
+            if (allowed.includes(e.key)) {
+                if (calcDisplay.value === 'Erreur') calcDisplay.value = '';
+                const display = map[e.key] || e.key;
+                calcDisplay.value += display;
+                const attrVal = e.key === '*' ? '*' : e.key === '/' ? '/' : e.key;
+                calcHighlight(`data-input="${attrVal}"`);
+            }
+        });
         document.querySelector('main').addEventListener('click', (e) => {
             const header = e.target.closest('.card-header[data-target]');
             if (header) {
@@ -1631,7 +1732,120 @@
             };
         });
 
-        // 13. Events globaux
+        // =============================================
+        // AMÉLIORATIONS iPhone
+        // =============================================
+
+        // --- Haptique ---
+        const haptic = (type = 'light') => {
+            if (!window.navigator || !navigator.vibrate) return;
+            const patterns = { light: [10], medium: [20], heavy: [30, 10, 30], success: [10, 50, 10], error: [50, 30, 50] };
+            navigator.vibrate(patterns[type] || patterns.light);
+        };
+
+        // --- Bottom Sheet ---
+        let bsTypeActif = 'depenses';
+        window.bsOuvrir = () => {
+            haptic('light');
+            document.getElementById('bottom-sheet').style.transform = 'translateY(0)';
+            const overlay = document.getElementById('bs-overlay');
+            overlay.style.pointerEvents = 'auto';
+            overlay.style.background = 'rgba(0,0,0,0.4)';
+            overlay.onclick = bsFermer;
+            setTimeout(() => document.getElementById('bs-libelle').focus(), 400);
+        };
+        window.bsFermer = () => {
+            document.getElementById('bottom-sheet').style.transform = 'translateY(100%)';
+            const overlay = document.getElementById('bs-overlay');
+            overlay.style.background = 'rgba(0,0,0,0)';
+            overlay.style.pointerEvents = 'none';
+            document.getElementById('bs-libelle').value = '';
+            document.getElementById('bs-montant').value = '';
+        };
+        window.bsSelectType = (btn) => {
+            document.querySelectorAll('.bs-type-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            bsTypeActif = btn.dataset.type;
+            haptic('light');
+        };
+        window.bsValider = () => {
+            const mois = getMoisActif();
+            if (!mois) return;
+            const libelle = document.getElementById('bs-libelle').value.trim();
+            const montant = parseMontant(document.getElementById('bs-montant').value);
+            if (!montant) { haptic('error'); return; }
+            const nouv = { id: genId(), libelle, montant, date: new Date().toISOString().split('T')[0], categorie: state.categories[0] };
+            if (bsTypeActif === 'depenses') nouv.moyenPaiement = 'CB';
+            if (bsTypeActif === 'epargne') {
+                confetti({ particleCount: 80, spread: 60, origin: { y: 0.7 } });
+            }
+            mois[bsTypeActif].unshift(nouv);
+            haptic('success');
+            bsFermer();
+            sauvegarderDonnees();
+            changerVue('mensuelle');
+            rafraichirTouteLInterface();
+        };
+
+        // FAB visible seulement sur les vues mensuelle et fixes
+        const majFAB = () => {
+            const fab = document.getElementById('fab-add');
+            const visible = state.vueActuelle === 'mensuelle' || state.vueActuelle === 'fixes';
+            fab.classList.toggle('hidden', !visible);
+        };
+
+        // Patch changerVue pour mettre à jour le FAB
+        const changerVueOrig = changerVue;
+
+        // --- Pull-to-refresh ---
+        let ptrStartY = 0, ptrDist = 0, ptrActive = false;
+        const ptrEl = document.getElementById('ptr-indicator');
+        const ptrThreshold = 80;
+
+        document.addEventListener('touchstart', (e) => {
+            if (window.scrollY === 0) { ptrStartY = e.touches[0].clientY; ptrActive = true; }
+        }, { passive: true });
+
+        document.addEventListener('touchmove', (e) => {
+            if (!ptrActive) return;
+            ptrDist = e.touches[0].clientY - ptrStartY;
+            if (ptrDist > 0 && window.scrollY === 0) {
+                const progress = Math.min(ptrDist / ptrThreshold, 1);
+                const translateY = Math.min(ptrDist * 0.4, 55);
+                ptrEl.style.transform = `translateX(-50%) translateY(${translateY}px)`;
+                document.getElementById('ptr-icon').textContent = progress >= 1 ? '↺' : '↓';
+                document.getElementById('ptr-text').textContent = progress >= 1 ? 'Relâcher pour rafraîchir' : 'Tirer pour rafraîchir';
+                if (progress >= 1 && ptrDist < ptrThreshold + 5) haptic('medium');
+            }
+        }, { passive: true });
+
+        document.addEventListener('touchend', () => {
+            if (!ptrActive) return;
+            ptrActive = false;
+            ptrEl.style.transform = 'translateX(-50%) translateY(-60px)';
+            if (ptrDist >= ptrThreshold) {
+                haptic('success');
+                document.getElementById('ptr-icon').textContent = '↺';
+                document.getElementById('ptr-text').textContent = 'Synchronisation…';
+                ptrEl.style.transform = 'translateX(-50%) translateY(20px)';
+                setTimeout(() => {
+                    ptrEl.style.transform = 'translateX(-50%) translateY(-60px)';
+                    rafraichirTouteLInterface();
+                }, 1200);
+            }
+            ptrDist = 0;
+        });
+
+        // Haptique sur suppression
+        const origSuppression = document.body.onclick;
+        document.body.addEventListener('click', (e) => {
+            if (e.target.closest('[data-del-id]') || e.target.closest('[data-del-type]')) haptic('medium');
+        });
+
+        // Haptique sur confetti épargne
+        document.querySelector('[data-add="epargne"][data-special="epargne"]')?.addEventListener('click', () => haptic('success'));
+
+        // =============================================
         document.getElementById('select-annee').onchange = (e) => rendreVueAnnuelle();
 
         document.getElementById('vue-admin').addEventListener('click', (e) => {
