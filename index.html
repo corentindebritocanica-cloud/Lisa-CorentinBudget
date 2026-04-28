@@ -165,7 +165,7 @@
         .login-box p { color: var(--text-muted); margin-bottom: 25px; font-size: 0.9rem; }
         .login-box input { width: 100%; padding: 15px; border-radius: var(--radius-input); border: 1px solid var(--border); background: var(--bg-color); margin-bottom: 15px; font-size: 1rem; color: var(--text-main); }
         .login-btn { width: 100%; padding: 15px; border-radius: var(--radius-input); border: none; background: var(--primary); color: white; font-weight: bold; font-size: 1.1rem; cursor: pointer; }
-        #login-error { color: var(--danger); font-size: 0.9rem; margin-top: 15px; display: none; }
+        #login-error { color: var(--danger); font-size: 0.88rem; margin-top: 15px; display: none; background: rgba(255,59,48,0.08); padding: 10px 14px; border-radius: 10px; border: 1px solid rgba(255,59,48,0.2); text-align: left; line-height: 1.4; }
 
         /* 8. BARRE DE NAVIGATION HAUTE */
         .top-nav { background-color: var(--card-bg); border-bottom: 1px solid var(--border); padding: 15px; padding-top: max(15px, env(safe-area-inset-top)); position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-card); }
@@ -360,9 +360,10 @@
         <div class="login-box">
             <h1>🔒 Budget L&C</h1>
             <p>Accès aux comptes de Lisa & Corentin</p>
-            <input type="email" id="login-email" placeholder="Adresse e-mail">
-            <input type="password" id="login-password" placeholder="Mot de passe">
-            <button class="login-btn" id="btn-login">Ouvrir les comptes</button>
+            <div id="login-init-status" style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px; padding:8px; background:var(--bg-color); border-radius:8px;">⏳ Chargement de l'app…</div>
+            <input type="email" id="login-email" placeholder="Adresse e-mail" autocomplete="email">
+            <input type="password" id="login-password" placeholder="Mot de passe" autocomplete="current-password">
+            <button class="login-btn" id="btn-login" disabled>⏳ Chargement…</button>
             <div id="login-error">Identifiants incorrects.</div>
         </div>
     </div>
@@ -427,7 +428,8 @@
         <div class="tab-buttons">
             <button class="btn-tab active" data-view="mensuelle">Mois</button>
             <button class="btn-tab" data-view="annuelle">Année</button>
-            <button class="btn-tab" data-view="fixes">Charges Fixes</button>
+            <button class="btn-tab" data-view="fixes">Fixes</button>
+            <button class="btn-tab" data-view="vacances">🏖️</button>
             <button class="btn-tab" data-view="admin">Admin</button>
         </div>
         
@@ -653,7 +655,155 @@
             </div>
 
         </div>
+
+        <!-- ===================== VUE VACANCES ===================== -->
+        <div id="vue-vacances" class="hidden">
+
+            <!-- Liste des voyages -->
+            <div id="vacances-liste">
+                <div class="header-title-group">
+                    <h1>🏖️ Voyages</h1>
+                </div>
+                <div id="voyages-cards"></div>
+                <button class="btn-action bg-primary" id="btn-nouveau-voyage">+ Nouveau voyage</button>
+            </div>
+
+            <!-- Détail d'un voyage -->
+            <div id="vacances-detail" class="hidden">
+                <div class="header-title-group">
+                    <button id="btn-retour-voyages" style="background:none;border:none;color:var(--primary);font-size:1rem;font-weight:700;cursor:pointer;padding:0;">← Voyages</button>
+                    <button class="btn-icon danger" id="btn-del-voyage" style="background:none;border:none;color:var(--danger);font-size:1.2rem;cursor:pointer;">🗑️</button>
+                </div>
+
+                <!-- Header résumé -->
+                <div class="card summary-card" style="background:linear-gradient(135deg,#007AFF,#5856D6); margin-bottom:16px;">
+                    <h3 id="voyage-titre-detail" style="font-size:1.3rem; margin-bottom:4px;"></h3>
+                    <div style="font-size:0.85rem; opacity:0.85; margin-bottom:14px;" id="voyage-dates-detail"></div>
+                    <div style="display:flex; justify-content:space-around; text-align:center;">
+                        <div>
+                            <div style="font-size:0.72rem; opacity:0.8;">👨 Corentin</div>
+                            <div style="font-size:1.3rem; font-weight:800;" id="voyage-total-corentin">0 €</div>
+                        </div>
+                        <div style="width:1px; background:rgba(255,255,255,0.3);"></div>
+                        <div>
+                            <div style="font-size:0.72rem; opacity:0.8;">Total dépensé</div>
+                            <div style="font-size:1.3rem; font-weight:800;" id="voyage-depense-affiche">0 €</div>
+                        </div>
+                        <div style="width:1px; background:rgba(255,255,255,0.3);"></div>
+                        <div>
+                            <div style="font-size:0.72rem; opacity:0.8;">👩 Lisa</div>
+                            <div style="font-size:1.3rem; font-weight:800;" id="voyage-total-lisa">0 €</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bilan "qui doit quoi" -->
+                <div id="voyage-bilan-card" class="card" style="margin-bottom:16px; border-left:4px solid var(--success); border-radius:var(--radius-card);">
+                    <div id="voyage-bilan-content" style="font-size:0.95rem;"></div>
+                </div>
+
+                <!-- Répartition par catégorie -->
+                <div class="card" style="margin-bottom:16px;">
+                    <div class="card-header" data-target="voyage-repartition"><h3>📊 Répartition</h3></div>
+                    <div id="voyage-repartition" class="section-content">
+                        <div id="voyage-repartition-content" style="padding-top:8px;"></div>
+                    </div>
+                </div>
+
+                <!-- Dépenses par catégorie -->
+                <div id="voyage-categories-content"></div>
+
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <button class="btn-action bg-primary" id="btn-add-depense-voyage" style="flex:1; margin-bottom:0;">+ Dépense</button>
+                    <button id="btn-open-import-screens" style="padding:14px 16px; border-radius:var(--radius-input); border:1px dashed var(--border); background:var(--bg-color); color:var(--text-muted); font-size:0.85rem; cursor:pointer; white-space:nowrap;">📸 Importer</button>
+                </div>
+            </div>
+
+        </div>
+
     </main>
+
+    <!-- Popup nouveau voyage -->
+    <div id="popup-nouveau-voyage" class="overlay-popup hidden">
+        <div class="popup-box" style="width:90%; max-width:400px; text-align:left;">
+            <h3 style="margin-bottom:18px; font-size:1.1rem;">🏖️ Nouveau voyage</h3>
+            <input type="text" id="nv-nom" placeholder="Nom du voyage (ex: Sardaigne 2026)" style="width:100%; padding:12px; border-radius:10px; border:1px solid var(--border); background:var(--bg-color); color:var(--text-main); font-size:1rem; margin-bottom:10px;">
+            <div style="display:flex; gap:8px; margin-bottom:10px;">
+                <div style="flex:1;">
+                    <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:4px;">Date de départ</label>
+                    <input type="date" id="nv-debut" style="width:100%; padding:10px; border-radius:10px; border:1px solid var(--border); background:var(--bg-color); color:var(--text-main);">
+                </div>
+                <div style="flex:1;">
+                    <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:4px;">Date de retour</label>
+                    <input type="date" id="nv-fin" style="width:100%; padding:10px; border-radius:10px; border:1px solid var(--border); background:var(--bg-color); color:var(--text-main);">
+                </div>
+            </div>
+            <div style="margin-bottom:16px;">
+                <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:4px;">Destination / Emoji</label>
+                <div style="display:flex; gap:8px;">
+                    <input type="text" id="nv-emoji" placeholder="🌴" style="width:60px; padding:10px; border-radius:10px; border:1px solid var(--border); background:var(--bg-color); color:var(--text-main); text-align:center; font-size:1.3rem;">
+                    <input type="text" id="nv-destination" placeholder="Sardaigne, Italie..." style="flex:1; padding:10px; border-radius:10px; border:1px solid var(--border); background:var(--bg-color); color:var(--text-main);">
+                </div>
+            </div>
+            <div style="display:flex; gap:8px;">
+                <button onclick="document.getElementById('popup-nouveau-voyage').classList.add('hidden')" style="flex:1; padding:12px; border-radius:10px; border:1px solid var(--border); background:none; color:var(--text-muted); cursor:pointer;">Annuler</button>
+                <button id="btn-confirmer-voyage" style="flex:2; padding:12px; border-radius:10px; border:none; background:var(--primary); color:white; font-weight:700; cursor:pointer;">Créer le voyage</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Popup ajout dépense voyage -->
+    <div id="popup-depense-voyage" class="overlay-popup hidden">
+        <div class="popup-box" style="width:90%; max-width:400px; text-align:left;">
+            <h3 style="margin-bottom:16px; font-size:1.1rem;">💸 Nouvelle dépense</h3>
+
+            <!-- Payeur -->
+            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:6px;">Payé par</label>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px;">
+                <button class="dv-payeur-btn active" data-payeur="Corentin" onclick="dvSelectPayeur(this)" style="padding:12px; border-radius:10px; border:2px solid var(--primary); background:var(--primary-light); color:var(--primary); font-weight:700; cursor:pointer; font-size:0.95rem;">👨 Corentin</button>
+                <button class="dv-payeur-btn" data-payeur="Lisa" onclick="dvSelectPayeur(this)" style="padding:12px; border-radius:10px; border:1.5px solid var(--border); background:var(--bg-color); color:var(--text-main); font-weight:700; cursor:pointer; font-size:0.95rem;">👩 Lisa</button>
+            </div>
+
+            <!-- Type -->
+            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:6px;">Type</label>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px;">
+                <button class="dv-type-btn active" data-dtype="commun" onclick="dvSelectType(this)" style="padding:10px; border-radius:10px; border:2px solid var(--primary); background:var(--primary-light); color:var(--primary); font-weight:600; cursor:pointer; font-size:0.85rem;">🤝 Dépense commune</button>
+                <button class="dv-type-btn" data-dtype="perso" onclick="dvSelectType(this)" style="padding:10px; border-radius:10px; border:1.5px solid var(--border); background:var(--bg-color); color:var(--text-main); font-weight:600; cursor:pointer; font-size:0.85rem;">👤 Perso (non partagé)</button>
+                <button class="dv-type-btn" data-dtype="remboursement" onclick="dvSelectType(this)" style="padding:10px; border-radius:10px; border:1.5px solid var(--border); background:var(--bg-color); color:var(--text-main); font-weight:600; cursor:pointer; font-size:0.85rem; grid-column:span 2;">↩️ Remboursement reçu</button>
+            </div>
+
+            <select id="dv-categorie" style="width:100%; padding:12px; border-radius:10px; border:1px solid var(--border); background:var(--bg-color); color:var(--text-main); font-size:0.95rem; margin-bottom:10px;"></select>
+            <input type="text" id="dv-libelle" placeholder="Description (optionnel)" style="width:100%; padding:12px; border-radius:10px; border:1px solid var(--border); background:var(--bg-color); color:var(--text-main); font-size:1rem; margin-bottom:10px;">
+            <input type="number" inputmode="decimal" id="dv-montant" placeholder="Montant €" style="width:100%; padding:12px; border-radius:10px; border:1px solid var(--border); background:var(--bg-color); color:var(--text-main); font-size:1.2rem; font-weight:700; text-align:right; margin-bottom:10px;">
+            <input type="date" id="dv-date" style="width:100%; padding:12px; border-radius:10px; border:1px solid var(--border); background:var(--bg-color); color:var(--text-main); margin-bottom:16px;">
+            <div style="display:flex; gap:8px;">
+                <button onclick="document.getElementById('popup-depense-voyage').classList.add('hidden')" style="flex:1; padding:12px; border-radius:10px; border:1px solid var(--border); background:none; color:var(--text-muted); cursor:pointer;">Annuler</button>
+                <button id="btn-confirmer-depense-voyage" style="flex:2; padding:12px; border-radius:10px; border:none; background:var(--primary); color:white; font-weight:700; cursor:pointer;">Ajouter</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Popup import screenshots -->
+    <div id="popup-import-screens" class="overlay-popup hidden">
+        <div class="popup-box" style="width:92%; max-width:460px; text-align:left; max-height:85vh; display:flex; flex-direction:column;">
+            <h3 style="margin-bottom:6px; font-size:1.1rem;">📸 Importer des captures</h3>
+            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:14px; line-height:1.5;">L'IA va lire vos screenshots et extraire automatiquement toutes les dépenses, remboursements et paiements.</p>
+            <label id="drop-zone" style="display:flex; flex-direction:column; align-items:center; justify-content:center; border:2px dashed var(--border); border-radius:14px; padding:24px; cursor:pointer; margin-bottom:12px; gap:8px; transition:border-color 0.2s;">
+                <span style="font-size:2rem;">📷</span>
+                <span style="font-weight:600; font-size:0.95rem;">Appuyer pour choisir des photos</span>
+                <span style="font-size:0.78rem; color:var(--text-muted);">10+ captures acceptées en une fois</span>
+                <input type="file" id="import-screens-input" accept="image/*" multiple style="display:none;">
+            </label>
+            <div id="import-screens-preview" style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px; max-height:100px; overflow-y:auto;"></div>
+            <div id="import-screens-status" style="font-size:0.85rem; color:var(--text-muted); margin-bottom:12px; min-height:20px; font-weight:600;"></div>
+            <div id="import-screens-result" style="flex:1; overflow-y:auto; font-size:0.82rem; color:var(--text-main); border-top:1px solid var(--border); padding-top:10px; display:none;"></div>
+            <div style="display:flex; gap:8px; margin-top:14px;">
+                <button onclick="document.getElementById('popup-import-screens').classList.add('hidden')" style="flex:1; padding:12px; border-radius:10px; border:1px solid var(--border); background:none; color:var(--text-muted); cursor:pointer;">Fermer</button>
+                <button id="btn-lancer-import" style="flex:2; padding:12px; border-radius:10px; border:none; background:var(--primary); color:white; font-weight:700; cursor:pointer; display:none;">🔍 Analyser</button>
+                <button id="btn-confirmer-import" style="flex:2; padding:12px; border-radius:10px; border:none; background:var(--success); color:white; font-weight:700; cursor:pointer; display:none;">✅ Importer tout</button>
+            </div>
+        </div>
+    </div>
 
     <div id="toast">Ligne supprimée <button id="btn-undo">Annuler</button></div>
 
@@ -722,9 +872,24 @@
         ];
         const REGEX_SUPERMARCHE = /leclerc|carrefour|auchan|intermarch|super\s*u|lidl|aldi|frais|cora|casino|netto/i;
 
+        const CATS_VOYAGE = [
+            { id:'transport_avion', label:'✈️ Vol / Train', couleur:'#007AFF' },
+            { id:'transport_voiture', label:'🚗 Voiture / Essence', couleur:'#FF9500' },
+            { id:'transport_local', label:'🚕 Transport local', couleur:'#FF9500' },
+            { id:'hebergement', label:'🏨 Hébergement', couleur:'#AF52DE' },
+            { id:'restaurant', label:'🍽️ Restaurant', couleur:'#FF3B30' },
+            { id:'courses', label:'🛒 Courses / Marché', couleur:'#34C759' },
+            { id:'activites', label:'🎡 Activités / Visites', couleur:'#FF2D55' },
+            { id:'shopping', label:'🛍️ Shopping / Souvenirs', couleur:'#FFCC00' },
+            { id:'sante', label:'🏥 Pharmacie / Santé', couleur:'#5AC8FA' },
+            { id:'divers', label:'💡 Divers', couleur:'#8E8E93' },
+        ];
+
         // --- État de l'application ---
         const state = {
             donnees: [],
+            voyages: [],
+            voyageActifId: null,
             categories: ["🏠 Loyer", "⚡ Électricité", "💧 Eau", "🛡️ Assurance", "🌐 Internet", "🛒 Courses", "🍽️ Restaurant", "🎬 Loisirs", "🏥 Santé", "✈️ Vacances", "🛠️ Travaux", "❓ Autre"],
             corbeille: [],
             objectifsProvisions: [],
@@ -869,11 +1034,28 @@
                     rafraichirTouteLInterface();
                 }
             });
+            onValue(ref(db, 'budgetVoyagesLC'), (snap) => {
+                if (snap.exists()) {
+                    const raw = snap.val();
+                    state.voyages = (Array.isArray(raw) ? raw : Object.values(raw)).map(v => ({
+                        ...v,
+                        depenses: Array.isArray(v.depenses) ? v.depenses : (v.depenses ? Object.values(v.depenses) : [])
+                    }));
+                } else {
+                    state.voyages = [];
+                }
+                if (state.vueActuelle === 'vacances') rendreVueVacances();
+            });
         };
 
         const sauvegarderDonnees = () => {
             setSyncDot('saving');
             set(ref(db, 'budgetDataLC'), state.donnees).then(() => setSyncDot('online'));
+        };
+
+        const sauvegarderVoyages = () => {
+            setSyncDot('saving');
+            set(ref(db, 'budgetVoyagesLC'), state.voyages).then(() => setSyncDot('online'));
         };
 
         const sauvegarderConfig = (silencieux = false) => {
@@ -890,7 +1072,7 @@
             state.vueActuelle = vue;
             document.querySelectorAll('main > div').forEach(d => d.classList.toggle('hidden', d.id !== `vue-${vue}`));
             document.querySelectorAll('.btn-tab').forEach(b => b.classList.toggle('active', b.dataset.view === vue));
-            document.getElementById('month-nav-group').classList.toggle('hidden', vue === 'annuelle' || vue === 'admin');
+            document.getElementById('month-nav-group').classList.toggle('hidden', vue === 'annuelle' || vue === 'admin' || vue === 'vacances');
             rafraichirTouteLInterface();
             // FAB visibility
             const fab = document.getElementById('fab-add');
@@ -915,6 +1097,7 @@
             if (state.vueActuelle === 'mensuelle') rendreVueMensuelle();
             else if (state.vueActuelle === 'fixes') rendreVueFixes();
             else if (state.vueActuelle === 'annuelle') rendreVueAnnuelle();
+            else if (state.vueActuelle === 'vacances') rendreVueVacances();
             else if (state.vueActuelle === 'admin') rendreAdmin();
         };
 
@@ -1240,6 +1423,437 @@
             });
         };
 
+        // --- Vue Vacances ---
+        const getVoyageActif = () => state.voyages.find(v => v.id === state.voyageActifId);
+        let dvPayeurActif = 'Corentin';
+        let dvTypeActif = 'commun';
+        let importScreensData = []; // résultats IA en attente de confirmation
+
+        window.dvSelectPayeur = (btn) => {
+            document.querySelectorAll('.dv-payeur-btn').forEach(b => {
+                b.style.borderColor = 'var(--border)';
+                b.style.background = 'var(--bg-color)';
+                b.style.color = 'var(--text-main)';
+            });
+            btn.style.borderColor = 'var(--primary)';
+            btn.style.background = 'var(--primary-light)';
+            btn.style.color = 'var(--primary)';
+            dvPayeurActif = btn.dataset.payeur;
+        };
+
+        window.dvSelectType = (btn) => {
+            document.querySelectorAll('.dv-type-btn').forEach(b => {
+                b.style.borderColor = 'var(--border)';
+                b.style.background = 'var(--bg-color)';
+                b.style.color = 'var(--text-main)';
+            });
+            btn.style.borderColor = 'var(--primary)';
+            btn.style.background = 'var(--primary-light)';
+            btn.style.color = 'var(--primary)';
+            dvTypeActif = btn.dataset.dtype;
+        };
+
+        // Calcul du bilan Lisa / Corentin
+        const calculerBilanVoyage = (depenses) => {
+            let payeCorentin = 0, payeLisa = 0;
+            (depenses || []).forEach(d => {
+                const m = parseMontant(d.montant);
+                if (d.type === 'remboursement') {
+                    // remboursement reçu par le payeur → diminue sa mise
+                    if (d.payeur === 'Corentin') payeCorentin -= m;
+                    else payeLisa -= m;
+                } else if (d.type === 'perso') {
+                    // dépense perso → compte pour lui seul, pas dans le commun
+                    if (d.payeur === 'Corentin') payeCorentin += m;
+                    else payeLisa += m;
+                } else {
+                    // commun → compte pour les deux, moitié chacun
+                    if (d.payeur === 'Corentin') payeCorentin += m;
+                    else payeLisa += m;
+                }
+            });
+
+            // Total commun dépensé
+            const communTotal = (depenses || [])
+                .filter(d => d.type === 'commun')
+                .reduce((s, d) => s + parseMontant(d.montant), 0);
+            const partChacun = communTotal / 2;
+
+            // Ce que Corentin a payé pour le commun
+            const communCorentin = (depenses || [])
+                .filter(d => d.type === 'commun' && d.payeur === 'Corentin')
+                .reduce((s, d) => s + parseMontant(d.montant), 0);
+            const communLisa = communTotal - communCorentin;
+
+            // Solde : positif = a trop payé (l'autre lui doit), négatif = a sous-payé
+            const soldeCorentin = communCorentin - partChacun;
+            const soldeLisa = communLisa - partChacun;
+
+            return { payeCorentin, payeLisa, soldeCorentin, soldeLisa };
+        };
+
+        const rendreVueVacances = () => {
+            const liste = document.getElementById('vacances-liste');
+            const detail = document.getElementById('vacances-detail');
+            const voyage = getVoyageActif();
+            if (voyage) {
+                liste.classList.add('hidden');
+                detail.classList.remove('hidden');
+                rendreDetailVoyage(voyage);
+            } else {
+                detail.classList.add('hidden');
+                liste.classList.remove('hidden');
+                rendreListeVoyages();
+            }
+        };
+
+        const rendreListeVoyages = () => {
+            const container = document.getElementById('voyages-cards');
+            if (!state.voyages.length) {
+                container.innerHTML = `<div style="text-align:center; padding:40px 20px; color:var(--text-muted);">
+                    <div style="font-size:3rem; margin-bottom:12px;">🏖️</div>
+                    <p style="font-weight:600; margin-bottom:6px;">Aucun voyage</p>
+                    <p style="font-size:0.85rem;">Créez votre premier voyage pour commencer à tracer votre budget.</p>
+                </div>`;
+                return;
+            }
+            container.innerHTML = state.voyages.map(v => {
+                const total = somme(v.depenses);
+                const bilan = calculerBilanVoyage(v.depenses);
+                const nbJours = v.debut && v.fin ? Math.ceil((new Date(v.fin) - new Date(v.debut)) / 86400000) + 1 : null;
+                return `<div class="card" style="cursor:pointer; margin-bottom:12px;" onclick="ouvrirVoyage('${v.id}')">
+                    <div style="display:flex; align-items:center; gap:14px; margin-bottom:10px;">
+                        <div style="font-size:2.2rem; line-height:1;">${v.emoji || '🌍'}</div>
+                        <div style="flex:1; min-width:0;">
+                            <div style="font-weight:700; font-size:1rem;">${v.nom}</div>
+                            <div style="font-size:0.8rem; color:var(--text-muted);">${v.destination || ''}${nbJours ? ' · ' + nbJours + ' jours' : ''}</div>
+                        </div>
+                        <div style="font-weight:800; font-size:1.1rem; color:var(--primary);">${eur(total)}</div>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; font-size:0.8rem; color:var(--text-muted);">
+                        <span>👨 Corentin : <strong style="color:var(--text-main);">${eur(bilan.payeCorentin)}</strong></span>
+                        <span>👩 Lisa : <strong style="color:var(--text-main);">${eur(bilan.payeLisa)}</strong></span>
+                    </div>
+                </div>`;
+            }).join('');
+        };
+
+        const rendreDetailVoyage = (v) => {
+            document.getElementById('voyage-titre-detail').textContent = (v.emoji || '🌍') + ' ' + v.nom;
+            const dates = v.debut && v.fin ? `${v.debut} → ${v.fin}` : v.destination || '';
+            document.getElementById('voyage-dates-detail').textContent = dates;
+
+            const bilan = calculerBilanVoyage(v.depenses);
+            const total = somme(v.depenses.filter(d => d.type !== 'remboursement'));
+
+            document.getElementById('voyage-depense-affiche').textContent = eur(total);
+            document.getElementById('voyage-total-corentin').textContent = eur(bilan.payeCorentin);
+            document.getElementById('voyage-total-lisa').textContent = eur(bilan.payeLisa);
+
+            // Bilan qui doit quoi à qui
+            const bilanBox = document.getElementById('voyage-bilan-card');
+            if (bilanBox) {
+                let msg = '', couleur = 'var(--success)';
+                const diff = Math.abs(bilan.soldeCorentin);
+                if (diff < 0.01) {
+                    msg = '✅ Tout est équilibré !';
+                } else if (bilan.soldeCorentin > 0) {
+                    msg = `👩 Lisa doit <strong>${eur(diff)}</strong> à 👨 Corentin`;
+                    couleur = 'var(--warn)';
+                } else {
+                    msg = `👨 Corentin doit <strong>${eur(diff)}</strong> à 👩 Lisa`;
+                    couleur = 'var(--warn)';
+                }
+                bilanBox.style.borderLeftColor = couleur;
+                bilanBox.innerHTML = `<div style="font-size:0.95rem; font-weight:700; color:var(--text-main);">${msg}</div>`;
+            }
+
+            // Répartition par catégorie
+            const repContent = document.getElementById('voyage-repartition-content');
+            const totParCat = {};
+            CATS_VOYAGE.forEach(c => { totParCat[c.id] = 0; });
+            (v.depenses || []).forEach(d => {
+                if (d.type !== 'remboursement' && totParCat[d.categorie] !== undefined)
+                    totParCat[d.categorie] += parseMontant(d.montant);
+            });
+            repContent.innerHTML = CATS_VOYAGE
+                .filter(c => totParCat[c.id] > 0)
+                .map(c => {
+                    const pct = total > 0 ? Math.round(totParCat[c.id] / total * 100) : 0;
+                    return `<div class="progress-container">
+                        <div class="progress-header"><span>${c.label}</span><span>${eur(totParCat[c.id])} · ${pct}%</span></div>
+                        <div class="progress-track"><div class="progress-fill" style="background:${c.couleur}; width:${pct}%;"></div></div>
+                    </div>`;
+                }).join('') || '<p style="color:var(--text-muted); font-size:0.85rem; padding:8px 0;">Aucune dépense pour l\'instant.</p>';
+
+            // Dépenses par catégorie + remboursements
+            const catsContent = document.getElementById('voyage-categories-content');
+            catsContent.innerHTML = '';
+
+            // Remboursements en premier si existants
+            const rembours = (v.depenses || []).filter(d => d.type === 'remboursement');
+            if (rembours.length) {
+                const cardEl = document.createElement('div');
+                cardEl.className = 'card';
+                cardEl.style.marginBottom = '12px';
+                cardEl.style.borderLeft = '3px solid var(--success)';
+                const headId = 'vcat-remboursement';
+                cardEl.innerHTML = `
+                    <div class="card-header" data-target="${headId}">
+                        <h3>↩️ Remboursements reçus</h3>
+                        <span style="font-weight:700; color:var(--success); font-size:0.95rem;">- ${eur(somme(rembours))}</span>
+                    </div>
+                    <div id="${headId}" class="section-content collapsed">
+                        ${rembours.map(d => ligneDepVoyage(d)).join('')}
+                    </div>`;
+                catsContent.appendChild(cardEl);
+            }
+
+            CATS_VOYAGE.forEach(cat => {
+                const lignes = (v.depenses || []).filter(d => d.categorie === cat.id && d.type !== 'remboursement');
+                if (!lignes.length) return;
+                const cardEl = document.createElement('div');
+                cardEl.className = 'card';
+                cardEl.style.marginBottom = '12px';
+                const headId = 'vcat-' + cat.id;
+                cardEl.innerHTML = `
+                    <div class="card-header" data-target="${headId}">
+                        <h3>${cat.label}</h3>
+                        <span style="font-weight:700; color:var(--primary); font-size:0.95rem;">${eur(somme(lignes))}</span>
+                    </div>
+                    <div id="${headId}" class="section-content collapsed">
+                        ${lignes.map(d => ligneDepVoyage(d)).join('')}
+                    </div>`;
+                catsContent.appendChild(cardEl);
+            });
+
+            catsContent.onclick = (e) => {
+                const btn = e.target.closest('[data-del-dep]');
+                if (!btn) return;
+                v.depenses = v.depenses.filter(d => d.id !== btn.dataset.delDep);
+                sauvegarderVoyages();
+                rendreDetailVoyage(v);
+            };
+        };
+
+        const ligneDepVoyage = (d) => `
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border);">
+                <div style="min-width:0; flex:1;">
+                    <div style="font-weight:600; font-size:0.9rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${d.libelle || '—'}</div>
+                    <div style="font-size:0.72rem; color:var(--text-muted);">${d.date || ''} · ${d.payeur || '?'} · ${d.type === 'perso' ? '👤 perso' : d.type === 'remboursement' ? '↩️ remb.' : '🤝 commun'}</div>
+                </div>
+                <div style="display:flex; align-items:center; gap:8px; flex-shrink:0; margin-left:8px;">
+                    <span style="font-weight:700; color:${d.type === 'remboursement' ? 'var(--success)' : 'var(--text-main)'};">${d.type === 'remboursement' ? '-' : ''}${eur(d.montant)}</span>
+                    <button style="background:none; border:none; color:var(--danger); font-size:1rem; cursor:pointer; padding:4px;" data-del-dep="${d.id}">✕</button>
+                </div>
+            </div>`;
+
+        window.ouvrirVoyage = (id) => {
+            state.voyageActifId = id;
+            rendreVueVacances();
+        };
+
+        document.getElementById('btn-nouveau-voyage').onclick = () => {
+            ['nv-nom','nv-debut','nv-fin','nv-emoji','nv-destination'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('popup-nouveau-voyage').classList.remove('hidden');
+        };
+
+        document.getElementById('btn-confirmer-voyage').onclick = () => {
+            const nom = document.getElementById('nv-nom').value.trim();
+            if (!nom) { alert("Donnez un nom au voyage."); return; }
+            const voyage = {
+                id: genId(), nom,
+                debut: document.getElementById('nv-debut').value,
+                fin: document.getElementById('nv-fin').value,
+                emoji: document.getElementById('nv-emoji').value.trim() || '🌍',
+                destination: document.getElementById('nv-destination').value.trim(),
+                depenses: []
+            };
+            state.voyages.push(voyage);
+            sauvegarderVoyages();
+            document.getElementById('popup-nouveau-voyage').classList.add('hidden');
+            state.voyageActifId = voyage.id;
+            rendreVueVacances();
+        };
+
+        document.getElementById('btn-retour-voyages').onclick = () => { state.voyageActifId = null; rendreVueVacances(); };
+
+        document.getElementById('btn-del-voyage').onclick = () => {
+            if (!confirm("Supprimer ce voyage et toutes ses dépenses ?")) return;
+            state.voyages = state.voyages.filter(v => v.id !== state.voyageActifId);
+            state.voyageActifId = null;
+            sauvegarderVoyages();
+            rendreVueVacances();
+        };
+
+        document.getElementById('btn-add-depense-voyage').onclick = () => {
+            const sel = document.getElementById('dv-categorie');
+            sel.innerHTML = CATS_VOYAGE.map(c => `<option value="${c.id}">${c.label}</option>`).join('');
+            document.getElementById('dv-libelle').value = '';
+            document.getElementById('dv-montant').value = '';
+            document.getElementById('dv-date').value = new Date().toISOString().split('T')[0];
+            dvPayeurActif = 'Corentin';
+            dvTypeActif = 'commun';
+            // Reset boutons visuellement
+            document.querySelectorAll('.dv-payeur-btn').forEach((b,i) => {
+                b.style.borderColor = i === 0 ? 'var(--primary)' : 'var(--border)';
+                b.style.background = i === 0 ? 'var(--primary-light)' : 'var(--bg-color)';
+                b.style.color = i === 0 ? 'var(--primary)' : 'var(--text-main)';
+            });
+            document.querySelectorAll('.dv-type-btn').forEach((b,i) => {
+                b.style.borderColor = i === 0 ? 'var(--primary)' : 'var(--border)';
+                b.style.background = i === 0 ? 'var(--primary-light)' : 'var(--bg-color)';
+                b.style.color = i === 0 ? 'var(--primary)' : 'var(--text-main)';
+            });
+            document.getElementById('popup-depense-voyage').classList.remove('hidden');
+        };
+
+        document.getElementById('btn-confirmer-depense-voyage').onclick = () => {
+            const montant = parseMontant(document.getElementById('dv-montant').value);
+            if (!montant) { alert("Saisissez un montant."); return; }
+            const voyage = getVoyageActif();
+            if (!voyage) return;
+            voyage.depenses.push({
+                id: genId(),
+                categorie: document.getElementById('dv-categorie').value,
+                libelle: document.getElementById('dv-libelle').value.trim(),
+                montant,
+                date: document.getElementById('dv-date').value,
+                payeur: dvPayeurActif,
+                dtype: dvTypeActif
+            });
+            sauvegarderVoyages();
+            document.getElementById('popup-depense-voyage').classList.add('hidden');
+            rendreDetailVoyage(voyage);
+        };
+
+        // --- Import Screenshots IA ---
+        const importInput = document.getElementById('import-screens-input');
+        const dropZone = document.getElementById('drop-zone');
+        if (dropZone) dropZone.onclick = () => importInput.click();
+
+        const btnOpenImport = document.getElementById('btn-open-import-screens');
+        if (btnOpenImport) btnOpenImport.onclick = () => {
+            importInput.value = '';
+            document.getElementById('import-screens-preview').innerHTML = '';
+            document.getElementById('import-screens-status').textContent = '';
+            document.getElementById('import-screens-result').style.display = 'none';
+            document.getElementById('btn-lancer-import').style.display = 'none';
+            document.getElementById('btn-confirmer-import').style.display = 'none';
+            importScreensData = [];
+            document.getElementById('popup-import-screens').classList.remove('hidden');
+        };
+
+        importInput.onchange = () => {
+            const files = Array.from(importInput.files);
+            if (!files.length) return;
+            const preview = document.getElementById('import-screens-preview');
+            preview.innerHTML = '';
+            files.forEach(f => {
+                const img = document.createElement('img');
+                img.style.cssText = 'width:52px; height:52px; object-fit:cover; border-radius:8px; border:1px solid var(--border);';
+                img.src = URL.createObjectURL(f);
+                preview.appendChild(img);
+            });
+            document.getElementById('import-screens-status').textContent = `${files.length} image(s) sélectionnée(s)`;
+            document.getElementById('btn-lancer-import').style.display = 'block';
+            document.getElementById('btn-confirmer-import').style.display = 'none';
+            document.getElementById('import-screens-result').style.display = 'none';
+            importScreensData = [];
+        };
+
+        document.getElementById('btn-lancer-import').onclick = async () => {
+            const files = Array.from(importInput.files);
+            if (!files.length) return;
+            const status = document.getElementById('import-screens-status');
+            const resultDiv = document.getElementById('import-screens-result');
+            status.textContent = `⏳ Analyse de ${files.length} image(s) en cours…`;
+            document.getElementById('btn-lancer-import').disabled = true;
+            importScreensData = [];
+
+            // Convertir toutes les images en base64
+            const toBase64 = (file) => new Promise((res, rej) => {
+                const r = new FileReader();
+                r.onload = () => res(r.result.split(',')[1]);
+                r.onerror = rej;
+                r.readAsDataURL(file);
+            });
+
+            try {
+                const b64List = await Promise.all(files.map(toBase64));
+                const content = [
+                    ...b64List.map(b64 => ({ type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: b64 } })),
+                    { type: 'text', text: `Tu es un assistant financier. Analyse ces captures d'écran de dépenses de voyage (Tricount, relevés, notes, tickets, etc.).
+Extrais TOUTES les transactions visibles. Pour chaque transaction retourne un objet JSON.
+Retourne UNIQUEMENT un tableau JSON valide, sans texte autour, sans markdown.
+Format de chaque objet :
+{
+  "libelle": "description de la dépense",
+  "montant": 12.50,
+  "date": "2024-07-15",
+  "payeur": "Corentin ou Lisa (si visible, sinon Corentin par défaut)",
+  "type": "commun ou perso ou remboursement",
+  "categorie": "une parmi : transport_avion, transport_voiture, transport_local, hebergement, restaurant, courses, activites, shopping, sante, divers"
+}
+Si une dépense est un remboursement reçu, mets type=remboursement et le montant positif.` }
+                ];
+
+                const response = await fetch('https://api.anthropic.com/v1/messages', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 4000, messages: [{ role: 'user', content }] })
+                });
+                const data = await response.json();
+                const texte = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('');
+
+                // Parser le JSON
+                const clean = texte.replace(/```json|```/g, '').trim();
+                const parsed = JSON.parse(clean);
+
+                if (!Array.isArray(parsed) || !parsed.length) throw new Error('Aucune dépense détectée');
+
+                importScreensData = parsed;
+                resultDiv.style.display = 'block';
+                resultDiv.innerHTML = `<p style="font-weight:700; margin-bottom:8px; color:var(--success);">✅ ${parsed.length} dépense(s) détectée(s)</p>` +
+                    parsed.map((d, i) => `<div style="padding:7px 0; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <div style="font-weight:600; font-size:0.88rem;">${d.libelle}</div>
+                            <div style="font-size:0.72rem; color:var(--text-muted);">${d.date || ''} · ${d.payeur} · ${d.type}</div>
+                        </div>
+                        <span style="font-weight:700; font-size:0.9rem;">${eur(d.montant)}</span>
+                    </div>`).join('');
+
+                status.textContent = `✅ Prêt à importer ${parsed.length} entrée(s)`;
+                document.getElementById('btn-confirmer-import').style.display = 'block';
+            } catch (err) {
+                status.textContent = '❌ Erreur : ' + (err.message || 'Analyse impossible');
+                resultDiv.style.display = 'none';
+            }
+            document.getElementById('btn-lancer-import').disabled = false;
+        };
+
+        document.getElementById('btn-confirmer-import').onclick = () => {
+            const voyage = getVoyageActif();
+            if (!voyage || !importScreensData.length) return;
+            importScreensData.forEach(d => {
+                voyage.depenses.push({
+                    id: genId(),
+                    libelle: d.libelle || '',
+                    montant: parseMontant(d.montant),
+                    date: d.date || '',
+                    payeur: d.payeur || 'Corentin',
+                    dtype: d.type || d.dtype || 'commun',
+                    categorie: d.categorie || 'divers'
+                });
+            });
+            sauvegarderVoyages();
+            document.getElementById('popup-import-screens').classList.add('hidden');
+            importScreensData = [];
+            rendreDetailVoyage(voyage);
+            haptic('success');
+        };
+
+
         // --- Vue Admin ---
         const rendreAdmin = () => {
             // Badge counts
@@ -1353,13 +1967,53 @@
         setupDrag('calc-bubble');
         
         // 1. Bouton Login
-        document.getElementById('btn-login').onclick = () => {
-            const e = document.getElementById('login-email').value;
-            const p = document.getElementById('login-password').value;
-            signInWithEmailAndPassword(auth, e, p).catch(() => {
-                document.getElementById('login-error').style.display = 'block';
-            });
+        // --- Firebase prêt : activer le bouton login ---
+        const loginBtn = document.getElementById('btn-login');
+        const loginStatus = document.getElementById('login-init-status');
+        loginStatus.textContent = '✅ App chargée — connecte-toi.';
+        loginStatus.style.color = 'var(--success)';
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'Ouvrir les comptes';
+
+        document.getElementById('btn-login').onclick = async () => {
+            const emailVal = document.getElementById('login-email').value.trim();
+            const passVal  = document.getElementById('login-password').value;
+            const errEl    = document.getElementById('login-error');
+            const btn      = document.getElementById('btn-login');
+
+            if (!emailVal || !passVal) {
+                errEl.style.display = 'block';
+                errEl.textContent = '⚠️ Remplis l\'e-mail et le mot de passe.';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = '⏳ Connexion…';
+            errEl.style.display = 'none';
+
+            try {
+                await signInWithEmailAndPassword(auth, emailVal, passVal);
+            } catch (err) {
+                btn.disabled = false;
+                btn.textContent = 'Ouvrir les comptes';
+                errEl.style.display = 'block';
+                const codes = {
+                    'auth/invalid-email':          '❌ Adresse e-mail invalide.',
+                    'auth/user-not-found':         '❌ Aucun compte avec cet e-mail.',
+                    'auth/wrong-password':         '❌ Mot de passe incorrect.',
+                    'auth/invalid-credential':     '❌ Identifiants incorrects (e-mail ou mot de passe).',
+                    'auth/too-many-requests':      '🔒 Trop de tentatives. Réessaie dans quelques minutes.',
+                    'auth/network-request-failed': '📡 Pas de connexion réseau. Vérifie ton Wi-Fi.',
+                    'auth/user-disabled':          '🚫 Ce compte a été désactivé.',
+                };
+                errEl.textContent = codes[err.code] || `❌ ${err.code} : ${err.message}`;
+                console.error('[Auth]', err.code, err.message);
+            }
         };
+
+        document.getElementById('login-password').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') document.getElementById('btn-login').click();
+        });
 
         // 2. Navigation Tabs
         document.querySelector('.tab-buttons').addEventListener('click', (e) => {
