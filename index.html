@@ -209,13 +209,23 @@
         .status-dot.saving  { background-color: var(--secondary); animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
 
-        /* 22. RESPONSIVE DESKTOP */
+        /* 22. RESPONSIVE DESKTOP ET ADMIN */
+        .admin-section { background: var(--card-bg); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--border); }
+        .color-selector { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+        .color-circle { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s; }
+        .color-circle.active { border-color: var(--text-main); transform: scale(1.15); }
+
         @media (min-width: 768px) {
             body { flex-direction: row; }
             .top-nav { width: 280px; height: 100vh; position: sticky; padding: 25px; border-bottom: none; border-right: 1px solid var(--border); }
             .tab-buttons { flex-direction: column; }
             .main-content { padding: 40px; }
         }
+        
+        /* TOAST */
+        #toast { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 12px 20px; border-radius: 20px; font-weight: 600; display: flex; align-items: center; gap: 15px; transition: bottom 0.3s ease; z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        #toast.show { bottom: 25px; }
+        #btn-undo { background: var(--secondary); color: white; border: none; padding: 6px 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body class="theme-glass">
@@ -413,6 +423,10 @@
                 <h3>🗑️ Corbeille</h3>
                 <div id="admin-corbeille"></div>
                 <button class="btn-action bg-danger" id="btn-vider-corbeille" style="margin-top:15px; font-size:0.8rem; padding:8px;">Vider définitivement</button>
+            </div>
+
+            <div style="text-align: right; color: var(--text-muted); font-size: 0.85rem; margin-top: 30px; font-weight: bold; padding-bottom: 20px;">
+                Version 4.0
             </div>
         </div>
     </main>
