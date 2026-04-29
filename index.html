@@ -3,15 +3,28 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Budget L&C">
     <meta name="theme-color" content="#F2F2F7" id="meta-theme-color">
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icone.PNG">
-    <title>Budget L&C</title>
+    <meta name="mobile-web-app-capable" content="yes">
 
 ```
+<!-- Splash screens iPhone -->
+<link rel="apple-touch-startup-image" media="screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)" href="splash/splash-1290x2796.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)" href="splash/splash-1179x2556.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)" href="splash/splash-1170x2532.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" href="splash/splash-1125x2436.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" href="splash/splash-750x1334.png">
+
+<!-- Icônes Apple -->
+<link rel="apple-touch-icon" sizes="180x180" href="icone.PNG">
+<link rel="apple-touch-icon" sizes="152x152" href="icone.PNG">
+<link rel="apple-touch-icon" sizes="120x120" href="icone.PNG">
+<link rel="manifest" href="manifest.json">
+<title>Budget L&C</title>
+
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
@@ -36,7 +49,7 @@
         --radius-card:   16px;
         --radius-input:  10px;
         --shadow-card:   0 2px 10px rgba(0,0,0,0.03);
-        --transition:    all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        --transition:    all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
 
     /* 2. MODE SOMBRE */
@@ -56,53 +69,96 @@
     }
 
     /* 3. THEMES — Adaptatif Jour/Nuit */
-    body.theme-purple { --primary: #AF52DE; --primary-light: #F2E6FA; }
-    body.dark-mode.theme-purple { --primary-light: #3A1D4A; }
-    body.theme-green  { --primary: #34C759; --primary-light: #E6F8EA; }
-    body.dark-mode.theme-green { --primary-light: #1A3B24; }
-    body.theme-rose   { --primary: #FF2D55; --primary-light: #FFE5EA; }
-    body.dark-mode.theme-rose { --primary-light: #4A1A24; }
+    /* purple : violet foncé assez saturé → texte blanc OK sur boutons */
+    body.theme-purple { --primary: #9B38CC; --primary-light: #F2E6FA; }
+    body.dark-mode.theme-purple { --primary: #BF5AF2; --primary-light: #3A1D4A; }
+
+    /* green : vert vif trop clair en jour → on assombrit pour avoir du blanc lisible dessus */
+    body.theme-green  { --primary: #248A3D; --primary-light: #E6F8EA; }
+    body.dark-mode.theme-green { --primary: #30D158; --primary-light: #1A3B24; }
+
+    /* rose : rouge-rose vif, OK en jour */
+    body.theme-rose   { --primary: #D70040; --primary-light: #FFE5EA; }
+    body.dark-mode.theme-rose { --primary: #FF375F; --primary-light: #4A1A24; }
 
     /* 4. THEME GLASSMORPHISM */
     body.theme-glass {
-        --primary: #007AFF; --primary-light: rgba(0, 122, 255, 0.1);
-        --bg-color: #F5F5F7; --text-main: #1D1D1F; --text-muted: rgba(60, 60, 67, 0.6); --border: rgba(255, 255, 255, 0.6);
-        --glass-bg: radial-gradient(circle at 20% 30%, rgba(255, 182, 193, 0.4), transparent 50%), radial-gradient(circle at 80% 70%, rgba(173, 216, 230, 0.4), transparent 50%);
-        --card-glass: rgba(255, 255, 255, 0.6); --glass-blur: blur(30px) saturate(150%);
+        --primary: #0066DD;
+        --primary-light: rgba(0, 102, 221, 0.12);
+        --bg-color: #F0F0F5;
+        --card-bg: rgba(255,255,255,0.72);
+        --text-main: #1D1D1F;
+        --text-muted: rgba(60, 60, 67, 0.65);
+        --border: rgba(180, 180, 200, 0.45);
+        --glass-bg: radial-gradient(circle at 20% 30%, rgba(255, 182, 193, 0.35), transparent 50%),
+                    radial-gradient(circle at 80% 70%, rgba(173, 216, 230, 0.35), transparent 50%);
+        --card-glass: rgba(255, 255, 255, 0.72);
+        --glass-blur: blur(30px) saturate(150%);
     }
     body.dark-mode.theme-glass {
         --primary: #0a84ff; --primary-light: rgba(10, 132, 255, 0.2);
-        --bg-color: #000000; --text-main: #ffffff; --text-muted: rgba(235, 235, 245, 0.6); --border: rgba(255, 255, 255, 0.1);
+        --bg-color: #000000; --card-bg: rgba(30,30,35,0.5); --text-main: #ffffff; --text-muted: rgba(235, 235, 245, 0.6); --border: rgba(255, 255, 255, 0.1);
         --glass-bg: radial-gradient(circle at 15% 50%, rgba(70, 20, 150, 0.35), transparent 50%), radial-gradient(circle at 85% 30%, rgba(10, 100, 200, 0.35), transparent 50%);
         --card-glass: rgba(30, 30, 35, 0.5); --glass-blur: blur(25px) saturate(200%);
     }
     body.theme-glass::before { content: ''; position: fixed; inset: 0; background: var(--glass-bg); z-index: -1; pointer-events: none; }
-    body.theme-glass .card, body.theme-glass .revenus-box, body.theme-glass .admin-section, body.theme-glass .top-nav, body.theme-glass .popup-box {
+    body.theme-glass .card:not(.summary-card), body.theme-glass .revenus-box, body.theme-glass .admin-section, body.theme-glass .top-nav, body.theme-glass .popup-box {
         background: var(--card-glass) !important; backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border: 1px solid var(--border) !important;
     }
 
     /* 5. THEMES HORS TECH */
-    body.theme-latte { --primary: #C47335; --bg-color: #F9F6F0; --card-bg: #EFEBE0; --text-main: #4A3B32; --border: #D8D0C5; }
-    body.dark-mode.theme-latte { --bg-color: #2E251F; --card-bg: #3D322A; --text-main: #EAE0D5; --border: #4D4036; }
-    
-    body.theme-botanic { --primary: #3E7C59; --bg-color: #E8EFE9; --card-bg: #F4F9F5; --text-main: #2C4A3B; --border: #CDE0D5; }
-    body.dark-mode.theme-botanic { --bg-color: #1A2620; --card-bg: #24362D; --text-main: #E2EDE7; --border: #314A3E; }
 
-    body.theme-gatsby { --primary: #D4AF37; --bg-color: #FDFBF7; --card-bg: #FFFFFF; --text-main: #1A1F29; --border: #D4AF37; }
-    body.dark-mode.theme-gatsby { --bg-color: #12151C; --card-bg: #1A1F29; --text-main: #E5C37E; }
+    /* latte : fond crème, texte brun foncé → OK */
+    body.theme-latte {
+        --primary: #A85C20; --primary-light: #F5E6D5;
+        --bg-color: #F9F6F0; --card-bg: #EFEBE0;
+        --text-main: #3A2A1E; --text-muted: #7A6251; --border: #D8D0C5;
+    }
+    body.dark-mode.theme-latte { --bg-color: #2E251F; --card-bg: #3D322A; --text-main: #EAE0D5; --text-muted: #B8A898; --border: #4D4036; }
 
-    body.theme-terracotta { --primary: #C0573E; --bg-color: #F4E8E1; --card-bg: #FCF7F4; --text-main: #5C3A21; --border: #E8D0C3; }
-    body.dark-mode.theme-terracotta { --bg-color: #3B241A; --card-bg: #4A3024; --text-main: #F4E8E1; }
+    /* botanic : fond vert pâle, primary vert foncé → texte blanc lisible */
+    body.theme-botanic {
+        --primary: #2D6644; --primary-light: #D4EDDA;
+        --bg-color: #E8EFE9; --card-bg: #F4F9F5;
+        --text-main: #1E3828; --text-muted: #507060; --border: #C0D9CC;
+    }
+    body.dark-mode.theme-botanic { --primary: #3E9E68; --bg-color: #1A2620; --card-bg: #24362D; --text-main: #E2EDE7; --text-muted: #8AADA0; --border: #314A3E; }
 
-    body.theme-moleskine { --primary: #B22222; --bg-color: #F1EAD7; --card-bg: #F8F3E6; --text-main: #1C2B4B; --border: #A2B5CD; }
-    body.dark-mode.theme-moleskine { --bg-color: #21252B; --card-bg: #2C313C; --text-main: #ABB2BF; --border: #4B5363; }
+    /* gatsby : doré sur blanc cassé → on évite le jaune trop clair comme couleur de texte actif */
+    body.theme-gatsby {
+        --primary: #B8960C; --primary-light: #FDF5D0;
+        --bg-color: #FDFBF7; --card-bg: #FFFFFF;
+        --text-main: #1A1F29; --text-muted: #6B6030; --border: #E8D88A;
+    }
+    body.dark-mode.theme-gatsby { --primary: #D4AF37; --primary-light: #3A3010; --bg-color: #12151C; --card-bg: #1A1F29; --text-main: #E5C37E; --text-muted: #9A8840; --border: #3A3520; }
 
-    body.theme-watercolor { --primary: #FF8DA1; --bg-color: #FAFAFA; --text-main: #555555; --border: rgba(0,0,0,0.05); }
-    body.dark-mode.theme-watercolor { --bg-color: #121212; --text-main: #E0E0E0; --border: rgba(255,255,255,0.05); }
+    /* terracotta : fond saumon clair, primary brique → bon contraste */
+    body.theme-terracotta {
+        --primary: #A83D26; --primary-light: #FAE0D8;
+        --bg-color: #F4E8E1; --card-bg: #FCF7F4;
+        --text-main: #4A2810; --text-muted: #8A5A42; --border: #E0C4B5;
+    }
+    body.dark-mode.theme-terracotta { --primary: #E06848; --bg-color: #3B241A; --card-bg: #4A3024; --text-main: #F4E8E1; --text-muted: #C09880; --border: #6A4030; }
+
+    /* moleskine : fond papier ivoire, primary rouge bordeaux, texte bleu marine → élégant */
+    body.theme-moleskine {
+        --primary: #8B1A1A; --primary-light: #F5DDDD;
+        --bg-color: #F1EAD7; --card-bg: #F8F3E6;
+        --text-main: #1C2B4B; --text-muted: #5A6A8A; --border: #C8C0A8;
+    }
+    body.dark-mode.theme-moleskine { --primary: #CC4444; --bg-color: #21252B; --card-bg: #2C313C; --text-main: #ABB2BF; --text-muted: #6A7080; --border: #4B5363; }
+
+    /* watercolor : fond blanc, primary rose vif trop clair → on assombrit le primary pour le texte */
+    body.theme-watercolor {
+        --primary: #D4506A; --primary-light: #FFE8ED;
+        --bg-color: #FAFAFA; --card-bg: #FFFFFF;
+        --text-main: #444444; --text-muted: #888888; --border: #EEEEEE;
+    }
+    body.dark-mode.theme-watercolor { --primary: #FF8DA1; --primary-light: #4A1A28; --bg-color: #121212; --card-bg: #1E1E1E; --text-main: #E0E0E0; --text-muted: #909090; --border: rgba(255,255,255,0.08); }
 
     /* 6. LAYOUT GLOBAL */
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; transition: var(--transition); }
-    body { background-color: var(--bg-color); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
+    body { background-color: var(--bg-color); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; padding-bottom: env(safe-area-inset-bottom); }
 
     /* 7. ECRAN DE CONNEXION */
     #login-screen { position: fixed; inset: 0; background: var(--bg-color); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 20px; }
@@ -114,7 +170,10 @@
     #login-error { color: var(--danger); font-size: 0.9rem; margin-top: 15px; display: none; }
 
     /* 8. BARRE DE NAVIGATION HAUTE */
-    .top-nav { background-color: var(--card-bg); border-bottom: 1px solid var(--border); padding: 15px; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-card); }
+    .top-nav { background-color: var(--card-bg); border-bottom: 1px solid var(--border); padding: 15px; padding-top: max(15px, env(safe-area-inset-top)); position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-card); }
+    @media (min-width: 768px) {
+        .top-nav { padding-top: 25px; } /* desktop : pas de safe area */
+    }
     .nav-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
     .nav-header h2 { font-size: 1.3rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
     .btn-theme { background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--text-main); }
@@ -139,7 +198,9 @@
 
     /* 11. FORMULAIRES & INPUTS */
     input, select, textarea { font-size: 16px !important; outline: none; background: transparent; color: var(--text-main); border: none; }
-    input[type="number"] { background: var(--bg-color); border-radius: 6px; padding: 4px; }
+    input[type="number"] { background: var(--bg-color); border-radius: 6px; padding: 4px; -moz-appearance: textfield; }
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
     .search-container input { width: 100%; padding: 12px 15px; border-radius: var(--radius-input); border: 1px solid var(--border); background: var(--card-bg); font-size: 1rem; margin-bottom: 15px; }
 
     /* 12. CARTES ET BOITES */
@@ -148,8 +209,8 @@
     .card-header h3 { font-size: 1rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
     .card-header::after { content: '▼'; font-size: 0.7rem; color: var(--text-muted); transition: 0.3s; }
     .card-header.collapsed::after { transform: rotate(-90deg); }
-    .section-content { overflow: hidden; transition: max-height 0.4s ease-out; }
-    .section-content.collapsed { max-height: 0 !important; }
+    .section-content { overflow: hidden; transition: max-height 0.4s ease-out; max-height: 2000px; }
+    .section-content.collapsed { max-height: 0; }
 
     /* 13. LIGNES D'ARTICLES */
     .item-row { display: flex; align-items: center; background: var(--card-bg); padding: 12px 0; border-bottom: 1px solid var(--border); touch-action: none; }
@@ -176,6 +237,19 @@
     .sub-text { font-size: 0.85rem; opacity: 0.9; }
     .comparison { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; margin-top: 10px; background: rgba(255,255,255,0.2); }
 
+    /* Empêche le thème glass d'écraser le fond coloré des summary-cards */
+    body.theme-glass .summary-card {
+        background: linear-gradient(135deg, var(--primary), var(--info)) !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        border: none !important;
+        color: white !important;
+    }
+    /* Idem pour la summary-card des charges fixes (gradient secondaire) */
+    body.theme-glass .summary-card--warm {
+        background: linear-gradient(135deg, var(--secondary), var(--warn)) !important;
+    }
+
     /* 16. REVENUS BOX */
     .revenus-box { background: var(--card-bg); padding: 15px; border-radius: var(--radius-card); display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; border: 1px solid var(--border); }
     .revenus-row { display: flex; justify-content: space-between; align-items: center; width: 100%; }
@@ -192,7 +266,7 @@
     /* 18. BULLES FLOTTANTES */
     .floating-bubble { position: fixed; width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; box-shadow: 0 5px 15px rgba(0,0,0,0.2); cursor: grab; z-index: 9000; touch-action: none; background: linear-gradient(135deg, var(--primary), var(--info)); color: white; }
     .floating-bubble:active { cursor: grabbing; transform: scale(0.95); }
-    #calc-bubble { bottom: 25px; right: 20px; }
+    #calc-bubble { bottom: calc(25px + env(safe-area-inset-bottom)); left: 20px; }
 
     /* 19. CALCULATRICE */
     .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px; }
@@ -212,10 +286,45 @@
     @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
 
     /* 22. RESPONSIVE DESKTOP ET ADMIN */
-    .admin-section { background: var(--card-bg); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--border); }
-    .color-selector { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
-    .color-circle { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s; }
-    .color-circle.active { border-color: var(--text-main); transform: scale(1.15); }
+    .admin-section { background: var(--card-bg); padding: 16px; border-radius: 14px; margin-bottom: 10px; border: 1px solid var(--border); }
+    .admin-section-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; font-weight:700; font-size:0.95rem; }
+    .admin-section-desc { font-size:0.8rem; color:var(--text-muted); margin-bottom:12px; line-height:1.4; }
+    .admin-group-label { font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); margin:20px 0 8px; padding-left:2px; }
+    .admin-badge { font-size:0.7rem; font-weight:700; background:var(--border); color:var(--text-muted); padding:2px 8px; border-radius:20px; }
+    .admin-badge--danger { background:rgba(255,59,48,0.12); color:var(--danger); }
+
+    /* Sélecteur de thèmes */
+    .theme-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(88px, 1fr)); gap: 10px; margin-top: 14px; }
+    .theme-card {
+        border-radius: 14px; overflow: hidden; cursor: pointer;
+        border: 2px solid transparent;
+        transition: transform 0.18s, border-color 0.18s, box-shadow 0.18s;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.07);
+    }
+    .theme-card:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0,0,0,0.13); }
+    .theme-card.active { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light), 0 4px 12px rgba(0,0,0,0.12); transform: translateY(-2px); }
+    .theme-card__swatch { height: 48px; width: 100%; }
+    .theme-card__label {
+        background: var(--card-bg); padding: 5px 6px 6px;
+        font-size: 0.68rem; font-weight: 600; text-align: center;
+        color: var(--text-main); line-height: 1.2; white-space: nowrap;
+        overflow: hidden; text-overflow: ellipsis;
+        border-top: 1px solid var(--border);
+    }
+    .theme-card.active .theme-card__label { color: var(--primary); }
+    .theme-card__check {
+        display: none; position: absolute; top: 4px; right: 5px;
+        background: var(--primary); color: white;
+        border-radius: 50%; width: 18px; height: 18px;
+        font-size: 0.6rem; align-items: center; justify-content: center;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+    }
+    .theme-card { position: relative; }
+    .theme-card.active .theme-card__check { display: flex; }
+
+    /* vieille classe conservée pour compatibilité */
+    .color-selector { display: none; }
+    .color-circle { display: none; }
 
     @media (min-width: 768px) {
         body { flex-direction: row; }
@@ -225,9 +334,26 @@
     }
     
     /* TOAST */
-    #toast { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 12px 20px; border-radius: 20px; font-weight: 600; display: flex; align-items: center; gap: 15px; transition: bottom 0.3s ease; z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-    #toast.show { bottom: 25px; }
+    #toast {
+        position: fixed;
+        bottom: max(90px, calc(env(safe-area-inset-bottom) + 75px));
+        left: 50%; transform: translateX(-50%) translateY(120px);
+        background: #333; color: white; padding: 12px 20px;
+        border-radius: 20px; font-weight: 600;
+        display: flex; align-items: center; gap: 15px;
+        transition: transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94), opacity 0.35s;
+        z-index: 9500; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        opacity: 0; pointer-events: none; white-space: nowrap;
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; pointer-events: auto; }
     #btn-undo { background: var(--secondary); color: white; border: none; padding: 6px 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+
+    /* BOTTOM SHEET */
+    .bs-type-btn { padding: 14px 8px; border-radius: 12px; border: 1.5px solid var(--border); background: var(--bg-color); color: var(--text-main); font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .bs-type-btn.active { border-color: var(--primary); background: var(--primary-light); color: var(--primary); }
+
+    /* FAB — caché en dehors de la vue mensuelle/fixes */
+    #fab-add.hidden { transform: scale(0); opacity: 0; pointer-events: none; }
 </style>
 ```
 
@@ -306,8 +432,7 @@
     <div class="tab-buttons">
         <button class="btn-tab active" data-view="mensuelle">Mois</button>
         <button class="btn-tab" data-view="annuelle">Année</button>
-        <button class="btn-tab" data-view="fixes">Fixes</button>
-        <button class="btn-tab" data-view="vacances">🏖️</button>
+        <button class="btn-tab" data-view="fixes">Charges Fixes</button>
         <button class="btn-tab" data-view="admin">Admin</button>
     </div>
     
@@ -329,9 +454,9 @@
 
         <div id="mois-content-wrapper">
             <div class="revenus-box">
-                <div class="revenus-row"><strong>Solde reporté (Revolut)</strong><input type="number" id="solde_reporte" readonly></div>
-                <div class="revenus-row"><strong>Revenus initiaux</strong><input type="number" id="revenus" data-field="revenus"></div>
-                <div class="revenus-row"><strong>Ajouts en cours</strong><input type="number" id="revenus_add" data-field="revenus_add"></div>
+                <div class="revenus-row"><strong>Solde reporté (Revolut)</strong><input type="number" inputmode="decimal" id="solde_reporte" readonly></div>
+                <div class="revenus-row"><strong>Revenus initiaux</strong><input type="number" inputmode="decimal" id="revenus" data-field="revenus"></div>
+                <div class="revenus-row"><strong>Ajouts en cours</strong><input type="number" inputmode="decimal" id="revenus_add" data-field="revenus_add"></div>
             </div>
 
             <div class="card summary-card">
@@ -344,11 +469,11 @@
             <div class="card">
                 <div class="card-header" data-target="repartition-m"><h3>📊 Répartition</h3></div>
                 <div id="repartition-m" class="section-content">
-                    <div class="progress-container"><div class="progress-header"><span>🏠 Charges Fixes</span><span id="pct-charges-m">0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--danger);" id="bar-charges-m"></div></div></div>
-                    <div class="progress-container"><div class="progress-header"><span>🛒 Dépenses</span><span id="pct-depenses-m">0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--secondary);" id="bar-depenses-m"></div></div></div>
-                    <div class="progress-container"><div class="progress-header"><span>✈️ Épargne</span><span id="pct-epargne-m">0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--info);" id="bar-epargne-m"></div></div></div>
-                    <div class="progress-container"><div class="progress-header"><span>🛡️ Provisions</span><span id="pct-provisions-m">0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--warn);" id="bar-provisions-m"></div></div></div>
-                    <div class="progress-container"><div class="progress-header"><span>✅ Reste</span><span id="pct-reste-m">0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--success);" id="bar-reste-m"></div></div></div>
+                    <div class="progress-container"><div class="progress-header"><span>🏠 Charges Fixes</span><span id="pct-charges-m" style="font-variant-numeric:tabular-nums;">0 € · 0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--danger);" id="bar-charges-m"></div></div></div>
+                    <div class="progress-container"><div class="progress-header"><span>🛒 Dépenses</span><span id="pct-depenses-m" style="font-variant-numeric:tabular-nums;">0 € · 0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--secondary);" id="bar-depenses-m"></div></div></div>
+                    <div class="progress-container"><div class="progress-header"><span>✈️ Épargne</span><span id="pct-epargne-m" style="font-variant-numeric:tabular-nums;">0 € · 0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--info);" id="bar-epargne-m"></div></div></div>
+                    <div class="progress-container"><div class="progress-header"><span>🛡️ Provisions</span><span id="pct-provisions-m" style="font-variant-numeric:tabular-nums;">0 € · 0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--warn);" id="bar-provisions-m"></div></div></div>
+                    <div class="progress-container"><div class="progress-header"><span>✅ Reste</span><span id="pct-reste-m" style="font-variant-numeric:tabular-nums;">0 € · 0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--success);" id="bar-reste-m"></div></div></div>
                 </div>
             </div>
 
@@ -382,7 +507,7 @@
         <h1>Charges Fixes Mensuelles</h1>
         <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:15px;">Cet onglet vous aide à calculer le montant à virer sur le compte commun chaque mois.</p>
         
-        <div class="card summary-card" style="background: linear-gradient(135deg, var(--secondary), var(--warn));">
+        <div class="card summary-card summary-card--warm" style="background: linear-gradient(135deg, var(--secondary), var(--warn));">
             <h3>Total à diviser</h3>
             <div class="total-amount" id="total-fixes-calcul">0 €</div>
             <div class="sub-text" style="font-weight:bold; font-size:1.1rem; margin-top:5px;">Soit <span id="part-individuelle">0</span> € par personne</div>
@@ -399,176 +524,169 @@
             <h1>Bilan Annuel</h1>
             <select id="select-annee" style="padding:8px; border-radius:8px; background:var(--card-bg); font-weight:bold;"></select>
         </div>
-        <div class="card summary-card" style="background: linear-gradient(135deg, #FF9500, #FF2D55);">
-            <h3>Total Épargné</h3>
-            <div class="total-amount" id="annuel-total-epargne">0 €</div>
+
+        <!-- Sous-onglets Annuel / Mensuel -->
+        <div style="display:flex; gap:4px; background:var(--border); padding:4px; border-radius:12px; margin-bottom:18px;">
+            <button id="btn-vue-annuel" class="btn-tab active" style="flex:1;" onclick="switchVueAnnuelle('annuel')">📊 Bilan annuel</button>
+            <button id="btn-vue-mensuel" class="btn-tab" style="flex:1;" onclick="switchVueAnnuelle('mensuel')">📅 Détail mensuel</button>
         </div>
-        <div class="card">
-            <div id="bloc-annuel-stats"></div>
+
+        <!-- VUE ANNUELLE -->
+        <div id="panneau-annuel">
+            <div class="card summary-card" style="background: linear-gradient(135deg, #FF9500, #FF2D55);">
+                <h3>🛒 Total Dépenses Annuel</h3>
+                <div class="total-amount" id="annuel-total-epargne">0 €</div>
+            </div>
+            <div class="card">
+                <div id="bloc-annuel-stats"></div>
+            </div>
+        </div>
+
+        <!-- VUE MENSUELLE DÉTAILLÉE -->
+        <div id="panneau-mensuel" class="hidden">
+            <div id="bloc-mensuel-detail"></div>
         </div>
     </div>
 
     <div id="vue-admin" class="hidden">
-        <h1 style="margin-bottom: 20px;">Paramètres</h1>
-        
-        <div class="admin-section" style="border-color:var(--danger); background: rgba(255,59,48,0.05);">
-            <h3 style="color:var(--danger);">🔒 Sécurité</h3>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Déconnectez cet appareil pour empêcher l'accès aux comptes.</p>
-            <button class="btn-action bg-danger" id="btn-logout" style="margin-bottom: 0;">Se déconnecter</button>
+
+        <!-- En-tête -->
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:24px;">
+            <div>
+                <h1 style="margin:0; font-size:1.6rem;">⚙️ Paramètres</h1>
+                <p style="color:var(--text-muted); font-size:0.82rem; margin-top:3px;">Budget L&amp;C · <span id="admin-version-label">v2.9.6</span></p>
+            </div>
+            <button class="btn-action bg-danger" id="btn-logout" style="width:auto; padding:10px 18px; margin:0; font-size:0.85rem;">🔒 Déconnexion</button>
         </div>
 
-        <div class="admin-section">
-            <h3>🔄 Outils Système</h3>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Forcer la mise à jour de l'application (vide le cache de la page).</p>
-            <button class="btn-action" style="background:var(--secondary); margin-bottom: 0;" onclick="window.location.reload(true)">Forcer le rechargement</button>
-        </div>
+        <!-- GROUPE 1 : Personnalisation -->
+        <p class="admin-group-label">🎨 Personnalisation</p>
 
         <div class="admin-section">
-            <h3>📅 Créer un mois spécifique</h3>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Ajouter un mois manuellement (ex: Février 2026).</p>
-            <div style="display:flex; gap:10px;">
-                <input type="month" id="input-new-month" style="flex:1; border:1px solid var(--border); padding:10px; border-radius:8px;">
-                <button class="btn-small bg-primary" id="btn-creer-mois" style="color:white; padding:10px 20px;">Créer</button>
+            <div class="admin-section-header">
+                <span>🎨 Garde-robe</span>
+                <span class="admin-badge">Thèmes</span>
+            </div>
+            <p class="admin-section-desc">S'adapte au Soleil ☀️ et à la Lune 🌙 automatiquement.</p>
+            <div class="theme-grid" id="theme-selector"></div>
+        </div>
+
+        <!-- GROUPE 2 : Données -->
+        <p class="admin-group-label">📂 Données</p>
+
+        <div class="admin-section">
+            <div class="admin-section-header">
+                <span>🏷️ Catégories</span>
+                <span class="admin-badge" id="badge-cat-count">0</span>
+            </div>
+            <p class="admin-section-desc">Catégories disponibles dans les listes déroulantes.</p>
+            <div id="admin-categories" style="margin-bottom:10px;"></div>
+            <div style="display:flex; gap:8px;">
+                <input type="text" id="new-cat-input" placeholder="✚ Nouvelle catégorie..." style="flex:1; border:1px solid var(--border); padding:10px; border-radius:8px; background:var(--bg-color); color:var(--text-main);">
+                <button class="btn-small bg-primary" id="btn-add-cat" style="color:white; padding:10px 16px; white-space:nowrap;">Ajouter</button>
             </div>
         </div>
 
         <div class="admin-section">
-            <h3>🛠️ Gestion des Catégories</h3>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Gérez vos catégories de dépenses par défaut.</p>
-            <div id="admin-categories"></div>
-            <div style="display:flex; gap:10px; margin-top:10px;">
-                <input type="text" id="new-cat-input" placeholder="Nouvelle catégorie..." style="flex:1; border:1px solid var(--border); padding:10px; border-radius:8px;">
-                <button class="btn-small bg-primary" id="btn-add-cat" style="color:white; padding:10px 20px;">Ajouter</button>
+            <div class="admin-section-header">
+                <span>🎯 Objectifs de Provisions</span>
+                <span class="admin-badge" id="badge-obj-count">0</span>
+            </div>
+            <p class="admin-section-desc">Le bilan annuel cumule les lignes dont la catégorie contient le mot-clé.</p>
+            <div id="admin-objectifs" style="margin-bottom:10px;"></div>
+            <div style="display:flex; gap:8px;">
+                <input type="text" id="new-obj-nom" placeholder="Mot-clé (ex: Assurance)" style="flex:1; border:1px solid var(--border); padding:10px; border-radius:8px; background:var(--bg-color); color:var(--text-main); min-width:0;">
+                <input type="number" id="new-obj-mnt" placeholder="Objectif €" style="width:90px; border:1px solid var(--border); padding:10px; border-radius:8px; background:var(--bg-color); color:var(--text-main); min-width:0;">
+                <button class="btn-small bg-primary" id="btn-add-obj" style="color:white; padding:10px 16px; white-space:nowrap;">Ajouter</button>
             </div>
         </div>
 
         <div class="admin-section">
-            <h3>🎯 Budgets de Provisions (Annuel)</h3>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Créez des objectifs. Le bilan calculera les lignes dont la catégorie contient le mot-clé.</p>
-            <div id="admin-objectifs"></div>
-            <div style="display:flex; gap:10px; margin-top:10px;">
-                <input type="text" id="new-obj-nom" placeholder="Mot-clé" style="flex:1; border:1px solid var(--border); padding:10px; border-radius:8px; min-width:0;">
-                <input type="number" id="new-obj-mnt" placeholder="€" style="width:70px; border:1px solid var(--border); padding:10px; border-radius:8px; min-width:0;">
-                <button class="btn-small bg-primary" id="btn-add-obj" style="color:white; padding:10px 20px;">Ajouter</button>
+            <div class="admin-section-header">
+                <span>📅 Créer un mois</span>
+            </div>
+            <p class="admin-section-desc">Ajouter un mois manuellement hors du flux automatique.</p>
+            <div style="display:flex; gap:8px;">
+                <input type="month" id="input-new-month" style="flex:1; border:1px solid var(--border); padding:10px; border-radius:8px; background:var(--bg-color); color:var(--text-main);">
+                <button class="btn-small bg-primary" id="btn-creer-mois" style="color:white; padding:10px 16px; white-space:nowrap;">Créer</button>
             </div>
         </div>
 
-        <div class="admin-section">
-            <h3>🎨 Garde-robe (Thèmes)</h3>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Changez l'ambiance. <strong>S'adapte au Soleil ☀️ et à la Lune 🌙 !</strong></p>
-            <div class="color-selector" id="theme-selector"></div>
-        </div>
+        <!-- GROUPE 3 : Sauvegarde -->
+        <p class="admin-group-label">💾 Sauvegarde &amp; Restauration</p>
 
         <div class="admin-section">
-            <h3>📧 Sauvegarde Automatique</h3>
-            <p style="font-size: 0.9rem; color: var(--text-muted); margin: 10px 0;">Le dimanche à minuit, un e-mail est envoyé automatiquement.</p>
-            <button class="btn-action" id="btn-sauvegarde-mail" style="background:#5856D6; margin-bottom: 0;">✉️ Envoyer fichier .json par mail</button>
-        </div>
-        
-        <div class="admin-section">
-            <h3>🗑️ Corbeille (Lignes supprimées)</h3>
-            <div id="admin-corbeille"></div>
-            <button class="btn-action bg-danger" id="btn-vider-corbeille" style="margin-top:15px; font-size:0.9rem; padding:10px; margin-bottom: 0;">Vider définitivement la corbeille</button>
-        </div>
-
-        <div class="admin-section">
-            <h3 style="color: var(--danger);">⚠️ Restauration Manuelle</h3>
-            <p style="font-size: 0.85rem; margin-top:5px; font-weight:bold;">Écraser les données actuelles avec un .json</p>
-            <input type="file" id="import-json" accept=".json" style="margin-top:10px; font-size: 0.9rem !important; width: 100%;">
-        </div>
-
-        <div style="text-align: right; color: var(--text-muted); font-size: 0.85rem; margin-top: 30px; font-weight: bold; padding-bottom: 20px;">
-            Version 2.9.5 (Correctif Calculatrice Drag)
-        </div>
-    </div>
-
-    <!-- ===== VUE VACANCES ===== -->
-    <div id="vue-vacances" class="hidden">
-        <div id="vacances-liste">
-            <h1 style="margin-bottom:20px;">🏖️ Voyages</h1>
-            <div id="voyages-cards"></div>
-            <button class="btn-action bg-primary" id="btn-nouveau-voyage">+ Nouveau voyage</button>
-        </div>
-        <div id="vacances-detail" class="hidden">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-                <button id="btn-retour-voyages" style="background:none;border:none;color:var(--primary);font-size:1rem;font-weight:700;cursor:pointer;">← Voyages</button>
-                <button id="btn-del-voyage" style="background:none;border:none;color:var(--danger);font-size:1.3rem;cursor:pointer;">🗑️</button>
+            <div class="admin-section-header">
+                <span>📧 Sauvegarde par mail</span>
             </div>
-            <div class="card summary-card" style="background:linear-gradient(135deg,#007AFF,#5856D6); margin-bottom:16px;">
-                <h3 id="voyage-titre-detail" style="font-size:1.2rem;margin-bottom:4px;"></h3>
-                <div style="font-size:0.82rem;opacity:0.85;margin-bottom:14px;" id="voyage-dates-detail"></div>
-                <div style="display:flex;justify-content:space-around;text-align:center;">
-                    <div><div style="font-size:0.72rem;opacity:0.8;">Total</div><div style="font-size:1.4rem;font-weight:800;" id="voyage-total-affiche">0 €</div></div>
-                    <div style="width:1px;background:rgba(255,255,255,0.3);"></div>
-                    <div><div style="font-size:0.72rem;opacity:0.8;">👨 Corentin</div><div style="font-size:1.2rem;font-weight:800;" id="voyage-total-corentin">0 €</div></div>
-                    <div style="width:1px;background:rgba(255,255,255,0.3);"></div>
-                    <div><div style="font-size:0.72rem;opacity:0.8;">👩 Lisa</div><div style="font-size:1.2rem;font-weight:800;" id="voyage-total-lisa">0 €</div></div>
-                </div>
-            </div>
-            <div id="voyage-bilan-card" class="card" style="margin-bottom:16px;text-align:center;display:none;"></div>
-            <div class="card" style="margin-bottom:16px;">
-                <div class="card-header" data-target="voyage-repartition"><h3>📊 Répartition</h3></div>
-                <div id="voyage-repartition" class="section-content"><div id="voyage-repartition-content" style="padding-top:8px;"></div></div>
-            </div>
-            <div id="voyage-categories-content"></div>
-            <button class="btn-action bg-primary" id="btn-add-depense-voyage">+ Ajouter une dépense</button>
+            <p class="admin-section-desc">Envoi automatique chaque dimanche à minuit. Vous pouvez aussi déclencher manuellement.</p>
+            <button class="btn-action" id="btn-sauvegarde-mail" style="background:#5856D6; margin-bottom:0;">✉️ Envoyer le fichier .json maintenant</button>
         </div>
+
+        <div class="admin-section">
+            <div class="admin-section-header">
+                <span>🗑️ Corbeille</span>
+                <span class="admin-badge admin-badge--danger" id="badge-corbeille-count">0</span>
+            </div>
+            <p class="admin-section-desc">Lignes supprimées récemment, restaurables.</p>
+            <div id="admin-corbeille" style="margin-bottom:12px;"></div>
+            <button class="btn-action bg-danger" id="btn-vider-corbeille" style="font-size:0.85rem; padding:10px; margin-bottom:0;">🗑️ Vider définitivement la corbeille</button>
+        </div>
+
+        <div class="admin-section" style="border-color:rgba(255,59,48,0.3); background:rgba(255,59,48,0.04);">
+            <div class="admin-section-header">
+                <span style="color:var(--danger);">⚠️ Restauration manuelle</span>
+            </div>
+            <p class="admin-section-desc">Écrase <strong>toutes</strong> les données actuelles avec un fichier .json exporté.</p>
+            <input type="file" id="import-json" accept=".json" style="margin-top:6px; font-size:0.9rem !important; width:100%; color:var(--text-main);">
+        </div>
+
+        <!-- GROUPE 4 : Système -->
+        <p class="admin-group-label">🛠️ Système</p>
+
+        <div class="admin-section">
+            <div class="admin-section-header">
+                <span>🔄 Cache &amp; Rechargement</span>
+            </div>
+            <p class="admin-section-desc">Force le rechargement complet de l'application (vide le cache).</p>
+            <button class="btn-action" style="background:var(--secondary); margin-bottom:0;" onclick="window.location.reload(true)">🔄 Forcer le rechargement</button>
+        </div>
+
+        <div style="text-align:center; color:var(--text-muted); font-size:0.78rem; margin-top:30px; padding-bottom:30px; line-height:1.8;">
+            Budget L&amp;C · <strong id="admin-version-footer">v2.9.7</strong><br>
+            Fait avec ❤️ pour Lisa &amp; Corentin
+        </div>
+
     </div>
 </main>
 
-<!-- Popup nouveau voyage -->
-<div id="popup-nouveau-voyage" class="overlay-popup hidden">
-    <div class="popup-box" style="width:90%;max-width:400px;text-align:left;">
-        <h3 style="margin-bottom:16px;">🏖️ Nouveau voyage</h3>
-        <input type="text" id="nv-nom" placeholder="Nom (ex: Sardaigne 2026)" style="width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--bg-color);color:var(--text-main);font-size:1rem;margin-bottom:10px;">
-        <div style="display:flex;gap:8px;margin-bottom:10px;">
-            <div style="flex:1;"><label style="font-size:0.72rem;color:var(--text-muted);display:block;margin-bottom:4px;">Départ</label><input type="date" id="nv-debut" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--bg-color);color:var(--text-main);"></div>
-            <div style="flex:1;"><label style="font-size:0.72rem;color:var(--text-muted);display:block;margin-bottom:4px;">Retour</label><input type="date" id="nv-fin" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--bg-color);color:var(--text-main);"></div>
-        </div>
-        <div style="display:flex;gap:8px;margin-bottom:16px;">
-            <input type="text" id="nv-emoji" placeholder="🌴" style="width:56px;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--bg-color);color:var(--text-main);text-align:center;font-size:1.3rem;">
-            <input type="text" id="nv-destination" placeholder="Destination..." style="flex:1;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--bg-color);color:var(--text-main);">
-        </div>
-        <div style="display:flex;gap:8px;">
-            <button onclick="document.getElementById('popup-nouveau-voyage').classList.add('hidden')" style="flex:1;padding:12px;border-radius:10px;border:1px solid var(--border);background:none;color:var(--text-muted);cursor:pointer;">Annuler</button>
-            <button id="btn-confirmer-voyage" style="flex:2;padding:12px;border-radius:10px;border:none;background:var(--primary);color:white;font-weight:700;cursor:pointer;">Créer</button>
-        </div>
-    </div>
-</div>
-
-<!-- Popup ajout dépense voyage -->
-<div id="popup-depense-voyage" class="overlay-popup hidden">
-    <div class="popup-box" style="width:90%;max-width:400px;text-align:left;">
-        <h3 style="margin-bottom:14px;">💸 Nouvelle dépense</h3>
-        <!-- Payeur -->
-        <div style="margin-bottom:12px;">
-            <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:6px;">Payé par</div>
-            <div style="display:flex;gap:8px;">
-                <button class="dv-payeur-btn" data-payeur="Corentin" onclick="dvSelectPayeur(this)" style="flex:1;padding:10px;border-radius:10px;border:2px solid var(--primary);background:var(--primary-light);color:var(--primary);font-weight:600;cursor:pointer;">👨 Corentin</button>
-                <button class="dv-payeur-btn" data-payeur="Lisa" onclick="dvSelectPayeur(this)" style="flex:1;padding:10px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg-color);color:var(--text-main);font-weight:600;cursor:pointer;">👩 Lisa</button>
-            </div>
-        </div>
-        <!-- Type -->
-        <div style="margin-bottom:12px;">
-            <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:6px;">Type</div>
-            <div style="display:flex;gap:8px;">
-                <button class="dv-type-btn" data-dtype="commun" onclick="dvSelectType(this)" style="flex:1;padding:8px;border-radius:10px;border:2px solid var(--primary);background:var(--primary-light);color:var(--primary);font-size:0.82rem;font-weight:600;cursor:pointer;">🤝 Commun</button>
-                <button class="dv-type-btn" data-dtype="perso" onclick="dvSelectType(this)" style="flex:1;padding:8px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg-color);color:var(--text-main);font-size:0.82rem;font-weight:600;cursor:pointer;">👤 Perso</button>
-                <button class="dv-type-btn" data-dtype="remboursement" onclick="dvSelectType(this)" style="flex:1;padding:8px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg-color);color:var(--text-main);font-size:0.82rem;font-weight:600;cursor:pointer;">↩️ Remb.</button>
-            </div>
-        </div>
-        <select id="dv-categorie" style="width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--bg-color);color:var(--text-main);font-size:0.95rem;margin-bottom:10px;"></select>
-        <input type="text" id="dv-libelle" placeholder="Description (optionnel)" style="width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--bg-color);color:var(--text-main);font-size:1rem;margin-bottom:10px;">
-        <input type="number" inputmode="decimal" id="dv-montant" placeholder="Montant €" style="width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--bg-color);color:var(--text-main);font-size:1.2rem;font-weight:700;text-align:right;margin-bottom:10px;">
-        <input type="date" id="dv-date" style="width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--bg-color);color:var(--text-main);margin-bottom:14px;">
-        <div style="display:flex;gap:8px;">
-            <button onclick="document.getElementById('popup-depense-voyage').classList.add('hidden')" style="flex:1;padding:12px;border-radius:10px;border:1px solid var(--border);background:none;color:var(--text-muted);cursor:pointer;">Annuler</button>
-            <button id="btn-confirmer-depense-voyage" style="flex:2;padding:12px;border-radius:10px;border:none;background:var(--primary);color:white;font-weight:700;cursor:pointer;">Ajouter</button>
-        </div>
-    </div>
-</div>
-
 <div id="toast">Ligne supprimée <button id="btn-undo">Annuler</button></div>
+
+<!-- PULL TO REFRESH -->
+<div id="ptr-indicator" style="position:fixed; top:0; left:50%; transform:translateX(-50%) translateY(-60px); background:var(--card-bg); border-radius:50px; padding:8px 18px; font-size:0.85rem; font-weight:700; color:var(--primary); box-shadow:0 4px 15px rgba(0,0,0,0.15); z-index:9999; transition:transform 0.25s cubic-bezier(0.25,0.46,0.45,0.94); pointer-events:none;">
+    <span id="ptr-icon">↓</span> <span id="ptr-text">Tirer pour rafraîchir</span>
+</div>
+
+<!-- BOTTOM SHEET AJOUT RAPIDE -->
+<div id="bs-overlay" style="position:fixed; inset:0; background:rgba(0,0,0,0); z-index:8000; pointer-events:none; transition:background 0.3s;"></div>
+<div id="bottom-sheet" style="position:fixed; bottom:0; left:0; right:0; background:var(--card-bg); border-radius:20px 20px 0 0; padding:0 20px calc(20px + env(safe-area-inset-bottom)); z-index:8001; transform:translateY(100%); transition:transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94); box-shadow:0 -4px 30px rgba(0,0,0,0.15);">
+    <div style="width:40px; height:4px; background:var(--border); border-radius:4px; margin:12px auto 20px;"></div>
+    <h3 style="margin-bottom:18px; font-size:1.1rem;">➕ Nouvelle entrée</h3>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px;">
+        <button class="bs-type-btn active" data-type="depenses" onclick="bsSelectType(this)">🛒 Dépense</button>
+        <button class="bs-type-btn" data-type="charges" onclick="bsSelectType(this)">🏠 Charge</button>
+        <button class="bs-type-btn" data-type="epargne" onclick="bsSelectType(this)">✈️ Épargne</button>
+        <button class="bs-type-btn" data-type="provisions" onclick="bsSelectType(this)">🛡️ Provision</button>
+    </div>
+    <input type="text" id="bs-libelle" placeholder="Description..." oninput="bsAutoCategorie(this.value)" style="width:100%; padding:14px; border-radius:12px; border:1px solid var(--border); background:var(--bg-color); color:var(--text-main); font-size:1rem; margin-bottom:10px;">
+    <select id="bs-categorie" style="width:100%; padding:14px; border-radius:12px; border:1px solid var(--border); background:var(--bg-color); color:var(--text-main); font-size:0.95rem; margin-bottom:10px;"></select>
+    <input type="number" inputmode="decimal" id="bs-montant" placeholder="Montant €" style="width:100%; padding:14px; border-radius:12px; border:1px solid var(--border); background:var(--bg-color); color:var(--text-main); font-size:1.2rem; font-weight:700; margin-bottom:16px; text-align:right;">
+    <button onclick="bsValider()" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:12px; font-size:1.1rem; font-weight:700; cursor:pointer;">Ajouter</button>
+    <button onclick="bsFermer()" style="width:100%; padding:12px; background:none; color:var(--text-muted); border:none; font-size:0.9rem; cursor:pointer; margin-top:6px;">Annuler</button>
+</div>
+
+<!-- FAB bouton + -->
+<div id="fab-add" style="position:fixed; bottom:calc(30px + env(safe-area-inset-bottom)); right:20px; width:56px; height:56px; border-radius:50%; background:var(--primary); color:white; font-size:1.8rem; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 15px rgba(0,122,255,0.4); cursor:pointer; z-index:7999; transition:transform 0.2s cubic-bezier(0.25,0.46,0.45,0.94);" onclick="bsOuvrir()">+</div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
@@ -595,33 +713,23 @@
     const LS_CACHE = 'budgetLC_cache';
     const NOMS_MOIS = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
     const THEMES = [
-        { id:'default', color:'#007AFF' }, { id:'theme-purple', color:'#AF52DE' },
-        { id:'theme-green', color:'#34C759' }, { id:'theme-rose', color:'#FF2D55' },
-        { id:'theme-glass', color:'linear-gradient(135deg, #ccc, #eee)' },
-        { id:'theme-latte', color:'#C47335' }, { id:'theme-botanic', color:'#3E7C59' },
-        { id:'theme-gatsby', color:'#D4AF37' }, { id:'theme-terracotta', color:'#C0573E' },
-        { id:'theme-moleskine', color:'#1C2B4B' }, { id:'theme-watercolor', color:'#FF8DA1' }
+        { id:'default',         label:'Bleu iOS',     swatch:'linear-gradient(135deg,#007AFF,#5AC8FA)' },
+        { id:'theme-purple',    label:'Violet',       swatch:'linear-gradient(135deg,#9B38CC,#BF5AF2)' },
+        { id:'theme-green',     label:'Vert',         swatch:'linear-gradient(135deg,#248A3D,#34C759)' },
+        { id:'theme-rose',      label:'Rose',         swatch:'linear-gradient(135deg,#D70040,#FF6B8A)' },
+        { id:'theme-glass',     label:'Verre',        swatch:'linear-gradient(135deg,#e0e8ff,#ffd6e8,#d6f0ff)' },
+        { id:'theme-latte',     label:'Café Latte',   swatch:'linear-gradient(135deg,#A85C20,#D4A96A)' },
+        { id:'theme-botanic',   label:'Botanic',      swatch:'linear-gradient(135deg,#2D6644,#6AB187)' },
+        { id:'theme-gatsby',    label:'Gatsby',       swatch:'linear-gradient(135deg,#B8960C,#F0D060)' },
+        { id:'theme-terracotta',label:'Terracotta',   swatch:'linear-gradient(135deg,#A83D26,#E08060)' },
+        { id:'theme-moleskine', label:'Moleskine',    swatch:'linear-gradient(135deg,#1C2B4B,#8B1A1A)' },
+        { id:'theme-watercolor',label:'Aquarelle',    swatch:'linear-gradient(135deg,#D4506A,#FFB3C6)' },
     ];
     const REGEX_SUPERMARCHE = /leclerc|carrefour|auchan|intermarch|super\s*u|lidl|aldi|frais|cora|casino|netto/i;
-
-    const CATS_VOYAGE = [
-        { id:'transport_avion',   label:'✈️ Vol / Train',        couleur:'#007AFF' },
-        { id:'transport_voiture', label:'🚗 Voiture / Essence',   couleur:'#FF9500' },
-        { id:'transport_local',   label:'🚕 Transport local',     couleur:'#FF9500' },
-        { id:'hebergement',       label:'🏨 Hébergement',         couleur:'#AF52DE' },
-        { id:'restaurant',        label:'🍽️ Restaurant',          couleur:'#FF3B30' },
-        { id:'courses',           label:'🛒 Courses / Marché',    couleur:'#34C759' },
-        { id:'activites',         label:'🎡 Activités / Visites', couleur:'#FF2D55' },
-        { id:'shopping',          label:'🛍️ Shopping',            couleur:'#FFCC00' },
-        { id:'sante',             label:'🏥 Pharmacie / Santé',   couleur:'#5AC8FA' },
-        { id:'divers',            label:'💡 Divers',              couleur:'#8E8E93' },
-    ];
 
     // --- État de l'application ---
     const state = {
         donnees: [],
-        voyages: [],
-        voyageActifId: null,
         categories: ["🏠 Loyer", "⚡ Électricité", "💧 Eau", "🛡️ Assurance", "🌐 Internet", "🛒 Courses", "🍽️ Restaurant", "🎬 Loisirs", "🏥 Santé", "✈️ Vacances", "🛠️ Travaux", "❓ Autre"],
         corbeille: [],
         objectifsProvisions: [],
@@ -635,12 +743,14 @@
     };
 
     // --- Utilitaires ---
-    const eur = (n) => (parseFloat(n) || 0).toFixed(2) + " €";
+    const fmt = (n) => { const v = parseFloat(n) || 0; return parseFloat(v.toFixed(2)).toString().replace('.', ','); };
+    const eur = (n) => fmt(n) + " €";
     const genId = () => Math.random().toString(36).substr(2, 9);
     const sansAccents = (str) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    const parseMontant = (v) => parseFloat(String(v).replace(',', '.')) || 0;
     
-    const somme = (arr) => (arr || []).reduce((s, i) => s + (parseFloat(i.montant) || 0), 0);
-    const sommeCB = (arr) => (arr || []).reduce((s, i) => (!i.moyenPaiement || i.moyenPaiement === 'CB' ? s + (parseFloat(i.montant) || 0) : s), 0);
+    const somme = (arr) => (arr || []).reduce((s, i) => s + parseMontant(i.montant), 0);
+    const sommeCB = (arr) => (arr || []).reduce((s, i) => (!i.moyenPaiement || i.moyenPaiement === 'CB' ? s + parseMontant(i.montant) : s), 0);
 
     const normaliserMois = (m) => ({
         ...m,
@@ -764,28 +874,11 @@
                 rafraichirTouteLInterface();
             }
         });
-        onValue(ref(db, 'budgetVoyagesLC'), (snap) => {
-            if (snap.exists()) {
-                const raw = snap.val();
-                state.voyages = (Array.isArray(raw) ? raw : Object.values(raw)).map(v => ({
-                    ...v,
-                    depenses: Array.isArray(v.depenses) ? v.depenses : (v.depenses ? Object.values(v.depenses) : [])
-                }));
-            } else {
-                state.voyages = [];
-            }
-            if (state.vueActuelle === 'vacances') rendreVueVacances();
-        });
     };
 
     const sauvegarderDonnees = () => {
         setSyncDot('saving');
         set(ref(db, 'budgetDataLC'), state.donnees).then(() => setSyncDot('online'));
-    };
-
-    const sauvegarderVoyages = () => {
-        setSyncDot('saving');
-        set(ref(db, 'budgetVoyagesLC'), state.voyages).then(() => setSyncDot('online'));
     };
 
     const sauvegarderConfig = (silencieux = false) => {
@@ -802,14 +895,24 @@
         state.vueActuelle = vue;
         document.querySelectorAll('main > div').forEach(d => d.classList.toggle('hidden', d.id !== `vue-${vue}`));
         document.querySelectorAll('.btn-tab').forEach(b => b.classList.toggle('active', b.dataset.view === vue));
-        document.getElementById('month-nav-group').classList.toggle('hidden', vue === 'annuelle' || vue === 'admin' || vue === 'vacances');
+        document.getElementById('month-nav-group').classList.toggle('hidden', vue === 'annuelle' || vue === 'admin');
         rafraichirTouteLInterface();
+        // FAB visibility
+        const fab = document.getElementById('fab-add');
+        if (fab) fab.classList.toggle('hidden', vue !== 'mensuelle' && vue !== 'fixes');
     };
 
     const toggleSection = (id, header) => {
         const el = document.getElementById(id);
-        el.classList.toggle('collapsed');
-        if (header) header.classList.toggle('collapsed');
+        const isCollapsed = el.classList.contains('collapsed');
+        if (isCollapsed) {
+            el.classList.remove('collapsed');
+            el.style.maxHeight = el.scrollHeight + 'px';
+        } else {
+            el.style.maxHeight = '0';
+            el.classList.add('collapsed');
+        }
+        if (header) header.classList.toggle('collapsed', !isCollapsed);
     };
 
     const rafraichirTouteLInterface = () => {
@@ -817,7 +920,6 @@
         if (state.vueActuelle === 'mensuelle') rendreVueMensuelle();
         else if (state.vueActuelle === 'fixes') rendreVueFixes();
         else if (state.vueActuelle === 'annuelle') rendreVueAnnuelle();
-        else if (state.vueActuelle === 'vacances') rendreVueVacances();
         else if (state.vueActuelle === 'admin') rendreAdmin();
     };
 
@@ -889,7 +991,7 @@
                             ${state.categories.map(c => `<option value="${c}" ${item.categorie === c ? 'selected' : ''}>${c}</option>`).join('')}
                         </select>
                         <div style="display:flex; align-items:center;">
-                            <input type="number" value="${mntFinal}" style="${style} width:85px; text-align:right; font-weight:700; border:none; background:var(--bg-color); padding:8px; border-radius:8px;" data-id="${item.id}" data-type="${type}" data-field="montant">
+                            <input type="number" inputmode="decimal" value="${mntFinal}" style="${style} width:85px; text-align:right; font-weight:700; border:none; background:var(--bg-color); padding:8px; border-radius:8px;" data-id="${item.id}" data-type="${type}" data-field="montant">
                         </div>
                     </div>
                     <button class="btn-delete" data-del-type="${type}" data-del-id="${item.id}">✕</button>
@@ -910,7 +1012,7 @@
                         <div class="item-top">
                             <textarea data-id="${item.id}" data-type="${type}" data-field="libelle" placeholder="Note...">${item.libelle || ''}</textarea>
                             <div style="display:flex; align-items:center;">
-                                ${isNeg ? '-' : ''}<input type="number" value="${mntFinal}" style="${style}" data-id="${item.id}" data-type="${type}" data-field="montant">
+                                ${isNeg ? '-' : ''}<input type="number" inputmode="decimal" value="${mntFinal}" style="${style}" data-id="${item.id}" data-type="${type}" data-field="montant">
                                 ${payIcon}
                             </div>
                         </div>
@@ -951,7 +1053,7 @@
         
         const idx = state.donnees.indexOf(mois);
         const report = calculerSoldeReporte(idx);
-        document.getElementById('solde_reporte').value = report.toFixed(2);
+        document.getElementById('solde_reporte').value = parseFloat((parseFloat(report) || 0).toFixed(2));
         document.getElementById('revenus').value = mois.revenus || 0;
         document.getElementById('revenus_add').value = mois.revenus_add || 0;
 
@@ -973,20 +1075,20 @@
 
         const reste = totalRev - tc - tdCB - tprov; // L'épargne (te) n'est plus soustraite car c'est un compte à part
 
-        document.getElementById('total-charges').innerText = tc.toFixed(0);
-        document.getElementById('total-epargne').innerText = te.toFixed(0);
-        document.getElementById('total-provisions').innerText = tprov.toFixed(0);
+        document.getElementById('total-charges').innerText = fmt(tc);
+        document.getElementById('total-epargne').innerText = fmt(te);
+        document.getElementById('total-provisions').innerText = fmt(tprov);
         document.getElementById('reste-a-vivre').innerText = eur(reste);
 
         const tdDiff = tdTotal - tdCB;
-        document.getElementById('titre-depenses').innerHTML = `🛒 Dépenses (${tdTotal.toFixed(0)}€) ${tdDiff > 0 ? `<small style="font-weight:normal; opacity:0.6;">(dont ${tdDiff.toFixed(0)}€ 🎟️/💵)</small>` : ''}`;
+        document.getElementById('titre-depenses').innerHTML = `🛒 Dépenses (${fmt(tdTotal)}€) ${tdDiff > 0 ? `<small style="font-weight:normal; opacity:0.6;">(dont ${fmt(tdDiff)}€ 🎟️/💵)</small>` : ''}`;
 
         // Jauges
         const globalTotal = tc + tdTotal + Math.abs(te) + tprov + (reste > 0 ? reste : 0);
         const setBar = (id, val) => {
             const p = globalTotal > 0 ? Math.round((val / globalTotal) * 100) : 0;
             document.getElementById(`bar-${id}-m`).style.width = p + '%';
-            document.getElementById(`pct-${id}-m`).innerText = p + '%';
+            document.getElementById(`pct-${id}-m`).innerText = fmt(val) + ' € · ' + p + '%';
         };
         setBar('charges', tc); setBar('depenses', tdTotal); setBar('epargne', Math.abs(te)); setBar('provisions', tprov); setBar('reste', reste > 0 ? reste : 0);
 
@@ -1014,6 +1116,17 @@
     };
 
     // --- Vue Annuelle ---
+    let vueAnnuelleMode = 'annuel';
+
+    window.switchVueAnnuelle = (mode) => {
+        vueAnnuelleMode = mode;
+        document.getElementById('panneau-annuel').classList.toggle('hidden', mode !== 'annuel');
+        document.getElementById('panneau-mensuel').classList.toggle('hidden', mode !== 'mensuel');
+        document.getElementById('btn-vue-annuel').classList.toggle('active', mode === 'annuel');
+        document.getElementById('btn-vue-mensuel').classList.toggle('active', mode === 'mensuel');
+        rendreVueAnnuelle();
+    };
+
     const rendreVueAnnuelle = () => {
         const sel = document.getElementById('select-annee');
         if (!sel.options.length) {
@@ -1023,205 +1136,124 @@
         }
         const an = parseInt(sel.value);
         const mois = state.donnees.filter(m => m.annee === an);
-        
+
         let te = 0, tc = 0, td = 0, tp = 0;
         mois.forEach(m => {
-            te += (m.epargne || []).reduce((s, i) => s + (parseFloat(i.montant) || 0), 0);
+            te += somme(m.epargne);
             tc += somme(m.charges);
             td += somme(m.depenses);
             tp += somme(m.provisions);
         });
 
-        document.getElementById('annuel-total-epargne').innerText = eur(te);
-        
+        // --- PANNEAU ANNUEL ---
+        document.getElementById('annuel-total-epargne').innerText = eur(tc + td);
+
         const bloc = document.getElementById('bloc-annuel-stats');
         bloc.innerHTML = `
             <div class="progress-container"><div class="progress-header"><span>🏠 Charges Fixes</span><span>${eur(tc)}</span></div></div>
             <div class="progress-container"><div class="progress-header"><span>🛒 Dépenses</span><span>${eur(td)}</span></div></div>
-            <div class="progress-container"><div class="progress-header"><span>🛡️ Provisions</span><span>${eur(tp)}</span></div></div>
+            <div class="progress-container"><div class="progress-header"><span>✈️ Projets / Épargne</span><span>${eur(te)}</span></div></div>
         `;
 
         state.objectifsProvisions.forEach(obj => {
             let totalObj = 0;
-            const search = sansAccents(obj.nom);
+            const search = sansAccents(obj.nom).trim();
             mois.forEach(m => {
                 [...(m.provisions||[]), ...(m.epargne||[])].forEach(line => {
-                    if (sansAccents(line.categorie || "").includes(search)) totalObj += (parseFloat(line.montant) || 0);
+                    const cat = sansAccents(line.categorie || "");
+                    if (cat.includes(search)) totalObj += parseMontant(line.montant);
                 });
             });
             const pct = Math.min(Math.round((totalObj / obj.montant) * 100), 100);
             bloc.innerHTML += `
                 <div style="margin-top:20px;">
-                    <div class="progress-header"><span>🎯 ${obj.nom}</span><span>${totalObj.toFixed(0)} / ${obj.montant}€</span></div>
+                    <div class="progress-header"><span>🎯 ${obj.nom}</span><span>${fmt(totalObj)} / ${fmt(obj.montant)}€</span></div>
                     <div class="progress-track"><div class="progress-fill" style="background:var(--secondary); width:${pct}%"></div></div>
                 </div>
             `;
         });
-    };
 
-    };
+        // --- PANNEAU MENSUEL ---
+        if (vueAnnuelleMode !== 'mensuel') return;
+        const detail = document.getElementById('bloc-mensuel-detail');
+        detail.innerHTML = '';
 
-    // --- Vue Vacances ---
-    const parseMontant = (v) => parseFloat(String(v).replace(',', '.')) || 0;
-    const getVoyageActif = () => state.voyages.find(v => v.id === state.voyageActifId);
+        mois.forEach(m => {
+            const mtc  = somme(m.charges);
+            const mtd  = somme(m.depenses);
+            const mte  = somme(m.epargne);
+            const mtp  = somme(m.provisions);
+            const mRev = parseMontant(m.revenus) + parseMontant(m.revenus_add);
+            const idx  = state.donnees.indexOf(m);
+            const report = calculerSoldeReporte(idx);
+            const mReste = report + mRev - mtc - sommeCB(m.depenses) - mtp;
 
-    const calculerBilanVoyage = (depenses) => {
-        const deps = (depenses || []).filter(d => d.dtype !== 'remboursement');
-        let payeCorentin = 0, payeLisa = 0;
-        deps.forEach(d => {
-            const m = parseMontant(d.montant);
-            if (d.payeur === 'Lisa') payeLisa += m; else payeCorentin += m;
-        });
-        const communTotal = deps.filter(d => d.dtype === 'commun').reduce((s, d) => s + parseMontant(d.montant), 0);
-        const part = communTotal / 2;
-        const persoC = deps.filter(d => d.dtype === 'perso' && d.payeur !== 'Lisa').reduce((s, d) => s + parseMontant(d.montant), 0);
-        const balanceC = payeCorentin - (part + persoC);
-        return { payeCorentin, payeLisa, total: payeCorentin + payeLisa, balance: balanceC };
-    };
+            // Objectifs du mois
+            let objHtml = '';
+            state.objectifsProvisions.forEach(obj => {
+                let totalObj = 0;
+                const search = sansAccents(obj.nom).trim();
+                [...(m.provisions||[]), ...(m.epargne||[])].forEach(line => {
+                    if (sansAccents(line.categorie || "").includes(search)) totalObj += parseMontant(line.montant);
+                });
+                if (totalObj > 0 || true) {
+                    const pct = Math.min(Math.round((totalObj / obj.montant) * 100), 100);
+                    objHtml += `
+                        <div class="progress-container">
+                            <div class="progress-header"><span>🎯 ${obj.nom}</span><span>${fmt(totalObj)} / ${fmt(obj.montant)}€</span></div>
+                            <div class="progress-track"><div class="progress-fill" style="background:var(--secondary); width:${pct}%"></div></div>
+                        </div>`;
+                }
+            });
 
-    const rendreVueVacances = () => {
-        const liste = document.getElementById('vacances-liste');
-        const detail = document.getElementById('vacances-detail');
-        if (getVoyageActif()) {
-            liste.classList.add('hidden'); detail.classList.remove('hidden');
-            rendreDetailVoyage(getVoyageActif());
-        } else {
-            detail.classList.add('hidden'); liste.classList.remove('hidden');
-            rendreListeVoyages();
-        }
-    };
-
-    const rendreListeVoyages = () => {
-        const container = document.getElementById('voyages-cards');
-        if (!state.voyages.length) {
-            container.innerHTML = `<div style="text-align:center;padding:40px 0;color:var(--text-muted);"><div style="font-size:3rem;margin-bottom:12px;">🏖️</div><p style="font-weight:600;margin-bottom:6px;">Aucun voyage</p><p style="font-size:0.85rem;">Créez votre premier voyage !</p></div>`;
-            return;
-        }
-        container.innerHTML = state.voyages.map(v => {
-            const b = calculerBilanVoyage(v.depenses);
-            const nbJ = v.debut && v.fin ? Math.ceil((new Date(v.fin) - new Date(v.debut)) / 86400000) + 1 : null;
-            return `<div class="card" style="cursor:pointer;margin-bottom:12px;" onclick="ouvrirVoyage('${v.id}')">
-                <div style="display:flex;align-items:center;gap:14px;">
-                    <div style="font-size:2rem;">${v.emoji || '🌍'}</div>
-                    <div style="flex:1;min-width:0;"><div style="font-weight:700;font-size:1rem;">${v.nom}</div><div style="font-size:0.78rem;color:var(--text-muted);">${v.destination || ''}${nbJ ? ' · ' + nbJ + ' j' : ''}</div></div>
-                    <div style="font-weight:800;font-size:1.1rem;color:var(--primary);">${eur(b.total)}</div>
+            const id = 'detail-' + m.id;
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.style.marginBottom = '12px';
+            card.innerHTML = `
+                <div class="card-header" data-target="${id}">
+                    <h3>${m.nom}</h3>
+                    <span style="font-size:0.85rem; color:var(--text-muted); font-weight:600;">🛒 ${eur(mtc + mtd)} dépensés</span>
                 </div>
-                <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:var(--text-muted);margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">
-                    <span>👨 ${eur(b.payeCorentin)}</span><span>👩 ${eur(b.payeLisa)}</span>
+                <div id="${id}" class="section-content collapsed">
+
+                    <div class="progress-container">
+                        <div class="progress-header"><span>🏠 Charges Fixes</span><span>${eur(mtc)}</span></div>
+                        <div class="progress-track"><div class="progress-fill" style="background:var(--danger); width:${mRev > 0 ? Math.min(Math.round(mtc/mRev*100),100) : 0}%"></div></div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-header"><span>🛒 Dépenses</span><span>${eur(mtd)}</span></div>
+                        <div class="progress-track"><div class="progress-fill" style="background:var(--secondary); width:${mRev > 0 ? Math.min(Math.round(mtd/mRev*100),100) : 0}%"></div></div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-header"><span>✈️ Projets / Épargne</span><span>${eur(mte)}</span></div>
+                        <div class="progress-track"><div class="progress-fill" style="background:var(--info); width:${mRev > 0 ? Math.min(Math.round(mte/mRev*100),100) : 0}%"></div></div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-header"><span>🛡️ Provisions</span><span>${eur(mtp)}</span></div>
+                        <div class="progress-track"><div class="progress-fill" style="background:var(--warn); width:${mRev > 0 ? Math.min(Math.round(mtp/mRev*100),100) : 0}%"></div></div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-header"><span>✅ Reste à vivre</span><span style="color:${mReste >= 0 ? 'var(--success)' : 'var(--danger)'}; font-weight:800;">${eur(mReste)}</span></div>
+                        <div class="progress-track"><div class="progress-fill" style="background:var(--success); width:${mRev > 0 ? Math.min(Math.round(Math.max(mReste,0)/mRev*100),100) : 0}%"></div></div>
+                    </div>
+
+                    ${objHtml ? `<div style="margin-top:8px; padding-top:8px; border-top:1px dashed var(--border);">${objHtml}</div>` : ''}
                 </div>
-            </div>`;
-        }).join('');
-    };
-
-    const rendreDetailVoyage = (v) => {
-        document.getElementById('voyage-titre-detail').textContent = (v.emoji || '🌍') + ' ' + v.nom;
-        document.getElementById('voyage-dates-detail').textContent = v.debut && v.fin ? v.debut + ' → ' + v.fin : (v.destination || '');
-        const b = calculerBilanVoyage(v.depenses);
-        document.getElementById('voyage-total-affiche').textContent = eur(b.total);
-        document.getElementById('voyage-total-corentin').textContent = eur(b.payeCorentin);
-        document.getElementById('voyage-total-lisa').textContent = eur(b.payeLisa);
-
-        const bilanCard = document.getElementById('voyage-bilan-card');
-        if (b.total > 0) {
-            bilanCard.style.display = 'block';
-            const diff = Math.abs(b.balance);
-            if (diff < 0.01) bilanCard.innerHTML = `<div style="font-size:1.5rem;">🎉</div><div style="font-weight:700;color:var(--success);">Tout est équilibré !</div>`;
-            else if (b.balance > 0) bilanCard.innerHTML = `<div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:4px;">Bilan</div><div style="font-weight:700;">👩 Lisa doit rembourser</div><div style="font-size:1.8rem;font-weight:800;color:var(--primary);margin:4px 0;">${eur(diff)}</div><div style="font-size:0.82rem;color:var(--text-muted);">à 👨 Corentin</div>`;
-            else bilanCard.innerHTML = `<div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:4px;">Bilan</div><div style="font-weight:700;">👨 Corentin doit rembourser</div><div style="font-size:1.8rem;font-weight:800;color:var(--primary);margin:4px 0;">${eur(diff)}</div><div style="font-size:0.82rem;color:var(--text-muted);">à 👩 Lisa</div>`;
-        } else { bilanCard.style.display = 'none'; }
-
-        const totParCat = {};
-        CATS_VOYAGE.forEach(c => { totParCat[c.id] = 0; });
-        (v.depenses || []).filter(d => d.dtype !== 'remboursement').forEach(d => { if (totParCat[d.categorie] !== undefined) totParCat[d.categorie] += parseMontant(d.montant); });
-        const repContent = document.getElementById('voyage-repartition-content');
-        const lignesRep = CATS_VOYAGE.filter(c => totParCat[c.id] > 0);
-        repContent.innerHTML = lignesRep.length ? lignesRep.map(c => {
-            const pct = b.total > 0 ? Math.round(totParCat[c.id] / b.total * 100) : 0;
-            return `<div class="progress-container"><div class="progress-header"><span>${c.label}</span><span>${eur(totParCat[c.id])} · ${pct}%</span></div><div class="progress-track"><div class="progress-fill" style="background:${c.couleur};width:${pct}%;"></div></div></div>`;
-        }).join('') : '<p style="color:var(--text-muted);font-size:0.85rem;padding:8px 0;">Aucune dépense.</p>';
-
-        const catsContent = document.getElementById('voyage-categories-content');
-        catsContent.innerHTML = '';
-        const rembs = (v.depenses || []).filter(d => d.dtype === 'remboursement');
-        if (rembs.length) {
-            const el = document.createElement('div'); el.className = 'card'; el.style.marginBottom = '12px';
-            const hid = 'vcat-remb';
-            el.innerHTML = `<div class="card-header" data-target="${hid}"><h3>↩️ Remboursements</h3><span style="font-weight:700;color:var(--success);">${eur(somme(rembs))}</span></div><div id="${hid}" class="section-content collapsed">${rembs.map(d => ligneDepVoyage(d)).join('')}</div>`;
-            catsContent.appendChild(el);
-        }
-        CATS_VOYAGE.forEach(cat => {
-            const lignes = (v.depenses || []).filter(d => d.categorie === cat.id && d.dtype !== 'remboursement');
-            if (!lignes.length) return;
-            const el = document.createElement('div'); el.className = 'card'; el.style.marginBottom = '12px';
-            const hid = 'vcat-' + cat.id;
-            el.innerHTML = `<div class="card-header" data-target="${hid}"><h3>${cat.label}</h3><span style="font-weight:700;color:var(--primary);">${eur(somme(lignes))}</span></div><div id="${hid}" class="section-content collapsed">${lignes.map(d => ligneDepVoyage(d)).join('')}</div>`;
-            catsContent.appendChild(el);
+            `;
+            detail.appendChild(card);
         });
-        catsContent.onclick = (e) => {
-            const btn = e.target.closest('[data-del-dep]');
-            if (btn) { v.depenses = v.depenses.filter(d => d.id !== btn.dataset.delDep); sauvegarderVoyages(); rendreDetailVoyage(v); }
-            const hdr = e.target.closest('.card-header[data-target]');
-            if (hdr) toggleSection(hdr.dataset.target, hdr);
-        };
     };
 
-    const ligneDepVoyage = (d) => `
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);">
-            <div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:0.88rem;">${d.libelle || '—'}</div><div style="font-size:0.72rem;color:var(--text-muted);">${d.date || ''} · ${d.dtype === 'perso' ? '👤 Perso' : d.dtype === 'remboursement' ? '↩️ Remb.' : '🤝 Commun'} · ${d.payeur || '?'}</div></div>
-            <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;"><span style="font-weight:700;color:${d.dtype === 'remboursement' ? 'var(--success)' : 'var(--text-main)'};">${d.dtype === 'remboursement' ? '+' : ''}${eur(d.montant)}</span><button style="background:none;border:none;color:var(--danger);font-size:1.1rem;cursor:pointer;" data-del-dep="${d.id}">✕</button></div>
-        </div>`;
-
-    window.ouvrirVoyage = (id) => { state.voyageActifId = id; rendreVueVacances(); };
-
-    let dvPayeurActif = 'Corentin', dvTypeActif = 'commun';
-    window.dvSelectPayeur = (btn) => {
-        document.querySelectorAll('.dv-payeur-btn').forEach(b => { b.style.border='1.5px solid var(--border)'; b.style.background='var(--bg-color)'; b.style.color='var(--text-main)'; });
-        btn.style.border='2px solid var(--primary)'; btn.style.background='var(--primary-light)'; btn.style.color='var(--primary)';
-        dvPayeurActif = btn.dataset.payeur;
-    };
-    window.dvSelectType = (btn) => {
-        document.querySelectorAll('.dv-type-btn').forEach(b => { b.style.border='1.5px solid var(--border)'; b.style.background='var(--bg-color)'; b.style.color='var(--text-main)'; });
-        btn.style.border='2px solid var(--primary)'; btn.style.background='var(--primary-light)'; btn.style.color='var(--primary)';
-        dvTypeActif = btn.dataset.dtype;
-    };
-
-    document.getElementById('btn-nouveau-voyage').onclick = () => {
-        ['nv-nom','nv-debut','nv-fin','nv-emoji','nv-destination'].forEach(id => document.getElementById(id).value = '');
-        document.getElementById('popup-nouveau-voyage').classList.remove('hidden');
-    };
-    document.getElementById('btn-confirmer-voyage').onclick = () => {
-        const nom = document.getElementById('nv-nom').value.trim();
-        if (!nom) { alert('Donnez un nom au voyage.'); return; }
-        const v = { id: genId(), nom, debut: document.getElementById('nv-debut').value, fin: document.getElementById('nv-fin').value, emoji: document.getElementById('nv-emoji').value.trim() || '🌍', destination: document.getElementById('nv-destination').value.trim(), depenses: [] };
-        state.voyages.push(v); sauvegarderVoyages();
-        document.getElementById('popup-nouveau-voyage').classList.add('hidden');
-        state.voyageActifId = v.id; rendreVueVacances();
-    };
-    document.getElementById('btn-retour-voyages').onclick = () => { state.voyageActifId = null; rendreVueVacances(); };
-    document.getElementById('btn-del-voyage').onclick = () => {
-        if (!confirm('Supprimer ce voyage et toutes ses dépenses ?')) return;
-        state.voyages = state.voyages.filter(v => v.id !== state.voyageActifId);
-        state.voyageActifId = null; sauvegarderVoyages(); rendreVueVacances();
-    };
-    document.getElementById('btn-add-depense-voyage').onclick = () => {
-        document.getElementById('dv-categorie').innerHTML = CATS_VOYAGE.map(c => `<option value="${c.id}">${c.label}</option>`).join('');
-        document.getElementById('dv-libelle').value = ''; document.getElementById('dv-montant').value = '';
-        document.getElementById('dv-date').value = new Date().toISOString().split('T')[0];
-        dvPayeurActif = 'Corentin'; dvTypeActif = 'commun';
-        document.querySelectorAll('.dv-payeur-btn').forEach((b,i) => { const a=i===0; b.style.border=a?'2px solid var(--primary)':'1.5px solid var(--border)'; b.style.background=a?'var(--primary-light)':'var(--bg-color)'; b.style.color=a?'var(--primary)':'var(--text-main)'; });
-        document.querySelectorAll('.dv-type-btn').forEach((b,i) => { const a=i===0; b.style.border=a?'2px solid var(--primary)':'1.5px solid var(--border)'; b.style.background=a?'var(--primary-light)':'var(--bg-color)'; b.style.color=a?'var(--primary)':'var(--text-main)'; });
-        document.getElementById('popup-depense-voyage').classList.remove('hidden');
-    };
-    document.getElementById('btn-confirmer-depense-voyage').onclick = () => {
-        const montant = parseMontant(document.getElementById('dv-montant').value);
-        if (!montant) { alert('Saisissez un montant.'); return; }
-        const v = getVoyageActif(); if (!v) return;
-        v.depenses.push({ id: genId(), categorie: document.getElementById('dv-categorie').value, libelle: document.getElementById('dv-libelle').value.trim(), montant, date: document.getElementById('dv-date').value, payeur: dvPayeurActif, dtype: dvTypeActif });
-        sauvegarderVoyages(); document.getElementById('popup-depense-voyage').classList.add('hidden'); rendreDetailVoyage(v);
-    };
-
-    // --- Vue Admin RESTAURÉE ---
+    // --- Vue Admin ---
     const rendreAdmin = () => {
+        // Badge counts
+        const badgeCat = document.getElementById('badge-cat-count');
+        const badgeObj = document.getElementById('badge-obj-count');
+        const badgeCorb = document.getElementById('badge-corbeille-count');
+        if (badgeCat) badgeCat.innerText = state.categories.length;
+        if (badgeObj) badgeObj.innerText = state.objectifsProvisions.length;
+        if (badgeCorb) badgeCorb.innerText = state.corbeille.length;
         const catDiv = document.getElementById('admin-categories');
         catDiv.innerHTML = state.categories.map((c, i) => `
             <div class="month-pill" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
@@ -1248,7 +1280,14 @@
         }
 
         const ts = document.getElementById('theme-selector');
-        ts.innerHTML = THEMES.map(t => `<div class="color-circle ${localStorage.getItem(LS_THEME) === t.id ? 'active' : ''}" style="background:${t.color}" data-set-theme="${t.id}"></div>`).join('');
+        const currentTheme = localStorage.getItem(LS_THEME) || 'default';
+        ts.innerHTML = THEMES.map(t => `
+            <div class="theme-card ${currentTheme === t.id ? 'active' : ''}" data-set-theme="${t.id}">
+                <div class="theme-card__check">✓</div>
+                <div class="theme-card__swatch" style="background:${t.swatch};"></div>
+                <div class="theme-card__label">${t.label}</div>
+            </div>
+        `).join('');
     };
 
     // --- Gestionnaires d'événements (BULLES FLOTTANTES CORRIGÉES) ---
@@ -1330,7 +1369,7 @@
     // 2. Navigation Tabs
     document.querySelector('.tab-buttons').addEventListener('click', (e) => {
         const btn = e.target.closest('[data-view]');
-        if (btn) changerVue(btn.dataset.view);
+        if (btn) { haptic('light'); changerVue(btn.dataset.view); }
     });
 
     // 3. Barre Latérale (Mois/Années)
@@ -1471,6 +1510,95 @@
 
     document.getElementById('btn-close-calc').onclick = () => document.getElementById('calc-popup').classList.add('hidden');
 
+    // --- Calculatrice ---
+    const calcDisplay = document.getElementById('calc-display');
+    document.querySelector('.calc-grid').addEventListener('click', (e) => {
+        const btn = e.target.closest('.calc-btn');
+        if (!btn) return;
+
+        if (btn.dataset.action === 'clear') {
+            calcDisplay.value = '';
+            return;
+        }
+        if (btn.dataset.action === 'result') {
+            calcEvaluer();
+            return;
+        }
+        if (btn.dataset.input !== undefined) {
+            // Afficher × et ÷ mais stocker * et /
+            const displayChar = btn.dataset.input === '*' ? '×' : btn.dataset.input === '/' ? '÷' : btn.dataset.input;
+            calcDisplay.value += displayChar;
+        }
+    });
+
+    // --- Calculatrice clavier ---
+    const calcEvaluer = () => {
+        try {
+            const expr = calcDisplay.value.replace(/×/g, '*').replace(/÷/g, '/');
+            const result = Function('"use strict"; return (' + expr + ')')();
+            calcDisplay.value = parseFloat(result.toFixed(10)).toString();
+        } catch {
+            calcDisplay.value = 'Erreur';
+        }
+    };
+
+    const calcHighlight = (selector) => {
+        const btn = document.querySelector(`.calc-btn[${selector}]`);
+        if (!btn) return;
+        btn.style.transform = 'scale(0.92)';
+        btn.style.opacity = '0.7';
+        setTimeout(() => { btn.style.transform = ''; btn.style.opacity = ''; }, 120);
+    };
+
+    document.addEventListener('keydown', (e) => {
+        const popup = document.getElementById('calc-popup');
+        if (popup.classList.contains('hidden')) return;
+
+        // Empêcher les comportements par défaut (scroll, etc.)
+        if (['Enter','=','Backspace','Escape'].includes(e.key) || /^[0-9+\-*/.(),]$/.test(e.key)) {
+            e.preventDefault();
+        }
+
+        if (e.key === 'Escape') {
+            popup.classList.add('hidden');
+            return;
+        }
+        if (e.key === 'Enter' || e.key === '=') {
+            calcEvaluer();
+            calcHighlight('data-action="result"');
+            return;
+        }
+        if (e.key === 'Backspace') {
+            if (calcDisplay.value === 'Erreur') { calcDisplay.value = ''; return; }
+            calcDisplay.value = calcDisplay.value.slice(0, -1);
+            return;
+        }
+        if (e.key === 'Delete' || (e.key === 'c' && !e.ctrlKey && !e.metaKey)) {
+            calcDisplay.value = '';
+            calcHighlight('data-action="clear"');
+            return;
+        }
+
+        const map = { '*': '×', '/': '÷' };
+        const allowed = '0123456789+-*/.()';
+        if (allowed.includes(e.key)) {
+            if (calcDisplay.value === 'Erreur') calcDisplay.value = '';
+            const display = map[e.key] || e.key;
+            calcDisplay.value += display;
+            const attrVal = e.key === '*' ? '*' : e.key === '/' ? '/' : e.key;
+            calcHighlight(`data-input="${attrVal}"`);
+        }
+    });
+    document.querySelector('main').addEventListener('click', (e) => {
+        const header = e.target.closest('.card-header[data-target]');
+        if (header) {
+            // Ne pas déclencher si c'est déjà géré par vue-admin
+            if (!header.closest('#vue-admin')) {
+                toggleSection(header.dataset.target, header);
+            }
+        }
+    });
+
     // 10. Initialisation Thème
     const toggleDark = () => {
         document.body.classList.toggle('dark-mode');
@@ -1555,15 +1683,47 @@
         });
     }
 
+    // --- Corbeille ---
+    const viderCorbeille = () => {
+        if (!state.corbeille.length) { alert("La corbeille est déjà vide."); return; }
+        if (confirm("Vider définitivement la corbeille ? Cette action est irréversible.")) {
+            state.corbeille = [];
+            sauvegarderConfig(true);
+            rendreAdmin();
+        }
+    };
+
+    const restaurerCorbeille = (index) => {
+        const item = state.corbeille[index];
+        if (!item) return;
+        const mois = getMoisActif();
+        if (!mois) { alert("Aucun mois actif. Sélectionnez un mois d'abord."); return; }
+        const type = item.typeOriginal;
+        const restored = { ...item };
+        delete restored.typeOriginal;
+        mois[type].unshift(restored);
+        state.corbeille.splice(index, 1);
+        sauvegarderDonnees();
+        sauvegarderConfig(true);
+        rendreAdmin();
+    };
+
     document.getElementById('btn-add-cat').onclick = () => {
-        const v = document.getElementById('new-cat-input').value;
-        if (v) { state.categories.push(v); sauvegarderConfig(); rendreAdmin(); }
+        const input = document.getElementById('new-cat-input');
+        const v = input.value.trim();
+        if (v) { state.categories.push(v); input.value = ''; sauvegarderConfig(); rendreAdmin(); }
     };
 
     document.getElementById('btn-add-obj').onclick = () => {
-        const nom = document.getElementById('new-obj-nom').value;
-        const montant = parseFloat(document.getElementById('new-obj-mnt').value);
-        if (nom && montant) { state.objectifsProvisions.push({ nom, montant }); sauvegarderConfig(); rendreAdmin(); }
+        const nomInput = document.getElementById('new-obj-nom');
+        const mntInput = document.getElementById('new-obj-mnt');
+        const nom = nomInput.value.trim();
+        const montant = parseFloat(mntInput.value);
+        if (nom && montant) {
+            state.objectifsProvisions.push({ nom, montant });
+            nomInput.value = ''; mntInput.value = '';
+            sauvegarderConfig(); rendreAdmin();
+        }
     };
 
     document.getElementById('btn-logout').onclick = () => signOut(auth).then(() => window.location.reload());
@@ -1589,12 +1749,146 @@
         };
     });
 
-    // 13. Events globaux
+    // =============================================
+    // AMÉLIORATIONS iPhone
+    // =============================================
+
+    // --- Haptique ---
+    const haptic = (type = 'light') => {
+        if (!window.navigator || !navigator.vibrate) return;
+        const patterns = { light: [10], medium: [20], heavy: [30, 10, 30], success: [10, 50, 10], error: [50, 30, 50] };
+        navigator.vibrate(patterns[type] || patterns.light);
+    };
+
+    // --- Bottom Sheet ---
+    let bsTypeActif = 'depenses';
+
+    const bsPeuplerCategories = () => {
+        const sel = document.getElementById('bs-categorie');
+        if (!sel) return;
+        sel.innerHTML = state.categories.map(c => `<option value="${c}">${c}</option>`).join('');
+    };
+
+    window.bsAutoCategorie = (libelle) => {
+        const sel = document.getElementById('bs-categorie');
+        if (!sel) return;
+        if (REGEX_SUPERMARCHE.test(libelle)) {
+            sel.value = "🛒 Courses";
+            return;
+        }
+        // Cherche une catégorie dont le mot-clé (sans emoji) est dans le libellé
+        const lib = sansAccents(libelle);
+        const match = state.categories.find(c => {
+            const motCle = sansAccents(c.replace(/[\u{1F300}-\u{1FFFF}]/gu, '').trim());
+            return motCle.length > 2 && lib.includes(motCle);
+        });
+        if (match) sel.value = match;
+    };
+
+    window.bsOuvrir = () => {
+        haptic('light');
+        bsPeuplerCategories();
+        document.getElementById('bottom-sheet').style.transform = 'translateY(0)';
+        const overlay = document.getElementById('bs-overlay');
+        overlay.style.pointerEvents = 'auto';
+        overlay.style.background = 'rgba(0,0,0,0.4)';
+        overlay.onclick = bsFermer;
+        setTimeout(() => document.getElementById('bs-libelle').focus(), 400);
+    };
+    window.bsFermer = () => {
+        document.getElementById('bottom-sheet').style.transform = 'translateY(100%)';
+        const overlay = document.getElementById('bs-overlay');
+        overlay.style.background = 'rgba(0,0,0,0)';
+        overlay.style.pointerEvents = 'none';
+        document.getElementById('bs-libelle').value = '';
+        document.getElementById('bs-montant').value = '';
+    };
+    window.bsSelectType = (btn) => {
+        document.querySelectorAll('.bs-type-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        bsTypeActif = btn.dataset.type;
+        haptic('light');
+    };
+    window.bsValider = () => {
+        const mois = getMoisActif();
+        if (!mois) { alert("Aucun mois actif sélectionné."); return; }
+        const libelle = document.getElementById('bs-libelle').value.trim();
+        const montant = parseMontant(document.getElementById('bs-montant').value);
+        const categorie = document.getElementById('bs-categorie').value || state.categories[0];
+        if (!montant) { haptic('error'); return; }
+        const nouv = { id: genId(), libelle, montant, categorie, date: new Date().toISOString().split('T')[0] };
+        if (bsTypeActif === 'depenses') nouv.moyenPaiement = 'CB';
+        if (bsTypeActif === 'epargne') confetti({ particleCount: 80, spread: 60, origin: { y: 0.7 } });
+        mois[bsTypeActif].unshift(nouv);
+        haptic('success');
+        bsFermer();
+        sauvegarderDonnees();
+        if (state.vueActuelle !== 'mensuelle') changerVue('mensuelle');
+        else rafraichirTouteLInterface();
+    };
+
+    // FAB visible seulement sur les vues mensuelle et fixes
+    const majFAB = () => {
+        const fab = document.getElementById('fab-add');
+        const visible = state.vueActuelle === 'mensuelle' || state.vueActuelle === 'fixes';
+        fab.classList.toggle('hidden', !visible);
+    };
+
+    // --- Pull-to-refresh ---
+    let ptrStartY = 0, ptrDist = 0, ptrActive = false;
+    const ptrEl = document.getElementById('ptr-indicator');
+    const ptrThreshold = 80;
+
+    document.addEventListener('touchstart', (e) => {
+        if (window.scrollY === 0) { ptrStartY = e.touches[0].clientY; ptrActive = true; }
+    }, { passive: true });
+
+    document.addEventListener('touchmove', (e) => {
+        if (!ptrActive) return;
+        ptrDist = e.touches[0].clientY - ptrStartY;
+        if (ptrDist > 0 && window.scrollY === 0) {
+            const progress = Math.min(ptrDist / ptrThreshold, 1);
+            const translateY = Math.min(ptrDist * 0.4, 55);
+            ptrEl.style.transform = `translateX(-50%) translateY(${translateY}px)`;
+            document.getElementById('ptr-icon').textContent = progress >= 1 ? '↺' : '↓';
+            document.getElementById('ptr-text').textContent = progress >= 1 ? 'Relâcher pour rafraîchir' : 'Tirer pour rafraîchir';
+            if (progress >= 1 && ptrDist < ptrThreshold + 5) haptic('medium');
+        }
+    }, { passive: true });
+
+    document.addEventListener('touchend', () => {
+        if (!ptrActive) return;
+        ptrActive = false;
+        ptrEl.style.transform = 'translateX(-50%) translateY(-60px)';
+        if (ptrDist >= ptrThreshold) {
+            haptic('success');
+            document.getElementById('ptr-icon').textContent = '↺';
+            document.getElementById('ptr-text').textContent = 'Synchronisation…';
+            ptrEl.style.transform = 'translateX(-50%) translateY(20px)';
+            setTimeout(() => {
+                ptrEl.style.transform = 'translateX(-50%) translateY(-60px)';
+                rafraichirTouteLInterface();
+            }, 1200);
+        }
+        ptrDist = 0;
+    });
+
+    // Haptique sur suppression
+    const origSuppression = document.body.onclick;
+    document.body.addEventListener('click', (e) => {
+        if (e.target.closest('[data-del-id]') || e.target.closest('[data-del-type]')) haptic('medium');
+    });
+
+    // Haptique sur confetti épargne
+    document.querySelector('[data-add="epargne"][data-special="epargne"]')?.addEventListener('click', () => haptic('success'));
+
+    // =============================================
     document.getElementById('select-annee').onchange = (e) => rendreVueAnnuelle();
 
     document.getElementById('vue-admin').addEventListener('click', (e) => {
         // Choix du thème
-        if (e.target.dataset.setTheme) { applyTheme(e.target.dataset.setTheme); return; }
+        const themeCard = e.target.closest('[data-set-theme]');
+        if (themeCard) { applyTheme(themeCard.dataset.setTheme); return; }
 
         // Supprimer catégorie
         const delCat = e.target.closest('[data-del-cat]');
