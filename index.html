@@ -512,7 +512,6 @@
                 </div>
                 <div id="voyage-categories-content"></div>
                 <button class="btn-action bg-primary" id="btn-add-depense-voyage">+ Ajouter une dépense</button>
-                <button class="btn-action" id="btn-open-import" style="background:var(--text-muted);margin-top:-4px;">📸 Importer des captures</button>
             </div>
         </div>
     </main>
@@ -520,15 +519,14 @@
     <!-- Popup nouveau voyage -->
     <div id="popup-nouveau-voyage" class="overlay-popup hidden">
         <div class="popup-box" style="width:90%;max-width:400px;text-align:left;">
-            <h3 style="margin-bottom:16px;">🏖️ Nouveau voyage</h3>
-            <input type="text" id="nv-nom" placeholder="Nom (ex: Sardaigne 2026)" style="width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--bg-color);color:var(--text-main);font-size:1rem;margin-bottom:10px;">
-            <div style="display:flex;gap:8px;margin-bottom:10px;">
-                <div style="flex:1;"><label style="font-size:0.72rem;color:var(--text-muted);display:block;margin-bottom:4px;">Départ</label><input type="date" id="nv-debut" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--bg-color);color:var(--text-main);"></div>
-                <div style="flex:1;"><label style="font-size:0.72rem;color:var(--text-muted);display:block;margin-bottom:4px;">Retour</label><input type="date" id="nv-fin" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--bg-color);color:var(--text-main);"></div>
+            <h3 style="margin-bottom:16px;">Nouveau voyage</h3>
+            <div style="display:flex;gap:8px;margin-bottom:10px;align-items:center;">
+                <input type="text" id="nv-emoji" placeholder="✈️" style="width:56px;height:48px;padding:6px;border-radius:10px;border:1px solid var(--border);background:var(--bg-color);color:var(--text-main);text-align:center;font-size:1.5rem;">
+                <input type="text" id="nv-nom" placeholder="Nom du voyage (ex: Albanie 2026)" style="flex:1;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--bg-color);color:var(--text-main);font-size:1rem;">
             </div>
             <div style="display:flex;gap:8px;margin-bottom:16px;">
-                <input type="text" id="nv-emoji" placeholder="🌴" style="width:56px;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--bg-color);color:var(--text-main);text-align:center;font-size:1.3rem;">
-                <input type="text" id="nv-destination" placeholder="Destination..." style="flex:1;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--bg-color);color:var(--text-main);">
+                <div style="flex:1;"><label style="font-size:0.72rem;color:var(--text-muted);display:block;margin-bottom:4px;">Départ</label><input type="date" id="nv-debut" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--bg-color);color:var(--text-main);"></div>
+                <div style="flex:1;"><label style="font-size:0.72rem;color:var(--text-muted);display:block;margin-bottom:4px;">Retour</label><input type="date" id="nv-fin" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--bg-color);color:var(--text-main);"></div>
             </div>
             <div style="display:flex;gap:8px;">
                 <button onclick="document.getElementById('popup-nouveau-voyage').classList.add('hidden')" style="flex:1;padding:12px;border-radius:10px;border:1px solid var(--border);background:none;color:var(--text-muted);cursor:pointer;">Annuler</button>
@@ -537,42 +535,6 @@
         </div>
     </div>
 
-    <!-- Popup import captures -->
-    <div id="popup-import" class="overlay-popup hidden">
-        <div class="popup-box" style="width:92%;max-width:440px;text-align:left;max-height:88vh;display:flex;flex-direction:column;">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
-                <h3 style="font-size:1.05rem;">📸 Importer des captures</h3>
-                <button onclick="document.getElementById('popup-import').classList.add('hidden')" style="background:none;border:none;font-size:1.4rem;color:var(--danger);cursor:pointer;">&#x2715;</button>
-            </div>
-            <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:12px;line-height:1.5;">Sélectionne tes screenshots Tricount, reçus ou notes. L'IA lira tout et extraira les dépenses automatiquement.</p>
-
-            <!-- Zone sélection -->
-            <label id="import-drop-zone" style="display:flex;flex-direction:column;align-items:center;justify-content:center;border:2px dashed var(--border);border-radius:14px;padding:20px;cursor:pointer;margin-bottom:10px;gap:6px;min-height:80px;">
-                <span style="font-size:1.8rem;">📁</span>
-                <span style="font-size:0.85rem;font-weight:600;color:var(--primary);">Choisir des images</span>
-                <span style="font-size:0.75rem;color:var(--text-muted);">Plusieurs à la fois — Tricount, reçus, notes…</span>
-                <input type="file" id="import-file-input" accept="image/*" multiple style="display:none;">
-            </label>
-
-            <!-- Miniatures -->
-            <div id="import-previews" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;min-height:0;"></div>
-
-            <!-- Statut -->
-            <div id="import-status" style="font-size:0.82rem;color:var(--text-muted);margin-bottom:10px;min-height:18px;"></div>
-
-            <!-- Résultats IA -->
-            <div id="import-results" style="flex:1;overflow-y:auto;margin-bottom:12px;display:none;">
-                <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-muted);margin-bottom:8px;" id="import-results-titre"></div>
-                <div id="import-results-list"></div>
-            </div>
-
-            <!-- Boutons -->
-            <div style="display:flex;gap:8px;">
-                <button id="btn-import-analyser" style="flex:1;padding:12px;border-radius:10px;border:none;background:var(--primary);color:white;font-weight:700;cursor:pointer;display:none;">Analyser</button>
-                <button id="btn-import-confirmer" style="flex:1;padding:12px;border-radius:10px;border:none;background:var(--success);color:white;font-weight:700;cursor:pointer;display:none;">Importer tout</button>
-            </div>
-        </div>
-    </div>
     <div id="popup-depense-voyage" class="overlay-popup hidden">
         <div class="popup-box" style="width:90%;max-width:400px;text-align:left;">
             <h3 style="margin-bottom:14px;">💸 Nouvelle dépense</h3>
@@ -1146,7 +1108,7 @@
                 return `<div class="card" style="cursor:pointer;margin-bottom:12px;" onclick="ouvrirVoyage('${v.id}')">
                     <div style="display:flex;align-items:center;gap:14px;">
                         <div style="font-size:2rem;">${v.emoji || '🌍'}</div>
-                        <div style="flex:1;min-width:0;"><div style="font-weight:700;font-size:1rem;">${v.nom}</div><div style="font-size:0.78rem;color:var(--text-muted);">${v.destination || ''}${nbJ ? ' · ' + nbJ + ' j' : ''}</div></div>
+                        <div style="flex:1;min-width:0;"><div style="font-weight:700;font-size:1rem;">${v.nom}</div><div style="font-size:0.78rem;color:var(--text-muted);">${nbJ ? nbJ + ' j' : ''}</div></div>
                         <div style="font-weight:800;font-size:1.1rem;color:var(--primary);">${eur(b.total)}</div>
                     </div>
                     <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:var(--text-muted);margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">
@@ -1158,7 +1120,7 @@
 
         const rendreDetailVoyage = (v) => {
             document.getElementById('voyage-titre-detail').textContent = (v.emoji || '🌍') + ' ' + v.nom;
-            document.getElementById('voyage-dates-detail').textContent = v.debut && v.fin ? v.debut + ' → ' + v.fin : (v.destination || '');
+            document.getElementById('voyage-dates-detail').textContent = v.debut && v.fin ? v.debut + ' → ' + v.fin : '';
             const b = calculerBilanVoyage(v.depenses);
             document.getElementById('voyage-total-affiche').textContent = eur(b.total);
             document.getElementById('voyage-total-corentin').textContent = eur(b.payeCorentin);
@@ -1241,13 +1203,14 @@
         };
 
         document.getElementById('btn-nouveau-voyage').onclick = () => {
-            ['nv-nom','nv-debut','nv-fin','nv-emoji','nv-destination'].forEach(id => document.getElementById(id).value = '');
+            ['nv-nom','nv-debut','nv-fin','nv-emoji'].forEach(id => document.getElementById(id).value = '');
             document.getElementById('popup-nouveau-voyage').classList.remove('hidden');
         };
         document.getElementById('btn-confirmer-voyage').onclick = () => {
             const nom = document.getElementById('nv-nom').value.trim();
             if (!nom) { alert('Donnez un nom au voyage.'); return; }
-            const v = { id: genId(), nom, debut: document.getElementById('nv-debut').value, fin: document.getElementById('nv-fin').value, emoji: document.getElementById('nv-emoji').value.trim() || '🌍', destination: document.getElementById('nv-destination').value.trim(), depenses: [] };
+            const emoji = document.getElementById('nv-emoji').value.trim() || '✈️';
+            const v = { id: genId(), nom, emoji, debut: document.getElementById('nv-debut').value, fin: document.getElementById('nv-fin').value, depenses: [] };
             state.voyages.push(v); sauvegarderVoyages();
             document.getElementById('popup-nouveau-voyage').classList.add('hidden');
             state.voyageActifId = v.id; rendreVueVacances();
@@ -1273,132 +1236,6 @@
             const v = getVoyageActif(); if (!v) return;
             v.depenses.push({ id: genId(), categorie: document.getElementById('dv-categorie').value, libelle: document.getElementById('dv-libelle').value.trim(), montant, date: document.getElementById('dv-date').value, payeur: dvPayeurActif, dtype: dvTypeActif });
             sauvegarderVoyages(); document.getElementById('popup-depense-voyage').classList.add('hidden'); rendreDetailVoyage(v);
-        };
-
-        // --- Import captures IA ---
-        let importImages = [];
-        let importResultats = [];
-
-        document.getElementById('btn-open-import').onclick = () => {
-            importImages = [];
-            importResultats = [];
-            document.getElementById('import-previews').innerHTML = '';
-            document.getElementById('import-results').style.display = 'none';
-            document.getElementById('import-results-list').innerHTML = '';
-            document.getElementById('import-status').textContent = '';
-            document.getElementById('btn-import-analyser').style.display = 'none';
-            document.getElementById('btn-import-confirmer').style.display = 'none';
-            document.getElementById('import-file-input').value = '';
-            document.getElementById('popup-import').classList.remove('hidden');
-        };
-
-        document.getElementById('import-drop-zone').onclick = () => document.getElementById('import-file-input').click();
-
-        document.getElementById('import-file-input').onchange = async (e) => {
-            const files = Array.from(e.target.files);
-            if (!files.length) return;
-            importImages = [];
-            document.getElementById('import-previews').innerHTML = '';
-            document.getElementById('import-status').textContent = 'Chargement des images...';
-            document.getElementById('btn-import-analyser').style.display = 'none';
-            document.getElementById('btn-import-confirmer').style.display = 'none';
-            document.getElementById('import-results').style.display = 'none';
-
-            for (const file of files) {
-                await new Promise(resolve => {
-                    const reader = new FileReader();
-                    reader.onload = (ev) => {
-                        const b64 = ev.target.result.split(',')[1];
-                        importImages.push({ b64, mime: file.type || 'image/jpeg' });
-                        const img = document.createElement('img');
-                        img.src = ev.target.result;
-                        img.style.cssText = 'width:54px;height:54px;object-fit:cover;border-radius:8px;border:1px solid var(--border);';
-                        document.getElementById('import-previews').appendChild(img);
-                        resolve();
-                    };
-                    reader.readAsDataURL(file);
-                });
-            }
-            document.getElementById('import-status').textContent = importImages.length + ' image(s) prete(s)';
-            document.getElementById('btn-import-analyser').style.display = 'block';
-        };
-
-        document.getElementById('btn-import-analyser').onclick = async () => {
-            const btn = document.getElementById('btn-import-analyser');
-            const status = document.getElementById('import-status');
-            btn.disabled = true;
-            btn.textContent = 'Analyse en cours...';
-            status.textContent = 'L\'IA analyse vos ' + importImages.length + ' image(s)...';
-            document.getElementById('import-results').style.display = 'none';
-            document.getElementById('btn-import-confirmer').style.display = 'none';
-            importResultats = [];
-
-            const catIds = CATS_VOYAGE.map(c => c.id).join(', ');
-            const prompt = 'Tu analyses des captures de voyage (Tricount, reçus, notes). Extrais TOUTES les transactions. Les 2 personnes : Corentin et Lisa. Reponds UNIQUEMENT en JSON valide, sans markdown. Format : tableau d\'objets avec : libelle (string), montant (number positif), date (YYYY-MM-DD ou vide), payeur (Corentin ou Lisa), dtype (commun, perso, ou remboursement), categorie (un de ces ids : ' + catIds + '). Si incertain du payeur mets Corentin. Si incertaine de la categorie mets divers.';
-
-            try {
-                const content = [
-                    { type: 'text', text: prompt },
-                    ...importImages.map(img => ({ type: 'image', source: { type: 'base64', media_type: img.mime, data: img.b64 } }))
-                ];
-                const resp = await fetch('https://api.anthropic.com/v1/messages', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 2000, messages: [{ role: 'user', content }] })
-                });
-                const data = await resp.json();
-                const raw = (data.content || []).find(b => b.type === 'text')?.text || '[]';
-                const clean = raw.replace(/```json|```/g, '').trim();
-                importResultats = JSON.parse(clean);
-
-                if (!Array.isArray(importResultats) || !importResultats.length) {
-                    status.textContent = 'Aucune transaction detectee.';
-                    btn.disabled = false; btn.textContent = 'Analyser';
-                    return;
-                }
-
-                status.textContent = importResultats.length + ' transaction(s) detectee(s)';
-                const listEl = document.getElementById('import-results-list');
-                document.getElementById('import-results-titre').textContent = 'Verifier avant d\'importer :';
-                listEl.innerHTML = importResultats.map((d, i) => {
-                    const cat = CATS_VOYAGE.find(c => c.id === d.categorie);
-                    const isRemb = d.dtype === 'remboursement';
-                    return '<div style="display:flex;justify-content:space-between;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border);gap:8px;">'
-                        + '<div style="flex:1;min-width:0;">'
-                        + '<div style="font-weight:600;font-size:0.85rem;">' + (d.libelle || '—') + '</div>'
-                        + '<div style="font-size:0.72rem;color:var(--text-muted);">' + (cat ? cat.label : d.categorie) + ' · ' + (d.dtype || '') + ' · ' + (d.payeur || '') + (d.date ? ' · ' + d.date : '') + '</div>'
-                        + '</div>'
-                        + '<span style="font-weight:700;font-size:0.9rem;white-space:nowrap;color:' + (isRemb ? 'var(--success)' : 'var(--text-main)') + ';">' + (isRemb ? '+' : '') + eur(d.montant) + '</span>'
-                        + '</div>';
-                }).join('');
-                document.getElementById('import-results').style.display = 'block';
-                document.getElementById('btn-import-confirmer').style.display = 'block';
-
-            } catch (err) {
-                status.textContent = 'Erreur : ' + err.message;
-            }
-            btn.disabled = false; btn.textContent = 'Analyser';
-        };
-
-        document.getElementById('btn-import-confirmer').onclick = () => {
-            const v = getVoyageActif();
-            if (!v || !importResultats.length) return;
-            importResultats.forEach(d => {
-                v.depenses.push({
-                    id: genId(),
-                    libelle: d.libelle || '',
-                    montant: parseFloat(d.montant) || 0,
-                    date: d.date || '',
-                    payeur: d.payeur || 'Corentin',
-                    dtype: d.dtype || 'commun',
-                    categorie: d.categorie || 'divers'
-                });
-            });
-            dbSet(dbRef('budgetVoyagesLC'), state.voyages).then(() => setSyncDot('online'));
-            document.getElementById('popup-import').classList.add('hidden');
-            importImages = [];
-            importResultats = [];
-            rendreDetailVoyage(v);
         };
 
         // --- Vue Admin RESTAURÉE ---
