@@ -13,6 +13,11 @@
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
+    <!-- Firebase compat — fonctionne sur tous les navigateurs dont Safari iOS -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
+
     <style>
         /* =====================================================
            1. DESIGN TOKENS — Variables CSS globales
@@ -283,6 +288,16 @@
         </div>
     </div>
 
+    <div id="changelog-popup" class="overlay-popup hidden">
+        <div class="popup-box" style="width: 90%; max-width: 400px; max-height: 80vh; display: flex; flex-direction: column;">
+            <h2 style="font-size:1.5rem; margin-bottom:5px;">🔔 Nouveautés</h2>
+            <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:15px; line-height:1.4;">Modifications effectuées depuis votre dernière visite :</p>
+            <div id="changelog-content" style="flex:1; overflow-y:auto; text-align:left; font-size:0.95rem; margin-bottom:20px; border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding: 10px 0;">
+                </div>
+            <button class="btn-action bg-primary" id="btn-close-changelog" style="margin-bottom:0;">J'ai compris</button>
+        </div>
+    </div>
+
     <nav class="top-nav">
         <div class="nav-header">
             <h2>Budget <span id="sync-dot" class="status-dot"></span></h2>
@@ -291,7 +306,8 @@
         <div class="tab-buttons">
             <button class="btn-tab active" data-view="mensuelle">Mois</button>
             <button class="btn-tab" data-view="annuelle">Année</button>
-            <button class="btn-tab" data-view="fixes">Charges Fixes</button>
+            <button class="btn-tab" data-view="fixes">Fixes</button>
+            <button class="btn-tab" data-view="vacances">Vacances</button>
             <button class="btn-tab" data-view="admin">Admin</button>
         </div>
         
@@ -328,11 +344,11 @@
                 <div class="card">
                     <div class="card-header" data-target="repartition-m"><h3>📊 Répartition</h3></div>
                     <div id="repartition-m" class="section-content">
-                        <div class="progress-container"><div class="progress-header"><span>🏠 Charges Fixes</span><span id="pct-charges-m">0 € (0%)</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--danger);" id="bar-charges-m"></div></div></div>
-                        <div class="progress-container"><div class="progress-header"><span>🛒 Dépenses</span><span id="pct-depenses-m">0 € (0%)</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--secondary);" id="bar-depenses-m"></div></div></div>
-                        <div class="progress-container"><div class="progress-header"><span>✈️ Épargne</span><span id="pct-epargne-m">0 € (0%)</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--info);" id="bar-epargne-m"></div></div></div>
-                        <div class="progress-container"><div class="progress-header"><span>🛡️ Provisions</span><span id="pct-provisions-m">0 € (0%)</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--warn);" id="bar-provisions-m"></div></div></div>
-                        <div class="progress-container"><div class="progress-header"><span>✅ Reste</span><span id="pct-reste-m">0 € (0%)</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--success);" id="bar-reste-m"></div></div></div>
+                        <div class="progress-container"><div class="progress-header"><span>🏠 Charges Fixes</span><span id="pct-charges-m">0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--danger);" id="bar-charges-m"></div></div></div>
+                        <div class="progress-container"><div class="progress-header"><span>🛒 Dépenses</span><span id="pct-depenses-m">0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--secondary);" id="bar-depenses-m"></div></div></div>
+                        <div class="progress-container"><div class="progress-header"><span>✈️ Épargne</span><span id="pct-epargne-m">0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--info);" id="bar-epargne-m"></div></div></div>
+                        <div class="progress-container"><div class="progress-header"><span>🛡️ Provisions</span><span id="pct-provisions-m">0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--warn);" id="bar-provisions-m"></div></div></div>
+                        <div class="progress-container"><div class="progress-header"><span>✅ Reste</span><span id="pct-reste-m">0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--success);" id="bar-reste-m"></div></div></div>
                     </div>
                 </div>
 
@@ -374,7 +390,7 @@
 
             <div class="card">
                 <div id="conteneur-fixes"></div>
-                <button class="btn-action bg-primary" data-add="fixes" style="margin-top:15px;">+ Ajouter une charge fixe (Loyer, Eau...)</button>
+                <button class="btn-action bg-primary" data-add="fixes" style="margin-top:15px;">+ Ajouter une charge fixe</button>
             </div>
         </div>
 
@@ -393,64 +409,192 @@
         </div>
 
         <div id="vue-admin" class="hidden">
-            <h1>Paramètres</h1>
-            <div class="admin-section" style="border-color:var(--danger);">
+            <h1 style="margin-bottom: 20px;">Paramètres</h1>
+            
+            <div class="admin-section" style="border-color:var(--danger); background: rgba(255,59,48,0.05);">
                 <h3 style="color:var(--danger);">🔒 Sécurité</h3>
-                <button class="btn-action bg-danger" id="btn-logout">Se déconnecter</button>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Déconnectez cet appareil pour empêcher l'accès aux comptes.</p>
+                <button class="btn-action bg-danger" id="btn-logout" style="margin-bottom: 0;">Se déconnecter</button>
             </div>
+
+            <div class="admin-section">
+                <h3>🔄 Outils Système</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Forcer la mise à jour de l'application (vide le cache de la page).</p>
+                <button class="btn-action" style="background:var(--secondary); margin-bottom: 0;" onclick="window.location.reload(true)">Forcer le rechargement</button>
+            </div>
+
+            <div class="admin-section">
+                <h3>📅 Créer un mois spécifique</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Ajouter un mois manuellement (ex: Février 2026).</p>
+                <div style="display:flex; gap:10px;">
+                    <input type="month" id="input-new-month" style="flex:1; border:1px solid var(--border); padding:10px; border-radius:8px;">
+                    <button class="btn-small bg-primary" id="btn-creer-mois" style="color:white; padding:10px 20px;">Créer</button>
+                </div>
+            </div>
+
             <div class="admin-section">
                 <h3>🛠️ Gestion des Catégories</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Gérez vos catégories de dépenses par défaut.</p>
                 <div id="admin-categories"></div>
                 <div style="display:flex; gap:10px; margin-top:10px;">
                     <input type="text" id="new-cat-input" placeholder="Nouvelle catégorie..." style="flex:1; border:1px solid var(--border); padding:10px; border-radius:8px;">
-                    <button class="btn-small bg-primary" id="btn-add-cat" style="color:white; padding:10px;">Ajouter</button>
+                    <button class="btn-small bg-primary" id="btn-add-cat" style="color:white; padding:10px 20px;">Ajouter</button>
                 </div>
             </div>
+
             <div class="admin-section">
-                <h3>🎯 Objectifs (Bilan Annuel)</h3>
+                <h3>🎯 Budgets de Provisions (Annuel)</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Créez des objectifs. Le bilan calculera les lignes dont la catégorie contient le mot-clé.</p>
                 <div id="admin-objectifs"></div>
                 <div style="display:flex; gap:10px; margin-top:10px;">
-                    <input type="text" id="new-obj-nom" placeholder="Mot-clé" style="flex:1; border:1px solid var(--border); padding:10px; border-radius:8px;">
-                    <input type="number" id="new-obj-mnt" placeholder="€" style="width:70px; border:1px solid var(--border); padding:10px; border-radius:8px;">
-                    <button class="btn-small bg-primary" id="btn-add-obj" style="color:white; padding:10px;">Ajouter</button>
+                    <input type="text" id="new-obj-nom" placeholder="Mot-clé" style="flex:1; border:1px solid var(--border); padding:10px; border-radius:8px; min-width:0;">
+                    <input type="number" id="new-obj-mnt" placeholder="€" style="width:70px; border:1px solid var(--border); padding:10px; border-radius:8px; min-width:0;">
+                    <button class="btn-small bg-primary" id="btn-add-obj" style="color:white; padding:10px 20px;">Ajouter</button>
                 </div>
             </div>
+
             <div class="admin-section">
-                <h3>🎨 Thème de l'application</h3>
+                <h3>🎨 Garde-robe (Thèmes)</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Changez l'ambiance. <strong>S'adapte au Soleil ☀️ et à la Lune 🌙 !</strong></p>
                 <div class="color-selector" id="theme-selector"></div>
             </div>
+
             <div class="admin-section">
-                <h3>🗑️ Corbeille</h3>
+                <h3>📧 Sauvegarde Automatique</h3>
+                <p style="font-size: 0.9rem; color: var(--text-muted); margin: 10px 0;">Le dimanche à minuit, un e-mail est envoyé automatiquement.</p>
+                <button class="btn-action" id="btn-sauvegarde-mail" style="background:#5856D6; margin-bottom: 0;">✉️ Envoyer fichier .json par mail</button>
+            </div>
+            
+            <div class="admin-section">
+                <h3>🗑️ Corbeille (Lignes supprimées)</h3>
                 <div id="admin-corbeille"></div>
-                <button class="btn-action bg-danger" id="btn-vider-corbeille" style="margin-top:15px; font-size:0.8rem; padding:8px;">Vider définitivement</button>
+                <button class="btn-action bg-danger" id="btn-vider-corbeille" style="margin-top:15px; font-size:0.9rem; padding:10px; margin-bottom: 0;">Vider définitivement la corbeille</button>
+            </div>
+
+            <div class="admin-section">
+                <h3 style="color: var(--danger);">⚠️ Restauration Manuelle</h3>
+                <p style="font-size: 0.85rem; margin-top:5px; font-weight:bold;">Écraser les données actuelles avec un .json</p>
+                <input type="file" id="import-json" accept=".json" style="margin-top:10px; font-size: 0.9rem !important; width: 100%;">
             </div>
 
             <div style="text-align: right; color: var(--text-muted); font-size: 0.85rem; margin-top: 30px; font-weight: bold; padding-bottom: 20px;">
-                Version 4.0
+                Version 2.9.5 (Correctif Calculatrice Drag)
+            </div>
+        </div>
+
+        <!-- ===== VUE VACANCES ===== -->
+        <div id="vue-vacances" class="hidden">
+            <div id="vacances-liste">
+                <h1 style="margin-bottom:20px;">🏖️ Voyages</h1>
+                <div id="voyages-cards"></div>
+                <button class="btn-action bg-primary" id="btn-nouveau-voyage">+ Nouveau voyage</button>
+            </div>
+            <div id="vacances-detail" class="hidden">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                    <button id="btn-retour-voyages" style="background:none;border:none;color:var(--primary);font-size:1rem;font-weight:700;cursor:pointer;">← Voyages</button>
+                    <button id="btn-del-voyage" style="background:none;border:none;color:var(--danger);font-size:1.3rem;cursor:pointer;">🗑️</button>
+                </div>
+                <div class="card summary-card" style="background:linear-gradient(135deg,#007AFF,#5856D6); margin-bottom:16px;">
+                    <h3 id="voyage-titre-detail" style="font-size:1.2rem;margin-bottom:4px;"></h3>
+                    <div style="font-size:0.82rem;opacity:0.85;margin-bottom:14px;" id="voyage-dates-detail"></div>
+                    <div style="display:flex;justify-content:space-around;text-align:center;">
+                        <div><div style="font-size:0.72rem;opacity:0.8;">Total</div><div style="font-size:1.4rem;font-weight:800;" id="voyage-total-affiche">0 €</div></div>
+                        <div style="width:1px;background:rgba(255,255,255,0.3);"></div>
+                        <div><div style="font-size:0.72rem;opacity:0.8;">👨 Corentin</div><div style="font-size:1.2rem;font-weight:800;" id="voyage-total-corentin">0 €</div></div>
+                        <div style="width:1px;background:rgba(255,255,255,0.3);"></div>
+                        <div><div style="font-size:0.72rem;opacity:0.8;">👩 Lisa</div><div style="font-size:1.2rem;font-weight:800;" id="voyage-total-lisa">0 €</div></div>
+                    </div>
+                </div>
+                <div id="voyage-bilan-card" class="card" style="margin-bottom:16px;text-align:center;display:none;"></div>
+                <div class="card" style="margin-bottom:16px;">
+                    <div class="card-header" data-target="voyage-repartition"><h3>📊 Répartition</h3></div>
+                    <div id="voyage-repartition" class="section-content"><div id="voyage-repartition-content" style="padding-top:8px;"></div></div>
+                </div>
+                <div id="voyage-categories-content"></div>
+                <button class="btn-action bg-primary" id="btn-add-depense-voyage">+ Ajouter une dépense</button>
             </div>
         </div>
     </main>
 
+    <!-- Popup nouveau voyage -->
+    <div id="popup-nouveau-voyage" class="overlay-popup hidden">
+        <div class="popup-box" style="width:90%;max-width:400px;text-align:left;">
+            <h3 style="margin-bottom:16px;">Nouveau voyage</h3>
+            <div style="display:flex;gap:8px;margin-bottom:10px;align-items:center;">
+                <input type="text" id="nv-emoji" placeholder="✈️" style="width:56px;height:48px;padding:6px;border-radius:10px;border:1px solid var(--border);background:var(--bg-color);color:var(--text-main);text-align:center;font-size:1.5rem;">
+                <input type="text" id="nv-nom" placeholder="Nom du voyage (ex: Albanie 2026)" style="flex:1;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--bg-color);color:var(--text-main);font-size:1rem;">
+            </div>
+            <div style="display:flex;gap:8px;margin-bottom:16px;">
+                <div style="flex:1;"><label style="font-size:0.72rem;color:var(--text-muted);display:block;margin-bottom:4px;">Départ</label><input type="date" id="nv-debut" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--bg-color);color:var(--text-main);"></div>
+                <div style="flex:1;"><label style="font-size:0.72rem;color:var(--text-muted);display:block;margin-bottom:4px;">Retour</label><input type="date" id="nv-fin" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--bg-color);color:var(--text-main);"></div>
+            </div>
+            <div style="display:flex;gap:8px;">
+                <button onclick="document.getElementById('popup-nouveau-voyage').classList.add('hidden')" style="flex:1;padding:12px;border-radius:10px;border:1px solid var(--border);background:none;color:var(--text-muted);cursor:pointer;">Annuler</button>
+                <button id="btn-confirmer-voyage" style="flex:2;padding:12px;border-radius:10px;border:none;background:var(--primary);color:white;font-weight:700;cursor:pointer;">Créer</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="popup-depense-voyage" class="overlay-popup hidden">
+        <div class="popup-box" style="width:90%;max-width:400px;text-align:left;">
+            <h3 style="margin-bottom:14px;">💸 Nouvelle dépense</h3>
+            <!-- Payeur -->
+            <div style="margin-bottom:12px;">
+                <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:6px;">Payé par</div>
+                <div style="display:flex;gap:8px;">
+                    <button class="dv-payeur-btn" data-payeur="Corentin" onclick="dvSelectPayeur(this)" style="flex:1;padding:10px;border-radius:10px;border:2px solid var(--primary);background:var(--primary-light);color:var(--primary);font-weight:600;cursor:pointer;">👨 Corentin</button>
+                    <button class="dv-payeur-btn" data-payeur="Lisa" onclick="dvSelectPayeur(this)" style="flex:1;padding:10px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg-color);color:var(--text-main);font-weight:600;cursor:pointer;">👩 Lisa</button>
+                </div>
+            </div>
+            <!-- Type -->
+            <div style="margin-bottom:12px;">
+                <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:6px;">Type</div>
+                <div style="display:flex;gap:8px;">
+                    <button class="dv-type-btn" data-dtype="commun" onclick="dvSelectType(this)" style="flex:1;padding:8px;border-radius:10px;border:2px solid var(--primary);background:var(--primary-light);color:var(--primary);font-size:0.82rem;font-weight:600;cursor:pointer;">🤝 Commun</button>
+                    <button class="dv-type-btn" data-dtype="perso" onclick="dvSelectType(this)" style="flex:1;padding:8px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg-color);color:var(--text-main);font-size:0.82rem;font-weight:600;cursor:pointer;">👤 Perso</button>
+                    <button class="dv-type-btn" data-dtype="remboursement" onclick="dvSelectType(this)" style="flex:1;padding:8px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg-color);color:var(--text-main);font-size:0.82rem;font-weight:600;cursor:pointer;">↩️ Remb.</button>
+                </div>
+            </div>
+            <select id="dv-categorie" style="width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--bg-color);color:var(--text-main);font-size:0.95rem;margin-bottom:10px;"></select>
+            <input type="text" id="dv-libelle" placeholder="Description (optionnel)" style="width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--bg-color);color:var(--text-main);font-size:1rem;margin-bottom:10px;">
+            <input type="number" inputmode="decimal" id="dv-montant" placeholder="Montant €" style="width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--bg-color);color:var(--text-main);font-size:1.2rem;font-weight:700;text-align:right;margin-bottom:10px;">
+            <input type="date" id="dv-date" style="width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--bg-color);color:var(--text-main);margin-bottom:14px;">
+            <div style="display:flex;gap:8px;">
+                <button onclick="document.getElementById('popup-depense-voyage').classList.add('hidden')" style="flex:1;padding:12px;border-radius:10px;border:1px solid var(--border);background:none;color:var(--text-muted);cursor:pointer;">Annuler</button>
+                <button id="btn-confirmer-depense-voyage" style="flex:2;padding:12px;border-radius:10px;border:none;background:var(--primary);color:white;font-weight:700;cursor:pointer;">Ajouter</button>
+            </div>
+        </div>
+    </div>
+
     <div id="toast">Ligne supprimée <button id="btn-undo">Annuler</button></div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getDatabase, ref, set, onValue, off } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
-        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-
+    <script>
+        // Firebase compat — scripts chargés en <head>
         const firebaseConfig = {
             apiKey: "AIzaSyBro9AXaoXhSptyUVxoKVtr6xC4rtZQ3FI",
             authDomain: "lisa-et-corentin.firebaseapp.com",
-            databaseURL: "https://lisa-et-corentin-default-rtdb.europe-west1.firebasedatabase.app", 
+            databaseURL: "https://lisa-et-corentin-default-rtdb.europe-west1.firebasedatabase.app",
             projectId: "lisa-et-corentin",
             storageBucket: "lisa-et-corentin.firebasestorage.app",
             messagingSenderId: "694332145017",
             appId: "1:694332145017:web:1bf6fb387f54d46b1643a8"
         };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-        const auth = getAuth(app);
+        firebase.initializeApp(firebaseConfig);
+        const db   = firebase.database();
+        const auth = firebase.auth();
+
+        // Safari iOS ITP : forcer la persistance en mémoire pour éviter le blocage des cookies tiers
+        auth.setPersistence(firebase.auth.Auth.Persistence.SESSION).catch(() => {});
+
+        // Wrappers — noms différents pour éviter tout conflit avec l'API compat
+        const dbRef   = (path)           => db.ref(path);
+        const dbSet   = (ref, data)      => ref.set(data);
+        const dbOn    = (ref, cb)        => ref.on('value', cb);
+        const dbOff   = (ref)            => { try { ref.off('value'); } catch(e) {} };
+        const authListen  = (cb)         => auth.onAuthStateChanged(cb);
+        const authLogin   = (email, pass)=> auth.signInWithEmailAndPassword(email, pass);
+        const authLogout  = ()           => auth.signOut();
 
         // --- Configuration ---
         const LS_DARK = 'budgetLC_dark';
@@ -467,9 +611,24 @@
         ];
         const REGEX_SUPERMARCHE = /leclerc|carrefour|auchan|intermarch|super\s*u|lidl|aldi|frais|cora|casino|netto/i;
 
+        const CATS_VOYAGE = [
+            { id:'transport_avion',   label:'✈️ Vol / Train',        couleur:'#007AFF' },
+            { id:'transport_voiture', label:'🚗 Voiture / Essence',   couleur:'#FF9500' },
+            { id:'transport_local',   label:'🚕 Transport local',     couleur:'#FF9500' },
+            { id:'hebergement',       label:'🏨 Hébergement',         couleur:'#AF52DE' },
+            { id:'restaurant',        label:'🍽️ Restaurant',          couleur:'#FF3B30' },
+            { id:'courses',           label:'🛒 Courses / Marché',    couleur:'#34C759' },
+            { id:'activites',         label:'🎡 Activités / Visites', couleur:'#FF2D55' },
+            { id:'shopping',          label:'🛍️ Shopping',            couleur:'#FFCC00' },
+            { id:'sante',             label:'🏥 Pharmacie / Santé',   couleur:'#5AC8FA' },
+            { id:'divers',            label:'💡 Divers',              couleur:'#8E8E93' },
+        ];
+
         // --- État de l'application ---
         const state = {
             donnees: [],
+            voyages: [],
+            voyageActifId: null,
             categories: ["🏠 Loyer", "⚡ Électricité", "💧 Eau", "🛡️ Assurance", "🌐 Internet", "🛒 Courses", "🍽️ Restaurant", "🎬 Loisirs", "🏥 Santé", "✈️ Vacances", "🛠️ Travaux", "❓ Autre"],
             corbeille: [],
             objectifsProvisions: [],
@@ -496,7 +655,7 @@
             depenses: Array.isArray(m.depenses) ? m.depenses : (m.depenses ? Object.values(m.depenses) : []),
             epargne: Array.isArray(m.epargne) ? m.epargne : (m.epargne ? Object.values(m.epargne) : []),
             provisions: Array.isArray(m.provisions) ? m.provisions : (m.provisions ? Object.values(m.provisions) : []),
-            fixes: Array.isArray(m.fixes) ? m.fixes : (m.fixes ? Object.values(m.fixes) : []), // Nouveau tableau
+            fixes: Array.isArray(m.fixes) ? m.fixes : (m.fixes ? Object.values(m.fixes) : []), 
             revenus_add: m.revenus_add || 0,
             annee: m.annee || parseInt(m.nom.split(' ')[1])
         });
@@ -520,19 +679,90 @@
             el.style.height = el.scrollHeight + 'px';
         };
 
+        // --- Comparaison et Changelog ---
+        const extractAllItems = (dataArray) => {
+            let items = {};
+            (dataArray || []).forEach(m => {
+                ['charges', 'depenses', 'epargne', 'provisions', 'fixes'].forEach(type => {
+                    (m[type] || []).forEach(item => {
+                        items[item.id] = { ...item, type, moisNom: m.nom };
+                    });
+                });
+            });
+            return items;
+        };
+
+        const compareDataAndShowDiff = (oldData, newData) => {
+            let oldItems = extractAllItems(oldData);
+            let newItems = extractAllItems(newData);
+            let changes = [];
+
+            for (let id in newItems) {
+                let newItem = newItems[id];
+                let oldItem = oldItems[id];
+                let mNew = parseFloat(newItem.montant) || 0;
+                
+                if (!oldItem) {
+                    if (mNew !== 0) changes.push(`➕ <b>${mNew}€</b> ${newItem.categorie} <span style="color:var(--text-muted); font-size:0.8em;">(${newItem.moisNom})</span>`);
+                } else {
+                    let mOld = parseFloat(oldItem.montant) || 0;
+                    if (mNew !== mOld || newItem.categorie !== oldItem.categorie) {
+                        if(!(mOld === 0 && mNew === 0)) {
+                            changes.push(`✏️ <b>${mNew}€</b> ${newItem.categorie} <span style="color:var(--text-muted); font-size:0.8em;">(${newItem.moisNom})</span>`);
+                        }
+                    }
+                }
+            }
+
+            for (let id in oldItems) {
+                if (!newItems[id]) {
+                    let oldItem = oldItems[id];
+                    let mOld = parseFloat(oldItem.montant) || 0;
+                    if (mOld !== 0) {
+                        changes.push(`🗑️ Supprimé : <b>${mOld}€</b> ${oldItem.categorie} <span style="color:var(--text-muted); font-size:0.8em;">(${oldItem.moisNom})</span>`);
+                    }
+                }
+            }
+
+            if (changes.length > 0) {
+                document.getElementById('changelog-content').innerHTML = changes.map(d => `<div style="padding: 8px 0; border-bottom: 1px solid var(--border);">${d}</div>`).join('');
+                document.getElementById('changelog-popup').classList.remove('hidden');
+            }
+        };
+
+        document.getElementById('btn-close-changelog').onclick = () => document.getElementById('changelog-popup').classList.add('hidden');
+
         // --- Logique DB ---
         const attacherEcouteurs = () => {
-            onValue(ref(db, 'budgetDataLC'), (snap) => {
+            dbOn(dbRef('budgetDataLC'), (snap) => {
                 if (snap.exists()) {
                     let raw = snap.val();
                     let data = (Array.isArray(raw) ? raw : Object.values(raw)).map(normaliserMois);
+                    
+                    if (state.firstLoad) {
+                        let cached = localStorage.getItem(LS_CACHE);
+                        if (cached) {
+                            let oldData = JSON.parse(cached);
+                            compareDataAndShowDiff(oldData, data);
+                        }
+                        state.firstLoad = false;
+                    }
+
                     state.donnees = trierMois(data);
                     if (!state.moisActifId && data.length) state.moisActifId = data[data.length - 1].id;
                     localStorage.setItem(LS_CACHE, JSON.stringify(state.donnees));
                     rafraichirTouteLInterface();
+                } else {
+                    if (state.firstLoad) {
+                        state.donnees = [normaliserMois({ id: genId(), nom: "Mars 2026", annee: 2026, revenus: 4500, revenus_add: 0 })];
+                        state.moisActifId = state.donnees[0].id;
+                        sauvegarderDonnees();
+                        state.firstLoad = false;
+                        rafraichirTouteLInterface();
+                    }
                 }
             });
-            onValue(ref(db, 'budgetConfigLC'), (snap) => {
+            dbOn(dbRef('budgetConfigLC'), (snap) => {
                 if (snap.exists()) {
                     const c = snap.val();
                     state.categories = c.categories || state.categories;
@@ -541,16 +771,33 @@
                     rafraichirTouteLInterface();
                 }
             });
+            dbOn(dbRef('budgetVoyagesLC'), (snap) => {
+                if (snap.exists()) {
+                    const raw = snap.val();
+                    state.voyages = (Array.isArray(raw) ? raw : Object.values(raw)).map(v => ({
+                        ...v,
+                        depenses: Array.isArray(v.depenses) ? v.depenses : (v.depenses ? Object.values(v.depenses) : [])
+                    }));
+                } else {
+                    state.voyages = [];
+                }
+                if (state.vueActuelle === 'vacances') rendreVueVacances();
+            });
         };
 
         const sauvegarderDonnees = () => {
             setSyncDot('saving');
-            set(ref(db, 'budgetDataLC'), state.donnees).then(() => setSyncDot('online'));
+            dbSet(dbRef('budgetDataLC'), state.donnees).then(() => setSyncDot('online'));
+        };
+
+        const sauvegarderVoyages = () => {
+            setSyncDot('saving');
+            dbSet(dbRef('budgetVoyagesLC'), state.voyages).then(() => setSyncDot('online'));
         };
 
         const sauvegarderConfig = (silencieux = false) => {
             if(!silencieux) setSyncDot('saving');
-            set(ref(db, 'budgetConfigLC'), {
+            dbSet(dbRef('budgetConfigLC'), {
                 categories: state.categories,
                 corbeille: state.corbeille,
                 objectifsProvisions: state.objectifsProvisions
@@ -562,7 +809,7 @@
             state.vueActuelle = vue;
             document.querySelectorAll('main > div').forEach(d => d.classList.toggle('hidden', d.id !== `vue-${vue}`));
             document.querySelectorAll('.btn-tab').forEach(b => b.classList.toggle('active', b.dataset.view === vue));
-            document.getElementById('month-nav-group').classList.toggle('hidden', vue === 'annuelle' || vue === 'admin');
+            document.getElementById('month-nav-group').classList.toggle('hidden', vue === 'annuelle' || vue === 'admin' || vue === 'vacances');
             rafraichirTouteLInterface();
         };
 
@@ -577,6 +824,7 @@
             if (state.vueActuelle === 'mensuelle') rendreVueMensuelle();
             else if (state.vueActuelle === 'fixes') rendreVueFixes();
             else if (state.vueActuelle === 'annuelle') rendreVueAnnuelle();
+            else if (state.vueActuelle === 'vacances') rendreVueVacances();
             else if (state.vueActuelle === 'admin') rendreAdmin();
         };
 
@@ -616,7 +864,7 @@
                 const tc = somme(m.charges);
                 const tdCB = sommeCB(m.depenses);
                 const tprov = somme(m.provisions);
-                // On ne déduit PAS l'épargne (te) car elle sort du compte Revolut vers un livret externe
+                // L'épargne et les Tickets Restos/Especes sont exclus
                 solde += (rev - tc - tdCB - tprov);
             }
             return solde;
@@ -628,7 +876,7 @@
             if (!container) return;
             container.innerHTML = '';
 
-            const filtered = (tableau || []).filter(i => sansAccents(i.libelle || "").includes(state.termeRecherche));
+            const filtered = (tableau || []).filter(i => sansAccents(i.libelle || i.categorie || "").includes(state.termeRecherche));
 
             filtered.forEach(item => {
                 const row = document.createElement('div');
@@ -639,34 +887,53 @@
                 const style = isNeg ? 'color:var(--danger);' : '';
                 const mntFinal = isNeg ? Math.abs(item.montant || 0) : (item.montant || 0);
 
-                let payIcon = '';
-                if (type === 'depenses') {
-                    const meth = item.moyenPaiement || 'CB';
-                    const icon = meth === 'TR' ? '🎟️' : (meth === 'ESPECES' ? '💵' : '💳');
-                    payIcon = `<button class="btn-pay-method" data-pay="${item.id}">${icon}</button>`;
-                }
-
-                row.innerHTML = `
-                    <div class="drag-handle">☰</div>
-                    <div class="item-content">
-                        <div class="item-top">
-                            <textarea data-id="${item.id}" data-type="${type}" data-field="libelle" placeholder="Note...">${item.libelle || ''}</textarea>
-                            <div style="display:flex; align-items:center;">
-                                ${isNeg ? '-' : ''}<input type="number" value="${mntFinal}" style="${style}" data-id="${item.id}" data-type="${type}" data-field="montant">
-                                ${payIcon}
-                            </div>
-                        </div>
-                        <div class="item-bottom">
-                            <input type="date" value="${item.date || ''}" data-id="${item.id}" data-type="${type}" data-field="date">
-                            <select data-id="${item.id}" data-type="${type}" data-field="categorie">
+                // CONDITION SPECIALE: ONGLET FIXES MINIMALISTE
+                if (type === 'fixes') {
+                    row.innerHTML = `
+                        <div class="drag-handle">☰</div>
+                        <div class="item-content" style="flex-direction: row; align-items: center; justify-content: space-between;">
+                            <select data-id="${item.id}" data-type="${type}" data-field="categorie" style="flex:1; font-weight:600; background:none; border:none; padding:0; font-size:1rem !important;">
                                 ${state.categories.map(c => `<option value="${c}" ${item.categorie === c ? 'selected' : ''}>${c}</option>`).join('')}
                             </select>
+                            <div style="display:flex; align-items:center;">
+                                <input type="number" value="${mntFinal}" style="${style} width:85px; text-align:right; font-weight:700; border:none; background:var(--bg-color); padding:8px; border-radius:8px;" data-id="${item.id}" data-type="${type}" data-field="montant">
+                            </div>
                         </div>
-                    </div>
-                    <button class="btn-delete" data-del-type="${type}" data-del-id="${item.id}">✕</button>
-                `;
+                        <button class="btn-delete" data-del-type="${type}" data-del-id="${item.id}">✕</button>
+                    `;
+                } 
+                // AFFICHAGE CLASSIQUE POUR LES AUTRES ONGLETS
+                else {
+                    let payIcon = '';
+                    if (type === 'depenses') {
+                        const meth = item.moyenPaiement || 'CB';
+                        const icon = meth === 'TR' ? '🎟️' : (meth === 'ESPECES' ? '💵' : '💳');
+                        payIcon = `<button class="btn-pay-method" data-pay="${item.id}">${icon}</button>`;
+                    }
+
+                    row.innerHTML = `
+                        <div class="drag-handle">☰</div>
+                        <div class="item-content">
+                            <div class="item-top">
+                                <textarea data-id="${item.id}" data-type="${type}" data-field="libelle" placeholder="Note...">${item.libelle || ''}</textarea>
+                                <div style="display:flex; align-items:center;">
+                                    ${isNeg ? '-' : ''}<input type="number" value="${mntFinal}" style="${style}" data-id="${item.id}" data-type="${type}" data-field="montant">
+                                    ${payIcon}
+                                </div>
+                            </div>
+                            <div class="item-bottom">
+                                <input type="date" value="${item.date || ''}" data-id="${item.id}" data-type="${type}" data-field="date">
+                                <select data-id="${item.id}" data-type="${type}" data-field="categorie">
+                                    ${state.categories.map(c => `<option value="${c}" ${item.categorie === c ? 'selected' : ''}>${c}</option>`).join('')}
+                                </select>
+                            </div>
+                        </div>
+                        <button class="btn-delete" data-del-type="${type}" data-del-id="${item.id}">✕</button>
+                    `;
+                }
+                
                 container.appendChild(row);
-                autoResize(row.querySelector('textarea'));
+                if(type !== 'fixes') autoResize(row.querySelector('textarea'));
             });
 
             // Drag and Drop
@@ -721,12 +988,12 @@
             const tdDiff = tdTotal - tdCB;
             document.getElementById('titre-depenses').innerHTML = `🛒 Dépenses (${tdTotal.toFixed(0)}€) ${tdDiff > 0 ? `<small style="font-weight:normal; opacity:0.6;">(dont ${tdDiff.toFixed(0)}€ 🎟️/💵)</small>` : ''}`;
 
-            // Jauges (AJOUT DE L'AFFICHAGE DU MONTANT EN EUROS)
+            // Jauges
             const globalTotal = tc + tdTotal + Math.abs(te) + tprov + (reste > 0 ? reste : 0);
             const setBar = (id, val) => {
                 const p = globalTotal > 0 ? Math.round((val / globalTotal) * 100) : 0;
                 document.getElementById(`bar-${id}-m`).style.width = p + '%';
-                document.getElementById(`pct-${id}-m`).innerText = val.toFixed(0) + ' € (' + p + '%)';
+                document.getElementById(`pct-${id}-m`).innerText = p + '%';
             };
             setBar('charges', tc); setBar('depenses', tdTotal); setBar('epargne', Math.abs(te)); setBar('provisions', tprov); setBar('reste', reste > 0 ? reste : 0);
 
@@ -789,17 +1056,189 @@
                         if (sansAccents(line.categorie || "").includes(search)) totalObj += (parseFloat(line.montant) || 0);
                     });
                 });
-                const pct = Math.min(Math.round((totalObj / obj.mnt) * 100), 100);
+                const pct = Math.min(Math.round((totalObj / obj.montant) * 100), 100);
                 bloc.innerHTML += `
                     <div style="margin-top:20px;">
-                        <div class="progress-header"><span>🎯 ${obj.nom}</span><span>${totalObj.toFixed(0)} / ${obj.mnt}€</span></div>
+                        <div class="progress-header"><span>🎯 ${obj.nom}</span><span>${totalObj.toFixed(0)} / ${obj.montant}€</span></div>
                         <div class="progress-track"><div class="progress-fill" style="background:var(--secondary); width:${pct}%"></div></div>
                     </div>
                 `;
             });
         };
 
-        // --- Vue Admin ---
+        // --- Vue Vacances ---
+        const parseMontant = (v) => parseFloat(String(v).replace(',', '.')) || 0;
+        const getVoyageActif = () => state.voyages.find(v => v.id === state.voyageActifId);
+
+        const calculerBilanVoyage = (depenses) => {
+            const deps = (depenses || []).filter(d => d.dtype !== 'remboursement');
+            let payeCorentin = 0, payeLisa = 0;
+            deps.forEach(d => {
+                const m = parseMontant(d.montant);
+                if (d.payeur === 'Lisa') payeLisa += m; else payeCorentin += m;
+            });
+            const communTotal = deps.filter(d => d.dtype === 'commun').reduce((s, d) => s + parseMontant(d.montant), 0);
+            const part = communTotal / 2;
+            const persoC = deps.filter(d => d.dtype === 'perso' && d.payeur !== 'Lisa').reduce((s, d) => s + parseMontant(d.montant), 0);
+            const balanceC = payeCorentin - (part + persoC);
+            return { payeCorentin, payeLisa, total: payeCorentin + payeLisa, balance: balanceC };
+        };
+
+        const rendreVueVacances = () => {
+            const liste = document.getElementById('vacances-liste');
+            const detail = document.getElementById('vacances-detail');
+            if (getVoyageActif()) {
+                liste.classList.add('hidden'); detail.classList.remove('hidden');
+                rendreDetailVoyage(getVoyageActif());
+            } else {
+                detail.classList.add('hidden'); liste.classList.remove('hidden');
+                rendreListeVoyages();
+            }
+        };
+
+        const rendreListeVoyages = () => {
+            const container = document.getElementById('voyages-cards');
+            if (!state.voyages.length) {
+                container.innerHTML = `<div style="text-align:center;padding:40px 0;color:var(--text-muted);"><div style="font-size:3rem;margin-bottom:12px;">🏖️</div><p style="font-weight:600;margin-bottom:6px;">Aucun voyage</p><p style="font-size:0.85rem;">Créez votre premier voyage !</p></div>`;
+                return;
+            }
+            container.innerHTML = state.voyages.map(v => {
+                const b = calculerBilanVoyage(v.depenses);
+                const nbJ = v.debut && v.fin ? Math.ceil((new Date(v.fin) - new Date(v.debut)) / 86400000) + 1 : null;
+                return `<div class="card" style="cursor:pointer;margin-bottom:12px;" onclick="ouvrirVoyage('${v.id}')">
+                    <div style="display:flex;align-items:center;gap:14px;">
+                        <div style="font-size:2rem;">${v.emoji || '🌍'}</div>
+                        <div style="flex:1;min-width:0;"><div style="font-weight:700;font-size:1rem;">${v.nom}</div><div style="font-size:0.78rem;color:var(--text-muted);">${nbJ ? nbJ + ' j' : ''}</div></div>
+                        <div style="font-weight:800;font-size:1.1rem;color:var(--primary);">${eur(b.total)}</div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:var(--text-muted);margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">
+                        <span>👨 ${eur(b.payeCorentin)}</span><span>👩 ${eur(b.payeLisa)}</span>
+                    </div>
+                </div>`;
+            }).join('');
+        };
+
+        const rendreDetailVoyage = (v) => {
+            document.getElementById('voyage-titre-detail').textContent = (v.emoji || '🌍') + ' ' + v.nom;
+            document.getElementById('voyage-dates-detail').textContent = v.debut && v.fin ? v.debut + ' → ' + v.fin : '';
+            const b = calculerBilanVoyage(v.depenses);
+            document.getElementById('voyage-total-affiche').textContent = eur(b.total);
+            document.getElementById('voyage-total-corentin').textContent = eur(b.payeCorentin);
+            document.getElementById('voyage-total-lisa').textContent = eur(b.payeLisa);
+
+            const bilanCard = document.getElementById('voyage-bilan-card');
+            if (b.total > 0) {
+                bilanCard.style.display = 'block';
+                const diff = Math.abs(b.balance);
+                if (diff < 0.01) bilanCard.innerHTML = `<div style="font-size:1.5rem;">🎉</div><div style="font-weight:700;color:var(--success);">Tout est équilibré !</div>`;
+                else if (b.balance > 0) bilanCard.innerHTML = `<div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:4px;">Bilan</div><div style="font-weight:700;">👩 Lisa doit rembourser</div><div style="font-size:1.8rem;font-weight:800;color:var(--primary);margin:4px 0;">${eur(diff)}</div><div style="font-size:0.82rem;color:var(--text-muted);">à 👨 Corentin</div>`;
+                else bilanCard.innerHTML = `<div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:4px;">Bilan</div><div style="font-weight:700;">👨 Corentin doit rembourser</div><div style="font-size:1.8rem;font-weight:800;color:var(--primary);margin:4px 0;">${eur(diff)}</div><div style="font-size:0.82rem;color:var(--text-muted);">à 👩 Lisa</div>`;
+            } else { bilanCard.style.display = 'none'; }
+
+            const totParCat = {};
+            CATS_VOYAGE.forEach(c => { totParCat[c.id] = 0; });
+            (v.depenses || []).filter(d => d.dtype !== 'remboursement').forEach(d => { if (totParCat[d.categorie] !== undefined) totParCat[d.categorie] += parseMontant(d.montant); });
+            const repContent = document.getElementById('voyage-repartition-content');
+            const lignesRep = CATS_VOYAGE.filter(c => totParCat[c.id] > 0);
+            repContent.innerHTML = lignesRep.length ? lignesRep.map(c => {
+                const pct = b.total > 0 ? Math.round(totParCat[c.id] / b.total * 100) : 0;
+                return `<div class="progress-container"><div class="progress-header"><span>${c.label}</span><span>${eur(totParCat[c.id])} · ${pct}%</span></div><div class="progress-track"><div class="progress-fill" style="background:${c.couleur};width:${pct}%;"></div></div></div>`;
+            }).join('') : '<p style="color:var(--text-muted);font-size:0.85rem;padding:8px 0;">Aucune dépense.</p>';
+
+            const catsContent = document.getElementById('voyage-categories-content');
+            catsContent.innerHTML = '';
+            const rembs = (v.depenses || []).filter(d => d.dtype === 'remboursement');
+            if (rembs.length) {
+                const el = document.createElement('div'); el.className = 'card'; el.style.marginBottom = '12px';
+                const hid = 'vcat-remb';
+                el.innerHTML = `<div class="card-header" data-target="${hid}"><h3>↩️ Remboursements</h3><span style="font-weight:700;color:var(--success);">${eur(somme(rembs))}</span></div><div id="${hid}" class="section-content collapsed">${rembs.map(d => ligneDepVoyage(d)).join('')}</div>`;
+                catsContent.appendChild(el);
+            }
+            CATS_VOYAGE.forEach(cat => {
+                const lignes = (v.depenses || []).filter(d => d.categorie === cat.id && d.dtype !== 'remboursement');
+                if (!lignes.length) return;
+                const el = document.createElement('div'); el.className = 'card'; el.style.marginBottom = '12px';
+                const hid = 'vcat-' + cat.id;
+                el.innerHTML = `<div class="card-header" data-target="${hid}"><h3>${cat.label}</h3><span style="font-weight:700;color:var(--primary);">${eur(somme(lignes))}</span></div><div id="${hid}" class="section-content collapsed">${lignes.map(d => ligneDepVoyage(d)).join('')}</div>`;
+                catsContent.appendChild(el);
+            });
+            catsContent.onclick = (e) => {
+                const btn = e.target.closest('[data-del-dep]');
+                if (btn) { v.depenses = v.depenses.filter(d => d.id !== btn.dataset.delDep); sauvegarderVoyages(); rendreDetailVoyage(v); }
+                const hdr = e.target.closest('.card-header[data-target]');
+                if (hdr) toggleSection(hdr.dataset.target, hdr);
+            };
+        };
+
+        const ligneDepVoyage = (d) => {
+            const typeLabel = d.dtype === 'perso' ? 'Perso' : d.dtype === 'remboursement' ? 'Remb.' : 'Commun';
+            const typeIcon = d.dtype === 'perso' ? '\uD83D\uDC64' : d.dtype === 'remboursement' ? '\u21A9\uFE0F' : '\uD83E\uDD1D';
+            const isRemb = d.dtype === 'remboursement';
+            const couleur = isRemb ? 'var(--success)' : 'var(--text-main)';
+            const prefix = isRemb ? '+' : '';
+            return `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);">
+                <div style="flex:1;min-width:0;">
+                    <div style="font-weight:600;font-size:0.88rem;">${d.libelle || '-'}</div>
+                    <div style="font-size:0.72rem;color:var(--text-muted);">${d.date || ''} &middot; ${typeIcon} ${typeLabel} &middot; ${d.payeur || '?'}</div>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
+                    <span style="font-weight:700;color:${couleur};">${prefix}${eur(d.montant)}</span>
+                    <button style="background:none;border:none;color:var(--danger);font-size:1.1rem;cursor:pointer;" data-del-dep="${d.id}">&times;</button>
+                </div>
+            </div>`;
+        };
+
+        window.ouvrirVoyage = (id) => { state.voyageActifId = id; rendreVueVacances(); };
+
+        let dvPayeurActif = 'Corentin', dvTypeActif = 'commun';
+        window.dvSelectPayeur = (btn) => {
+            document.querySelectorAll('.dv-payeur-btn').forEach(b => { b.style.border='1.5px solid var(--border)'; b.style.background='var(--bg-color)'; b.style.color='var(--text-main)'; });
+            btn.style.border='2px solid var(--primary)'; btn.style.background='var(--primary-light)'; btn.style.color='var(--primary)';
+            dvPayeurActif = btn.dataset.payeur;
+        };
+        window.dvSelectType = (btn) => {
+            document.querySelectorAll('.dv-type-btn').forEach(b => { b.style.border='1.5px solid var(--border)'; b.style.background='var(--bg-color)'; b.style.color='var(--text-main)'; });
+            btn.style.border='2px solid var(--primary)'; btn.style.background='var(--primary-light)'; btn.style.color='var(--primary)';
+            dvTypeActif = btn.dataset.dtype;
+        };
+
+        document.getElementById('btn-nouveau-voyage').onclick = () => {
+            ['nv-nom','nv-debut','nv-fin','nv-emoji'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('popup-nouveau-voyage').classList.remove('hidden');
+        };
+        document.getElementById('btn-confirmer-voyage').onclick = () => {
+            const nom = document.getElementById('nv-nom').value.trim();
+            if (!nom) { alert('Donnez un nom au voyage.'); return; }
+            const emoji = document.getElementById('nv-emoji').value.trim() || '✈️';
+            const v = { id: genId(), nom, emoji, debut: document.getElementById('nv-debut').value, fin: document.getElementById('nv-fin').value, depenses: [] };
+            state.voyages.push(v); sauvegarderVoyages();
+            document.getElementById('popup-nouveau-voyage').classList.add('hidden');
+            state.voyageActifId = v.id; rendreVueVacances();
+        };
+        document.getElementById('btn-retour-voyages').onclick = () => { state.voyageActifId = null; rendreVueVacances(); };
+        document.getElementById('btn-del-voyage').onclick = () => {
+            if (!confirm('Supprimer ce voyage et toutes ses dépenses ?')) return;
+            state.voyages = state.voyages.filter(v => v.id !== state.voyageActifId);
+            state.voyageActifId = null; sauvegarderVoyages(); rendreVueVacances();
+        };
+        document.getElementById('btn-add-depense-voyage').onclick = () => {
+            document.getElementById('dv-categorie').innerHTML = CATS_VOYAGE.map(c => `<option value="${c.id}">${c.label}</option>`).join('');
+            document.getElementById('dv-libelle').value = ''; document.getElementById('dv-montant').value = '';
+            document.getElementById('dv-date').value = new Date().toISOString().split('T')[0];
+            dvPayeurActif = 'Corentin'; dvTypeActif = 'commun';
+            document.querySelectorAll('.dv-payeur-btn').forEach((b,i) => { const a=i===0; b.style.border=a?'2px solid var(--primary)':'1.5px solid var(--border)'; b.style.background=a?'var(--primary-light)':'var(--bg-color)'; b.style.color=a?'var(--primary)':'var(--text-main)'; });
+            document.querySelectorAll('.dv-type-btn').forEach((b,i) => { const a=i===0; b.style.border=a?'2px solid var(--primary)':'1.5px solid var(--border)'; b.style.background=a?'var(--primary-light)':'var(--bg-color)'; b.style.color=a?'var(--primary)':'var(--text-main)'; });
+            document.getElementById('popup-depense-voyage').classList.remove('hidden');
+        };
+        document.getElementById('btn-confirmer-depense-voyage').onclick = () => {
+            const montant = parseMontant(document.getElementById('dv-montant').value);
+            if (!montant) { alert('Saisissez un montant.'); return; }
+            const v = getVoyageActif(); if (!v) return;
+            v.depenses.push({ id: genId(), categorie: document.getElementById('dv-categorie').value, libelle: document.getElementById('dv-libelle').value.trim(), montant, date: document.getElementById('dv-date').value, payeur: dvPayeurActif, dtype: dvTypeActif });
+            sauvegarderVoyages(); document.getElementById('popup-depense-voyage').classList.add('hidden'); rendreDetailVoyage(v);
+        };
+
+        // --- Vue Admin RESTAURÉE ---
         const rendreAdmin = () => {
             const catDiv = document.getElementById('admin-categories');
             catDiv.innerHTML = state.categories.map((c, i) => `
@@ -811,7 +1250,7 @@
             const objDiv = document.getElementById('admin-objectifs');
             objDiv.innerHTML = state.objectifsProvisions.map((o, i) => `
                 <div class="month-pill" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
-                    <span>${o.nom} (${o.mnt}€)</span><button class="btn-delete" data-del-obj="${i}">✕</button>
+                    <span>${o.nom} (${o.montant}€)</span><button class="btn-delete" data-del-obj="${i}">✕</button>
                 </div>
             `).join('');
 
@@ -830,16 +1269,94 @@
             ts.innerHTML = THEMES.map(t => `<div class="color-circle ${localStorage.getItem(LS_THEME) === t.id ? 'active' : ''}" style="background:${t.color}" data-set-theme="${t.id}"></div>`).join('');
         };
 
-        // --- Gestionnaires d'événements ---
+        // --- Gestionnaires d'événements (BULLES FLOTTANTES CORRIGÉES) ---
+        
+        const setupDrag = (id) => {
+            const bubble = document.getElementById(id);
+            if (!bubble) return;
+            let isDragging = false;
+            let startX, startY, initialX, initialY;
+
+            const dragStart = (e) => {
+                isDragging = false;
+                if (e.type === 'touchstart') {
+                    startX = e.touches[0].clientX;
+                    startY = e.touches[0].clientY;
+                } else {
+                    startX = e.clientX;
+                    startY = e.clientY;
+                }
+                const rect = bubble.getBoundingClientRect();
+                initialX = rect.left;
+                initialY = rect.top;
+                
+                document.addEventListener('mousemove', dragMove);
+                document.addEventListener('mouseup', dragEnd);
+                document.addEventListener('touchmove', dragMove, {passive: false});
+                document.addEventListener('touchend', dragEnd);
+            };
+
+            const dragMove = (e) => {
+                let clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+                let clientY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
+                
+                const dx = clientX - startX;
+                const dy = clientY - startY;
+                
+                if (Math.abs(dx) > 5 || Math.abs(dy) > 5) isDragging = true;
+
+                if (isDragging) {
+                    e.preventDefault(); 
+                    let newX = initialX + dx;
+                    let newY = initialY + dy;
+                    
+                    newX = Math.max(0, Math.min(window.innerWidth - bubble.offsetWidth, newX));
+                    newY = Math.max(0, Math.min(window.innerHeight - bubble.offsetHeight, newY));
+
+                    bubble.style.left = newX + 'px';
+                    bubble.style.top = newY + 'px';
+                    bubble.style.bottom = 'auto';
+                    bubble.style.right = 'auto';
+                }
+            };
+
+            const dragEnd = (e) => {
+                document.removeEventListener('mousemove', dragMove);
+                document.removeEventListener('mouseup', dragEnd);
+                document.removeEventListener('touchmove', dragMove);
+                document.removeEventListener('touchend', dragEnd);
+                
+                if (!isDragging && id === 'calc-bubble') {
+                    document.getElementById('calc-popup').classList.remove('hidden');
+                }
+            };
+
+            bubble.addEventListener('mousedown', dragStart);
+            bubble.addEventListener('touchstart', dragStart, {passive: false});
+        };
+        setupDrag('calc-bubble');
         
         // 1. Bouton Login
         document.getElementById('btn-login').onclick = () => {
-            const e = document.getElementById('login-email').value;
-            const p = document.getElementById('login-password').value;
-            signInWithEmailAndPassword(auth, e, p).catch(() => {
-                document.getElementById('login-error').style.display = 'block';
+            const email = document.getElementById('login-email').value.trim();
+            const pass  = document.getElementById('login-password').value;
+            const errEl = document.getElementById('login-error');
+            errEl.style.display = 'none';
+            authLogin(email, pass).catch((err) => {
+                errEl.style.display = 'block';
+                const msgs = {
+                    'auth/invalid-credential':     'Email ou mot de passe incorrect.',
+                    'auth/wrong-password':         'Mot de passe incorrect.',
+                    'auth/user-not-found':         'Aucun compte avec cet email.',
+                    'auth/too-many-requests':      'Trop de tentatives. Réessaie plus tard.',
+                    'auth/network-request-failed': 'Pas de connexion réseau.',
+                };
+                errEl.textContent = msgs[err.code] || ('Erreur : ' + err.code);
             });
         };
+        document.getElementById('login-password').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') document.getElementById('btn-login').click();
+        });
 
         // 2. Navigation Tabs
         document.querySelector('.tab-buttons').addEventListener('click', (e) => {
@@ -983,31 +1500,6 @@
             rafraichirTouteLInterface();
         };
 
-        // 8. Calculatrice
-        const calcDisp = document.getElementById('calc-display');
-        document.getElementById('calc-popup').onclick = (e) => {
-            const input = e.target.dataset.input;
-            const action = e.target.dataset.action;
-            if (input) calcDisp.value += input;
-            if (action === 'clear') calcDisp.value = '';
-            if (action === 'result') {
-                try { calcDisp.value = eval(calcDisp.value.replace(/×/g, '*').replace(/÷/g, '/')); }
-                catch { calcDisp.value = "Erreur"; }
-            }
-        };
-
-        // 9. Bulles flottantes (Drag)
-        const setupDrag = (id) => {
-            const el = document.getElementById(id);
-            let x = 0, y = 0, isDown = false;
-            const start = (e) => { isDown = true; x = (e.pageX || e.touches[0].pageX) - el.offsetLeft; y = (e.pageY || e.touches[0].pageY) - el.offsetTop; };
-            const move = (e) => { if (!isDown) return; e.preventDefault(); el.style.left = ((e.pageX || e.touches[0].pageX) - x) + 'px'; el.style.top = ((e.pageY || e.touches[0].pageY) - y) + 'px'; el.style.bottom = 'auto'; el.style.right = 'auto'; };
-            const end = () => { if(isDown && id === 'calc-bubble') document.getElementById('calc-popup').classList.remove('hidden'); isDown = false; };
-            el.onmousedown = start; el.ontouchstart = start;
-            window.onmousemove = move; window.ontouchmove = move;
-            el.onmouseup = end; el.ontouchend = end;
-        };
-        setupDrag('calc-bubble');
         document.getElementById('btn-close-calc').onclick = () => document.getElementById('calc-popup').classList.add('hidden');
 
         // 10. Initialisation Thème
@@ -1027,31 +1519,72 @@
             localStorage.setItem(LS_THEME, t);
             rendreAdmin();
         };
-        document.getElementById('vue-admin').addEventListener('click', (e) => {
-            if (e.target.dataset.setTheme) applyTheme(e.target.dataset.setTheme);
-        });
+        
         if (localStorage.getItem(LS_THEME)) applyTheme(localStorage.getItem(LS_THEME));
 
         // 11. Auth Listener
-        onAuthStateChanged(auth, (user) => {
+        authListen((user) => {
             if (user) {
                 document.getElementById('login-screen').classList.add('hidden');
                 attacherEcouteurs();
             } else {
                 document.getElementById('login-screen').classList.remove('hidden');
-                off(ref(db, 'budgetDataLC'));
+                dbOff(dbRef('budgetDataLC'));
             }
         });
 
-        // 12. Admin Actions
-        const viderCorbeille = () => { if (confirm("Vider la corbeille ?")) { state.corbeille = []; sauvegarderConfig(); } };
-        const restaurerCorbeille = (i) => {
-            const item = state.corbeille.splice(i, 1)[0];
-            const mois = getMoisActif();
-            mois[item.typeOriginal].unshift(item);
-            delete item.typeOriginal;
-            sauvegarderDonnees(); sauvegarderConfig(); rafraichirTouteLInterface();
+        // Nouveau mois manuel
+        document.getElementById('btn-creer-mois').onclick = () => {
+            const val = document.getElementById('input-new-month').value;
+            if(!val) { alert("Veuillez sélectionner un mois et une année."); return; }
+            const parts = val.split('-'); const an = parseInt(parts[0]); const moisIdx = parseInt(parts[1]) - 1;
+            const nomMois = NOMS_MOIS[moisIdx] + " " + an;
+            
+            if(state.donnees.find(m => m.nom === nomMois)) { alert("Ce mois existe déjà !"); return; }
+            
+            let lastRevenus = 0;
+            if(state.donnees.length > 0) lastRevenus = state.donnees[state.donnees.length-1].revenus;
+            
+            const nouveau = normaliserMois({
+                id: genId(), nom: nomMois, annee: an, revenus: lastRevenus, revenus_add: 0,
+                charges: [], depenses: [], epargne: [], provisions: [], fixes: []
+            });
+            
+            state.donnees.push(nouveau);
+            state.donnees = trierMois(state.donnees);
+            state.moisActifId = nouveau.id;
+            sauvegarderDonnees(); changerVue('mensuelle');
+            document.getElementById('input-new-month').value = "";
         };
+
+        // Sauvegarde Mail
+        document.getElementById('btn-sauvegarde-mail').onclick = (e) => {
+            const btn = e.target;
+            const originalText = btn.innerText; btn.innerText = "⏳ Envoi..."; btn.disabled = true;
+            const urlScript = "https://script.google.com/macros/s/AKfycbwW3w-ScyWzRousgkNA7tdUeifNqB_kr2fXbGH1AqUSduOEdqjegbllEcxkkhVAko3ZIA/exec";
+            fetch(urlScript, { method: 'POST', mode: 'no-cors', body: JSON.stringify(state.donnees) })
+            .then(() => { alert("✅ Sauvegarde envoyée !"); btn.innerText = originalText; btn.disabled = false; })
+            .catch(() => { alert("❌ Erreur"); btn.innerText = originalText; btn.disabled = false; });
+        };
+
+        // Importation manuelle
+        const importInput = document.getElementById('import-json');
+        if(importInput) {
+            importInput.addEventListener('change', function(e) {
+                const file = e.target.files[0]; if(!file) return; const reader = new FileReader();
+                reader.onload = function(evt) {
+                    try {
+                        const imported = JSON.parse(evt.target.result);
+                        if(confirm("Écraser les données actuelles avec ce fichier ?")) { 
+                            state.donnees = trierMois(imported.map(normaliserMois)); 
+                            state.moisActifId = state.donnees.length ? state.donnees[state.donnees.length-1].id : null; 
+                            sauvegarderDonnees(); alert("Restauration réussie !"); 
+                            changerVue('mensuelle');
+                        }
+                    } catch(err) { alert("Fichier invalide."); }
+                }; reader.readAsText(file);
+            });
+        }
 
         document.getElementById('btn-add-cat').onclick = () => {
             const v = document.getElementById('new-cat-input').value;
@@ -1060,11 +1593,11 @@
 
         document.getElementById('btn-add-obj').onclick = () => {
             const nom = document.getElementById('new-obj-nom').value;
-            const mnt = parseFloat(document.getElementById('new-obj-mnt').value);
-            if (nom && mnt) { state.objectifsProvisions.push({ nom, mnt }); sauvegarderConfig(); rendreAdmin(); }
+            const montant = parseFloat(document.getElementById('new-obj-mnt').value);
+            if (nom && montant) { state.objectifsProvisions.push({ nom, montant }); sauvegarderConfig(); rendreAdmin(); }
         };
 
-        document.getElementById('btn-logout').onclick = () => signOut(auth).then(() => window.location.reload());
+        document.getElementById('btn-logout').onclick = () => authLogout().then(() => window.location.reload());
 
         document.getElementById('btn-undo').onclick = () => {
             if (state.suppressionEnAttente) {
@@ -1091,6 +1624,9 @@
         document.getElementById('select-annee').onchange = (e) => rendreVueAnnuelle();
 
         document.getElementById('vue-admin').addEventListener('click', (e) => {
+            // Choix du thème
+            if (e.target.dataset.setTheme) { applyTheme(e.target.dataset.setTheme); return; }
+
             // Supprimer catégorie
             const delCat = e.target.closest('[data-del-cat]');
             if (delCat) { state.categories.splice(parseInt(delCat.dataset.delCat), 1); sauvegarderConfig(true); rendreAdmin(); return; }
