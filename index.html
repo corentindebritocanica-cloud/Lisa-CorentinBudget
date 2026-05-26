@@ -187,17 +187,29 @@
         .progress-track { background: var(--border); border-radius: 10px; height: 8px; overflow: hidden; }
         .progress-fill { height: 100%; transition: width 0.6s ease; background: var(--primary); }
 
-        /* 18. POPUPS ET MODALES */
+        /* 18. BULLES FLOTTANTES */
+        .floating-bubble { position: fixed; width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; box-shadow: 0 5px 15px rgba(0,0,0,0.2); cursor: grab; z-index: 9000; touch-action: none; background: linear-gradient(135deg, var(--primary), var(--info)); color: white; }
+        .floating-bubble:active { cursor: grabbing; transform: scale(0.95); }
+        #calc-bubble { bottom: 25px; right: 20px; }
+
+        /* 19. CALCULATRICE */
+        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px; }
+        .calc-btn { background: var(--bg-color); border: 1px solid var(--border); border-radius: 12px; padding: 15px 0; font-size: 1.2rem; font-weight: bold; cursor: pointer; color: var(--text-main); }
+        .calc-btn.op { background: var(--primary-light); color: var(--primary); }
+        .calc-btn.eq { background: var(--primary); color: white; border: none; }
+        .calc-btn.c  { background: rgba(255, 59, 48, 0.15); color: var(--danger); border: none; }
+
+        /* 20. POPUPS ET MODALES */
         .overlay-popup { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 9999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
         .popup-box { background: var(--card-bg); padding: 25px; border-radius: 20px; text-align: center; max-width: 90%; width: 380px; box-shadow: 0 15px 40px rgba(0,0,0,0.2); }
 
-        /* 19. INDICATEUR SYNC */
+        /* 21. INDICATEUR SYNC */
         .status-dot { width: 9px; height: 9px; border-radius: 50%; background-color: var(--success); display: inline-block; margin-left: 5px; }
         .status-dot.offline { background-color: var(--danger); }
         .status-dot.saving  { background-color: var(--secondary); animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
 
-        /* 20. RESPONSIVE DESKTOP ET ADMIN */
+        /* 22. RESPONSIVE DESKTOP ET ADMIN */
         .admin-section { background: var(--card-bg); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--border); }
         .color-selector { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
         .color-circle { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s; }
@@ -226,6 +238,39 @@
             <input type="password" id="login-password" placeholder="Mot de passe">
             <button class="login-btn" id="btn-login">Ouvrir les comptes</button>
             <div id="login-error">Identifiants incorrects.</div>
+        </div>
+    </div>
+
+    <div id="calc-bubble" class="floating-bubble">🧮</div>
+
+    <div id="calc-popup" class="overlay-popup hidden">
+        <div class="popup-box" style="width: 320px;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+                <h3 style="margin:0;">Calculatrice</h3>
+                <button style="border:none; background:none; font-size:1.5rem; color:var(--danger);" id="btn-close-calc">✕</button>
+            </div>
+            <input type="text" id="calc-display" readonly value="" style="width: 100%; font-size: 2rem; text-align: right; padding: 15px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg-color); font-weight:bold;">
+            <div class="calc-grid">
+                <button class="calc-btn c" data-action="clear">C</button>
+                <button class="calc-btn op" data-input="(">(</button>
+                <button class="calc-btn op" data-input=")">)</button>
+                <button class="calc-btn op" data-input="/">÷</button>
+                <button class="calc-btn" data-input="7">7</button>
+                <button class="calc-btn" data-input="8">8</button>
+                <button class="calc-btn" data-input="9">9</button>
+                <button class="calc-btn op" data-input="*">×</button>
+                <button class="calc-btn" data-input="4">4</button>
+                <button class="calc-btn" data-input="5">5</button>
+                <button class="calc-btn" data-input="6">6</button>
+                <button class="calc-btn op" data-input="-">-</button>
+                <button class="calc-btn" data-input="1">1</button>
+                <button class="calc-btn" data-input="2">2</button>
+                <button class="calc-btn" data-input="3">3</button>
+                <button class="calc-btn op" data-input="+">+</button>
+                <button class="calc-btn" data-input="0" style="grid-column: span 2;">0</button>
+                <button class="calc-btn" data-input=".">.</button>
+                <button class="calc-btn eq" data-action="result">=</button>
+            </div>
         </div>
     </div>
 
@@ -283,11 +328,11 @@
                 <div class="card">
                     <div class="card-header" data-target="repartition-m"><h3>📊 Répartition</h3></div>
                     <div id="repartition-m" class="section-content">
-                        <div class="progress-container"><div class="progress-header"><span>🏠 Charges Fixes</span><span id="pct-charges-m">0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--danger);" id="bar-charges-m"></div></div></div>
-                        <div class="progress-container"><div class="progress-header"><span>🛒 Dépenses</span><span id="pct-depenses-m">0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--secondary);" id="bar-depenses-m"></div></div></div>
-                        <div class="progress-container"><div class="progress-header"><span>✈️ Épargne</span><span id="pct-epargne-m">0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--info);" id="bar-epargne-m"></div></div></div>
-                        <div class="progress-container"><div class="progress-header"><span>🛡️ Provisions</span><span id="pct-provisions-m">0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--warn);" id="bar-provisions-m"></div></div></div>
-                        <div class="progress-container"><div class="progress-header"><span>✅ Reste</span><span id="pct-reste-m">0%</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--success);" id="bar-reste-m"></div></div></div>
+                        <div class="progress-container"><div class="progress-header"><span>🏠 Charges Fixes</span><span id="pct-charges-m">0 € (0%)</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--danger);" id="bar-charges-m"></div></div></div>
+                        <div class="progress-container"><div class="progress-header"><span>🛒 Dépenses</span><span id="pct-depenses-m">0 € (0%)</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--secondary);" id="bar-depenses-m"></div></div></div>
+                        <div class="progress-container"><div class="progress-header"><span>✈️ Épargne</span><span id="pct-epargne-m">0 € (0%)</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--info);" id="bar-epargne-m"></div></div></div>
+                        <div class="progress-container"><div class="progress-header"><span>🛡️ Provisions</span><span id="pct-provisions-m">0 € (0%)</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--warn);" id="bar-provisions-m"></div></div></div>
+                        <div class="progress-container"><div class="progress-header"><span>✅ Reste</span><span id="pct-reste-m">0 € (0%)</span></div><div class="progress-track"><div class="progress-fill" style="background:var(--success);" id="bar-reste-m"></div></div></div>
                     </div>
                 </div>
 
@@ -381,7 +426,7 @@
             </div>
 
             <div style="text-align: right; color: var(--text-muted); font-size: 0.85rem; margin-top: 30px; font-weight: bold; padding-bottom: 20px;">
-                Version 4.1 (Sans Calculatrice)
+                Version 4.0
             </div>
         </div>
     </main>
@@ -676,12 +721,12 @@
             const tdDiff = tdTotal - tdCB;
             document.getElementById('titre-depenses').innerHTML = `🛒 Dépenses (${tdTotal.toFixed(0)}€) ${tdDiff > 0 ? `<small style="font-weight:normal; opacity:0.6;">(dont ${tdDiff.toFixed(0)}€ 🎟️/💵)</small>` : ''}`;
 
-            // Jauges
+            // Jauges (AJOUT DE L'AFFICHAGE DU MONTANT EN EUROS)
             const globalTotal = tc + tdTotal + Math.abs(te) + tprov + (reste > 0 ? reste : 0);
             const setBar = (id, val) => {
                 const p = globalTotal > 0 ? Math.round((val / globalTotal) * 100) : 0;
                 document.getElementById(`bar-${id}-m`).style.width = p + '%';
-                document.getElementById(`pct-${id}-m`).innerText = p + '%';
+                document.getElementById(`pct-${id}-m`).innerText = val.toFixed(0) + ' € (' + p + '%)';
             };
             setBar('charges', tc); setBar('depenses', tdTotal); setBar('epargne', Math.abs(te)); setBar('provisions', tprov); setBar('reste', reste > 0 ? reste : 0);
 
@@ -697,7 +742,7 @@
             }
         };
 
-        // --- Vue Charges Fixes (NOUVEAU) ---
+        // --- Vue Charges Fixes ---
         const rendreVueFixes = () => {
             const mois = getMoisActif();
             if (!mois) return;
@@ -938,7 +983,34 @@
             rafraichirTouteLInterface();
         };
 
-        // 8. Initialisation Thème
+        // 8. Calculatrice
+        const calcDisp = document.getElementById('calc-display');
+        document.getElementById('calc-popup').onclick = (e) => {
+            const input = e.target.dataset.input;
+            const action = e.target.dataset.action;
+            if (input) calcDisp.value += input;
+            if (action === 'clear') calcDisp.value = '';
+            if (action === 'result') {
+                try { calcDisp.value = eval(calcDisp.value.replace(/×/g, '*').replace(/÷/g, '/')); }
+                catch { calcDisp.value = "Erreur"; }
+            }
+        };
+
+        // 9. Bulles flottantes (Drag)
+        const setupDrag = (id) => {
+            const el = document.getElementById(id);
+            let x = 0, y = 0, isDown = false;
+            const start = (e) => { isDown = true; x = (e.pageX || e.touches[0].pageX) - el.offsetLeft; y = (e.pageY || e.touches[0].pageY) - el.offsetTop; };
+            const move = (e) => { if (!isDown) return; e.preventDefault(); el.style.left = ((e.pageX || e.touches[0].pageX) - x) + 'px'; el.style.top = ((e.pageY || e.touches[0].pageY) - y) + 'px'; el.style.bottom = 'auto'; el.style.right = 'auto'; };
+            const end = () => { if(isDown && id === 'calc-bubble') document.getElementById('calc-popup').classList.remove('hidden'); isDown = false; };
+            el.onmousedown = start; el.ontouchstart = start;
+            window.onmousemove = move; window.ontouchmove = move;
+            el.onmouseup = end; el.ontouchend = end;
+        };
+        setupDrag('calc-bubble');
+        document.getElementById('btn-close-calc').onclick = () => document.getElementById('calc-popup').classList.add('hidden');
+
+        // 10. Initialisation Thème
         const toggleDark = () => {
             document.body.classList.toggle('dark-mode');
             const isDark = document.body.classList.contains('dark-mode');
@@ -960,7 +1032,7 @@
         });
         if (localStorage.getItem(LS_THEME)) applyTheme(localStorage.getItem(LS_THEME));
 
-        // 9. Auth Listener
+        // 11. Auth Listener
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 document.getElementById('login-screen').classList.add('hidden');
@@ -971,7 +1043,7 @@
             }
         });
 
-        // 10. Admin Actions
+        // 12. Admin Actions
         const viderCorbeille = () => { if (confirm("Vider la corbeille ?")) { state.corbeille = []; sauvegarderConfig(); } };
         const restaurerCorbeille = (i) => {
             const item = state.corbeille.splice(i, 1)[0];
@@ -1015,7 +1087,7 @@
             };
         });
 
-        // 11. Events globaux
+        // 13. Events globaux
         document.getElementById('select-annee').onchange = (e) => rendreVueAnnuelle();
 
         document.getElementById('vue-admin').addEventListener('click', (e) => {
@@ -1039,7 +1111,7 @@
             if (header) toggleSection(header.dataset.target, header);
         });
 
-        // 12. Hors-ligne
+        // --- Hors-ligne ---
         window.addEventListener('offline', () => {
             setSyncDot('offline');
             document.getElementById('offline-popup').classList.remove('hidden');
