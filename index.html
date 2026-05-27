@@ -193,16 +193,6 @@
         .progress-fill { height: 100%; transition: width 0.6s ease; background: var(--primary); }
 
         /* 18. BULLES FLOTTANTES */
-        .floating-bubble { position: fixed; width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; box-shadow: 0 5px 15px rgba(0,0,0,0.2); cursor: grab; z-index: 9000; touch-action: none; background: linear-gradient(135deg, var(--primary), var(--info)); color: white; }
-        .floating-bubble:active { cursor: grabbing; transform: scale(0.95); }
-        #calc-bubble { bottom: 25px; right: 20px; }
-
-        /* 19. CALCULATRICE */
-        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px; }
-        .calc-btn { background: var(--bg-color); border: 1px solid var(--border); border-radius: 12px; padding: 15px 0; font-size: 1.2rem; font-weight: bold; cursor: pointer; color: var(--text-main); }
-        .calc-btn.op { background: var(--primary-light); color: var(--primary); }
-        .calc-btn.eq { background: var(--primary); color: white; border: none; }
-        .calc-btn.c  { background: rgba(255, 59, 48, 0.15); color: var(--danger); border: none; }
 
         /* 20. POPUPS ET MODALES */
         .overlay-popup { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 9999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
@@ -246,38 +236,6 @@
         </div>
     </div>
 
-    <div id="calc-bubble" class="floating-bubble">🧮</div>
-
-    <div id="calc-popup" class="overlay-popup hidden">
-        <div class="popup-box" style="width: 320px;">
-            <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
-                <h3 style="margin:0;">Calculatrice</h3>
-                <button style="border:none; background:none; font-size:1.5rem; color:var(--danger);" id="btn-close-calc">✕</button>
-            </div>
-            <input type="text" id="calc-display" readonly value="" style="width: 100%; font-size: 2rem; text-align: right; padding: 15px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg-color); font-weight:bold;">
-            <div class="calc-grid">
-                <button class="calc-btn c" data-action="clear">C</button>
-                <button class="calc-btn op" data-input="(">(</button>
-                <button class="calc-btn op" data-input=")">)</button>
-                <button class="calc-btn op" data-input="/">÷</button>
-                <button class="calc-btn" data-input="7">7</button>
-                <button class="calc-btn" data-input="8">8</button>
-                <button class="calc-btn" data-input="9">9</button>
-                <button class="calc-btn op" data-input="*">×</button>
-                <button class="calc-btn" data-input="4">4</button>
-                <button class="calc-btn" data-input="5">5</button>
-                <button class="calc-btn" data-input="6">6</button>
-                <button class="calc-btn op" data-input="-">-</button>
-                <button class="calc-btn" data-input="1">1</button>
-                <button class="calc-btn" data-input="2">2</button>
-                <button class="calc-btn" data-input="3">3</button>
-                <button class="calc-btn op" data-input="+">+</button>
-                <button class="calc-btn" data-input="0" style="grid-column: span 2;">0</button>
-                <button class="calc-btn" data-input=".">.</button>
-                <button class="calc-btn eq" data-action="result">=</button>
-            </div>
-        </div>
-    </div>
 
     <div id="offline-popup" class="overlay-popup hidden">
         <div class="popup-box">
@@ -307,7 +265,6 @@
             <button class="btn-tab active" data-view="mensuelle">Mois</button>
             <button class="btn-tab" data-view="annuelle">Année</button>
             <button class="btn-tab" data-view="fixes">Fixes</button>
-            <button class="btn-tab" data-view="vacances">Vacances</button>
             <button class="btn-tab" data-view="admin">Admin</button>
         </div>
         
@@ -483,88 +440,6 @@
         </div>
 
         <!-- ===== VUE VACANCES ===== -->
-        <div id="vue-vacances" class="hidden">
-            <div id="vacances-liste">
-                <h1 style="margin-bottom:20px;">🏖️ Voyages</h1>
-                <div id="voyages-cards"></div>
-                <button class="btn-action bg-primary" id="btn-nouveau-voyage">+ Nouveau voyage</button>
-            </div>
-            <div id="vacances-detail" class="hidden">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-                    <button id="btn-retour-voyages" style="background:none;border:none;color:var(--primary);font-size:1rem;font-weight:700;cursor:pointer;">← Voyages</button>
-                    <button id="btn-del-voyage" style="background:none;border:none;color:var(--danger);font-size:1.3rem;cursor:pointer;">🗑️</button>
-                </div>
-                <div class="card summary-card" style="background:linear-gradient(135deg,#007AFF,#5856D6); margin-bottom:16px;">
-                    <h3 id="voyage-titre-detail" style="font-size:1.2rem;margin-bottom:4px;"></h3>
-                    <div style="font-size:0.82rem;opacity:0.85;margin-bottom:14px;" id="voyage-dates-detail"></div>
-                    <div style="display:flex;justify-content:space-around;text-align:center;">
-                        <div><div style="font-size:0.72rem;opacity:0.8;">Total</div><div style="font-size:1.4rem;font-weight:800;" id="voyage-total-affiche">0 €</div></div>
-                        <div style="width:1px;background:rgba(255,255,255,0.3);"></div>
-                        <div><div style="font-size:0.72rem;opacity:0.8;">👨 Corentin</div><div style="font-size:1.2rem;font-weight:800;" id="voyage-total-corentin">0 €</div></div>
-                        <div style="width:1px;background:rgba(255,255,255,0.3);"></div>
-                        <div><div style="font-size:0.72rem;opacity:0.8;">👩 Lisa</div><div style="font-size:1.2rem;font-weight:800;" id="voyage-total-lisa">0 €</div></div>
-                    </div>
-                </div>
-                <div id="voyage-bilan-card" class="card" style="margin-bottom:16px;text-align:center;display:none;"></div>
-                <div class="card" style="margin-bottom:16px;">
-                    <div class="card-header" data-target="voyage-repartition"><h3>📊 Répartition</h3></div>
-                    <div id="voyage-repartition" class="section-content"><div id="voyage-repartition-content" style="padding-top:8px;"></div></div>
-                </div>
-                <div id="voyage-categories-content"></div>
-                <button class="btn-action bg-primary" id="btn-add-depense-voyage">+ Ajouter une dépense</button>
-            </div>
-        </div>
-    </main>
-
-    <!-- Popup nouveau voyage -->
-    <div id="popup-nouveau-voyage" class="overlay-popup hidden">
-        <div class="popup-box" style="width:90%;max-width:400px;text-align:left;">
-            <h3 style="margin-bottom:16px;">Nouveau voyage</h3>
-            <div style="display:flex;gap:8px;margin-bottom:10px;align-items:center;">
-                <input type="text" id="nv-emoji" placeholder="✈️" style="width:56px;height:48px;padding:6px;border-radius:10px;border:1px solid var(--border);background:var(--bg-color);color:var(--text-main);text-align:center;font-size:1.5rem;">
-                <input type="text" id="nv-nom" placeholder="Nom du voyage (ex: Albanie 2026)" style="flex:1;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--bg-color);color:var(--text-main);font-size:1rem;">
-            </div>
-            <div style="display:flex;gap:8px;margin-bottom:16px;">
-                <div style="flex:1;"><label style="font-size:0.72rem;color:var(--text-muted);display:block;margin-bottom:4px;">Départ</label><input type="date" id="nv-debut" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--bg-color);color:var(--text-main);"></div>
-                <div style="flex:1;"><label style="font-size:0.72rem;color:var(--text-muted);display:block;margin-bottom:4px;">Retour</label><input type="date" id="nv-fin" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--bg-color);color:var(--text-main);"></div>
-            </div>
-            <div style="display:flex;gap:8px;">
-                <button onclick="document.getElementById('popup-nouveau-voyage').classList.add('hidden')" style="flex:1;padding:12px;border-radius:10px;border:1px solid var(--border);background:none;color:var(--text-muted);cursor:pointer;">Annuler</button>
-                <button id="btn-confirmer-voyage" style="flex:2;padding:12px;border-radius:10px;border:none;background:var(--primary);color:white;font-weight:700;cursor:pointer;">Créer</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="popup-depense-voyage" class="overlay-popup hidden">
-        <div class="popup-box" style="width:90%;max-width:400px;text-align:left;">
-            <h3 style="margin-bottom:14px;">💸 Nouvelle dépense</h3>
-            <!-- Payeur -->
-            <div style="margin-bottom:12px;">
-                <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:6px;">Payé par</div>
-                <div style="display:flex;gap:8px;">
-                    <button class="dv-payeur-btn" data-payeur="Corentin" onclick="dvSelectPayeur(this)" style="flex:1;padding:10px;border-radius:10px;border:2px solid var(--primary);background:var(--primary-light);color:var(--primary);font-weight:600;cursor:pointer;">👨 Corentin</button>
-                    <button class="dv-payeur-btn" data-payeur="Lisa" onclick="dvSelectPayeur(this)" style="flex:1;padding:10px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg-color);color:var(--text-main);font-weight:600;cursor:pointer;">👩 Lisa</button>
-                </div>
-            </div>
-            <!-- Type -->
-            <div style="margin-bottom:12px;">
-                <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:6px;">Type</div>
-                <div style="display:flex;gap:8px;">
-                    <button class="dv-type-btn" data-dtype="commun" onclick="dvSelectType(this)" style="flex:1;padding:8px;border-radius:10px;border:2px solid var(--primary);background:var(--primary-light);color:var(--primary);font-size:0.82rem;font-weight:600;cursor:pointer;">🤝 Commun</button>
-                    <button class="dv-type-btn" data-dtype="perso" onclick="dvSelectType(this)" style="flex:1;padding:8px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg-color);color:var(--text-main);font-size:0.82rem;font-weight:600;cursor:pointer;">👤 Perso</button>
-                    <button class="dv-type-btn" data-dtype="remboursement" onclick="dvSelectType(this)" style="flex:1;padding:8px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg-color);color:var(--text-main);font-size:0.82rem;font-weight:600;cursor:pointer;">↩️ Remb.</button>
-                </div>
-            </div>
-            <select id="dv-categorie" style="width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--bg-color);color:var(--text-main);font-size:0.95rem;margin-bottom:10px;"></select>
-            <input type="text" id="dv-libelle" placeholder="Description (optionnel)" style="width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--bg-color);color:var(--text-main);font-size:1rem;margin-bottom:10px;">
-            <input type="number" inputmode="decimal" id="dv-montant" placeholder="Montant €" style="width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--bg-color);color:var(--text-main);font-size:1.2rem;font-weight:700;text-align:right;margin-bottom:10px;">
-            <input type="date" id="dv-date" style="width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--bg-color);color:var(--text-main);margin-bottom:14px;">
-            <div style="display:flex;gap:8px;">
-                <button onclick="document.getElementById('popup-depense-voyage').classList.add('hidden')" style="flex:1;padding:12px;border-radius:10px;border:1px solid var(--border);background:none;color:var(--text-muted);cursor:pointer;">Annuler</button>
-                <button id="btn-confirmer-depense-voyage" style="flex:2;padding:12px;border-radius:10px;border:none;background:var(--primary);color:white;font-weight:700;cursor:pointer;">Ajouter</button>
-            </div>
-        </div>
-    </div>
 
     <div id="toast">Ligne supprimée <button id="btn-undo">Annuler</button></div>
 
@@ -611,24 +486,10 @@
         ];
         const REGEX_SUPERMARCHE = /leclerc|carrefour|auchan|intermarch|super\s*u|lidl|aldi|frais|cora|casino|netto/i;
 
-        const CATS_VOYAGE = [
-            { id:'transport_avion',   label:'✈️ Vol / Train',        couleur:'#007AFF' },
-            { id:'transport_voiture', label:'🚗 Voiture / Essence',   couleur:'#FF9500' },
-            { id:'transport_local',   label:'🚕 Transport local',     couleur:'#FF9500' },
-            { id:'hebergement',       label:'🏨 Hébergement',         couleur:'#AF52DE' },
-            { id:'restaurant',        label:'🍽️ Restaurant',          couleur:'#FF3B30' },
-            { id:'courses',           label:'🛒 Courses / Marché',    couleur:'#34C759' },
-            { id:'activites',         label:'🎡 Activités / Visites', couleur:'#FF2D55' },
-            { id:'shopping',          label:'🛍️ Shopping',            couleur:'#FFCC00' },
-            { id:'sante',             label:'🏥 Pharmacie / Santé',   couleur:'#5AC8FA' },
-            { id:'divers',            label:'💡 Divers',              couleur:'#8E8E93' },
-        ];
 
         // --- État de l'application ---
         const state = {
             donnees: [],
-            voyages: [],
-            voyageActifId: null,
             categories: ["🏠 Loyer", "⚡ Électricité", "💧 Eau", "🛡️ Assurance", "🌐 Internet", "🛒 Courses", "🍽️ Restaurant", "🎬 Loisirs", "🏥 Santé", "✈️ Vacances", "🛠️ Travaux", "❓ Autre"],
             corbeille: [],
             objectifsProvisions: [],
@@ -771,18 +632,6 @@
                     rafraichirTouteLInterface();
                 }
             });
-            dbOn(dbRef('budgetVoyagesLC'), (snap) => {
-                if (snap.exists()) {
-                    const raw = snap.val();
-                    state.voyages = (Array.isArray(raw) ? raw : Object.values(raw)).map(v => ({
-                        ...v,
-                        depenses: Array.isArray(v.depenses) ? v.depenses : (v.depenses ? Object.values(v.depenses) : [])
-                    }));
-                } else {
-                    state.voyages = [];
-                }
-                if (state.vueActuelle === 'vacances') rendreVueVacances();
-            });
         };
 
         const sauvegarderDonnees = () => {
@@ -790,10 +639,6 @@
             dbSet(dbRef('budgetDataLC'), state.donnees).then(() => setSyncDot('online'));
         };
 
-        const sauvegarderVoyages = () => {
-            setSyncDot('saving');
-            dbSet(dbRef('budgetVoyagesLC'), state.voyages).then(() => setSyncDot('online'));
-        };
 
         const sauvegarderConfig = (silencieux = false) => {
             if(!silencieux) setSyncDot('saving');
@@ -809,7 +654,6 @@
             state.vueActuelle = vue;
             document.querySelectorAll('main > div').forEach(d => d.classList.toggle('hidden', d.id !== `vue-${vue}`));
             document.querySelectorAll('.btn-tab').forEach(b => b.classList.toggle('active', b.dataset.view === vue));
-            document.getElementById('month-nav-group').classList.toggle('hidden', vue === 'annuelle' || vue === 'admin' || vue === 'vacances');
             rafraichirTouteLInterface();
         };
 
@@ -990,10 +834,11 @@
 
             // Jauges
             const globalTotal = tc + tdTotal + Math.abs(te) + tprov + (reste > 0 ? reste : 0);
+            const fmt = (n) => { const v = parseFloat(n) || 0; return parseFloat(v.toFixed(2)).toString().replace('.', ','); };
             const setBar = (id, val) => {
                 const p = globalTotal > 0 ? Math.round((val / globalTotal) * 100) : 0;
                 document.getElementById(`bar-${id}-m`).style.width = p + '%';
-                document.getElementById(`pct-${id}-m`).innerText = p + '%';
+                document.getElementById(`pct-${id}-m`).innerText = fmt(val) + ' € · ' + p + '%';
             };
             setBar('charges', tc); setBar('depenses', tdTotal); setBar('epargne', Math.abs(te)); setBar('provisions', tprov); setBar('reste', reste > 0 ? reste : 0);
 
@@ -1048,18 +893,20 @@
                 <div class="progress-container"><div class="progress-header"><span>🛡️ Provisions</span><span>${eur(tp)}</span></div></div>
             `;
 
+            const parseMontant = (v) => parseFloat(String(v).replace(',', '.')) || 0;
             state.objectifsProvisions.forEach(obj => {
                 let totalObj = 0;
-                const search = sansAccents(obj.nom);
+                const search = sansAccents(obj.nom).trim();
                 mois.forEach(m => {
                     [...(m.provisions||[]), ...(m.epargne||[])].forEach(line => {
-                        if (sansAccents(line.categorie || "").includes(search)) totalObj += (parseFloat(line.montant) || 0);
+                        const cat = sansAccents(line.categorie || '').replace(/[^\w\s]/g, '').trim();
+                        if (cat.includes(search)) totalObj += parseMontant(line.montant);
                     });
                 });
                 const pct = Math.min(Math.round((totalObj / obj.montant) * 100), 100);
                 bloc.innerHTML += `
                     <div style="margin-top:20px;">
-                        <div class="progress-header"><span>🎯 ${obj.nom}</span><span>${totalObj.toFixed(0)} / ${obj.montant}€</span></div>
+                        <div class="progress-header"><span>🎯 ${obj.nom}</span><span>${totalObj.toFixed(2)} / ${obj.montant}€</span></div>
                         <div class="progress-track"><div class="progress-fill" style="background:var(--secondary); width:${pct}%"></div></div>
                     </div>
                 `;
@@ -1067,177 +914,6 @@
         };
 
         // --- Vue Vacances ---
-        const parseMontant = (v) => parseFloat(String(v).replace(',', '.')) || 0;
-        const getVoyageActif = () => state.voyages.find(v => v.id === state.voyageActifId);
-
-        const calculerBilanVoyage = (depenses) => {
-            const deps = (depenses || []).filter(d => d.dtype !== 'remboursement');
-            let payeCorentin = 0, payeLisa = 0;
-            deps.forEach(d => {
-                const m = parseMontant(d.montant);
-                if (d.payeur === 'Lisa') payeLisa += m; else payeCorentin += m;
-            });
-            const communTotal = deps.filter(d => d.dtype === 'commun').reduce((s, d) => s + parseMontant(d.montant), 0);
-            const part = communTotal / 2;
-            const persoC = deps.filter(d => d.dtype === 'perso' && d.payeur !== 'Lisa').reduce((s, d) => s + parseMontant(d.montant), 0);
-            const balanceC = payeCorentin - (part + persoC);
-            return { payeCorentin, payeLisa, total: payeCorentin + payeLisa, balance: balanceC };
-        };
-
-        const rendreVueVacances = () => {
-            const liste = document.getElementById('vacances-liste');
-            const detail = document.getElementById('vacances-detail');
-            if (getVoyageActif()) {
-                liste.classList.add('hidden'); detail.classList.remove('hidden');
-                rendreDetailVoyage(getVoyageActif());
-            } else {
-                detail.classList.add('hidden'); liste.classList.remove('hidden');
-                rendreListeVoyages();
-            }
-        };
-
-        const rendreListeVoyages = () => {
-            const container = document.getElementById('voyages-cards');
-            if (!state.voyages.length) {
-                container.innerHTML = `<div style="text-align:center;padding:40px 0;color:var(--text-muted);"><div style="font-size:3rem;margin-bottom:12px;">🏖️</div><p style="font-weight:600;margin-bottom:6px;">Aucun voyage</p><p style="font-size:0.85rem;">Créez votre premier voyage !</p></div>`;
-                return;
-            }
-            container.innerHTML = state.voyages.map(v => {
-                const b = calculerBilanVoyage(v.depenses);
-                const nbJ = v.debut && v.fin ? Math.ceil((new Date(v.fin) - new Date(v.debut)) / 86400000) + 1 : null;
-                return `<div class="card" style="cursor:pointer;margin-bottom:12px;" onclick="ouvrirVoyage('${v.id}')">
-                    <div style="display:flex;align-items:center;gap:14px;">
-                        <div style="font-size:2rem;">${v.emoji || '🌍'}</div>
-                        <div style="flex:1;min-width:0;"><div style="font-weight:700;font-size:1rem;">${v.nom}</div><div style="font-size:0.78rem;color:var(--text-muted);">${nbJ ? nbJ + ' j' : ''}</div></div>
-                        <div style="font-weight:800;font-size:1.1rem;color:var(--primary);">${eur(b.total)}</div>
-                    </div>
-                    <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:var(--text-muted);margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">
-                        <span>👨 ${eur(b.payeCorentin)}</span><span>👩 ${eur(b.payeLisa)}</span>
-                    </div>
-                </div>`;
-            }).join('');
-        };
-
-        const rendreDetailVoyage = (v) => {
-            document.getElementById('voyage-titre-detail').textContent = (v.emoji || '🌍') + ' ' + v.nom;
-            document.getElementById('voyage-dates-detail').textContent = v.debut && v.fin ? v.debut + ' → ' + v.fin : '';
-            const b = calculerBilanVoyage(v.depenses);
-            document.getElementById('voyage-total-affiche').textContent = eur(b.total);
-            document.getElementById('voyage-total-corentin').textContent = eur(b.payeCorentin);
-            document.getElementById('voyage-total-lisa').textContent = eur(b.payeLisa);
-
-            const bilanCard = document.getElementById('voyage-bilan-card');
-            if (b.total > 0) {
-                bilanCard.style.display = 'block';
-                const diff = Math.abs(b.balance);
-                if (diff < 0.01) bilanCard.innerHTML = `<div style="font-size:1.5rem;">🎉</div><div style="font-weight:700;color:var(--success);">Tout est équilibré !</div>`;
-                else if (b.balance > 0) bilanCard.innerHTML = `<div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:4px;">Bilan</div><div style="font-weight:700;">👩 Lisa doit rembourser</div><div style="font-size:1.8rem;font-weight:800;color:var(--primary);margin:4px 0;">${eur(diff)}</div><div style="font-size:0.82rem;color:var(--text-muted);">à 👨 Corentin</div>`;
-                else bilanCard.innerHTML = `<div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:4px;">Bilan</div><div style="font-weight:700;">👨 Corentin doit rembourser</div><div style="font-size:1.8rem;font-weight:800;color:var(--primary);margin:4px 0;">${eur(diff)}</div><div style="font-size:0.82rem;color:var(--text-muted);">à 👩 Lisa</div>`;
-            } else { bilanCard.style.display = 'none'; }
-
-            const totParCat = {};
-            CATS_VOYAGE.forEach(c => { totParCat[c.id] = 0; });
-            (v.depenses || []).filter(d => d.dtype !== 'remboursement').forEach(d => { if (totParCat[d.categorie] !== undefined) totParCat[d.categorie] += parseMontant(d.montant); });
-            const repContent = document.getElementById('voyage-repartition-content');
-            const lignesRep = CATS_VOYAGE.filter(c => totParCat[c.id] > 0);
-            repContent.innerHTML = lignesRep.length ? lignesRep.map(c => {
-                const pct = b.total > 0 ? Math.round(totParCat[c.id] / b.total * 100) : 0;
-                return `<div class="progress-container"><div class="progress-header"><span>${c.label}</span><span>${eur(totParCat[c.id])} · ${pct}%</span></div><div class="progress-track"><div class="progress-fill" style="background:${c.couleur};width:${pct}%;"></div></div></div>`;
-            }).join('') : '<p style="color:var(--text-muted);font-size:0.85rem;padding:8px 0;">Aucune dépense.</p>';
-
-            const catsContent = document.getElementById('voyage-categories-content');
-            catsContent.innerHTML = '';
-            const rembs = (v.depenses || []).filter(d => d.dtype === 'remboursement');
-            if (rembs.length) {
-                const el = document.createElement('div'); el.className = 'card'; el.style.marginBottom = '12px';
-                const hid = 'vcat-remb';
-                el.innerHTML = `<div class="card-header" data-target="${hid}"><h3>↩️ Remboursements</h3><span style="font-weight:700;color:var(--success);">${eur(somme(rembs))}</span></div><div id="${hid}" class="section-content collapsed">${rembs.map(d => ligneDepVoyage(d)).join('')}</div>`;
-                catsContent.appendChild(el);
-            }
-            CATS_VOYAGE.forEach(cat => {
-                const lignes = (v.depenses || []).filter(d => d.categorie === cat.id && d.dtype !== 'remboursement');
-                if (!lignes.length) return;
-                const el = document.createElement('div'); el.className = 'card'; el.style.marginBottom = '12px';
-                const hid = 'vcat-' + cat.id;
-                el.innerHTML = `<div class="card-header" data-target="${hid}"><h3>${cat.label}</h3><span style="font-weight:700;color:var(--primary);">${eur(somme(lignes))}</span></div><div id="${hid}" class="section-content collapsed">${lignes.map(d => ligneDepVoyage(d)).join('')}</div>`;
-                catsContent.appendChild(el);
-            });
-            catsContent.onclick = (e) => {
-                const btn = e.target.closest('[data-del-dep]');
-                if (btn) { v.depenses = v.depenses.filter(d => d.id !== btn.dataset.delDep); sauvegarderVoyages(); rendreDetailVoyage(v); }
-                const hdr = e.target.closest('.card-header[data-target]');
-                if (hdr) toggleSection(hdr.dataset.target, hdr);
-            };
-        };
-
-        const ligneDepVoyage = (d) => {
-            const typeLabel = d.dtype === 'perso' ? 'Perso' : d.dtype === 'remboursement' ? 'Remb.' : 'Commun';
-            const typeIcon = d.dtype === 'perso' ? '\uD83D\uDC64' : d.dtype === 'remboursement' ? '\u21A9\uFE0F' : '\uD83E\uDD1D';
-            const isRemb = d.dtype === 'remboursement';
-            const couleur = isRemb ? 'var(--success)' : 'var(--text-main)';
-            const prefix = isRemb ? '+' : '';
-            return `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);">
-                <div style="flex:1;min-width:0;">
-                    <div style="font-weight:600;font-size:0.88rem;">${d.libelle || '-'}</div>
-                    <div style="font-size:0.72rem;color:var(--text-muted);">${d.date || ''} &middot; ${typeIcon} ${typeLabel} &middot; ${d.payeur || '?'}</div>
-                </div>
-                <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
-                    <span style="font-weight:700;color:${couleur};">${prefix}${eur(d.montant)}</span>
-                    <button style="background:none;border:none;color:var(--danger);font-size:1.1rem;cursor:pointer;" data-del-dep="${d.id}">&times;</button>
-                </div>
-            </div>`;
-        };
-
-        window.ouvrirVoyage = (id) => { state.voyageActifId = id; rendreVueVacances(); };
-
-        let dvPayeurActif = 'Corentin', dvTypeActif = 'commun';
-        window.dvSelectPayeur = (btn) => {
-            document.querySelectorAll('.dv-payeur-btn').forEach(b => { b.style.border='1.5px solid var(--border)'; b.style.background='var(--bg-color)'; b.style.color='var(--text-main)'; });
-            btn.style.border='2px solid var(--primary)'; btn.style.background='var(--primary-light)'; btn.style.color='var(--primary)';
-            dvPayeurActif = btn.dataset.payeur;
-        };
-        window.dvSelectType = (btn) => {
-            document.querySelectorAll('.dv-type-btn').forEach(b => { b.style.border='1.5px solid var(--border)'; b.style.background='var(--bg-color)'; b.style.color='var(--text-main)'; });
-            btn.style.border='2px solid var(--primary)'; btn.style.background='var(--primary-light)'; btn.style.color='var(--primary)';
-            dvTypeActif = btn.dataset.dtype;
-        };
-
-        document.getElementById('btn-nouveau-voyage').onclick = () => {
-            ['nv-nom','nv-debut','nv-fin','nv-emoji'].forEach(id => document.getElementById(id).value = '');
-            document.getElementById('popup-nouveau-voyage').classList.remove('hidden');
-        };
-        document.getElementById('btn-confirmer-voyage').onclick = () => {
-            const nom = document.getElementById('nv-nom').value.trim();
-            if (!nom) { alert('Donnez un nom au voyage.'); return; }
-            const emoji = document.getElementById('nv-emoji').value.trim() || '✈️';
-            const v = { id: genId(), nom, emoji, debut: document.getElementById('nv-debut').value, fin: document.getElementById('nv-fin').value, depenses: [] };
-            state.voyages.push(v); sauvegarderVoyages();
-            document.getElementById('popup-nouveau-voyage').classList.add('hidden');
-            state.voyageActifId = v.id; rendreVueVacances();
-        };
-        document.getElementById('btn-retour-voyages').onclick = () => { state.voyageActifId = null; rendreVueVacances(); };
-        document.getElementById('btn-del-voyage').onclick = () => {
-            if (!confirm('Supprimer ce voyage et toutes ses dépenses ?')) return;
-            state.voyages = state.voyages.filter(v => v.id !== state.voyageActifId);
-            state.voyageActifId = null; sauvegarderVoyages(); rendreVueVacances();
-        };
-        document.getElementById('btn-add-depense-voyage').onclick = () => {
-            document.getElementById('dv-categorie').innerHTML = CATS_VOYAGE.map(c => `<option value="${c.id}">${c.label}</option>`).join('');
-            document.getElementById('dv-libelle').value = ''; document.getElementById('dv-montant').value = '';
-            document.getElementById('dv-date').value = new Date().toISOString().split('T')[0];
-            dvPayeurActif = 'Corentin'; dvTypeActif = 'commun';
-            document.querySelectorAll('.dv-payeur-btn').forEach((b,i) => { const a=i===0; b.style.border=a?'2px solid var(--primary)':'1.5px solid var(--border)'; b.style.background=a?'var(--primary-light)':'var(--bg-color)'; b.style.color=a?'var(--primary)':'var(--text-main)'; });
-            document.querySelectorAll('.dv-type-btn').forEach((b,i) => { const a=i===0; b.style.border=a?'2px solid var(--primary)':'1.5px solid var(--border)'; b.style.background=a?'var(--primary-light)':'var(--bg-color)'; b.style.color=a?'var(--primary)':'var(--text-main)'; });
-            document.getElementById('popup-depense-voyage').classList.remove('hidden');
-        };
-        document.getElementById('btn-confirmer-depense-voyage').onclick = () => {
-            const montant = parseMontant(document.getElementById('dv-montant').value);
-            if (!montant) { alert('Saisissez un montant.'); return; }
-            const v = getVoyageActif(); if (!v) return;
-            v.depenses.push({ id: genId(), categorie: document.getElementById('dv-categorie').value, libelle: document.getElementById('dv-libelle').value.trim(), montant, date: document.getElementById('dv-date').value, payeur: dvPayeurActif, dtype: dvTypeActif });
-            sauvegarderVoyages(); document.getElementById('popup-depense-voyage').classList.add('hidden'); rendreDetailVoyage(v);
-        };
-
         // --- Vue Admin RESTAURÉE ---
         const rendreAdmin = () => {
             const catDiv = document.getElementById('admin-categories');
@@ -1271,70 +947,6 @@
 
         // --- Gestionnaires d'événements (BULLES FLOTTANTES CORRIGÉES) ---
         
-        const setupDrag = (id) => {
-            const bubble = document.getElementById(id);
-            if (!bubble) return;
-            let isDragging = false;
-            let startX, startY, initialX, initialY;
-
-            const dragStart = (e) => {
-                isDragging = false;
-                if (e.type === 'touchstart') {
-                    startX = e.touches[0].clientX;
-                    startY = e.touches[0].clientY;
-                } else {
-                    startX = e.clientX;
-                    startY = e.clientY;
-                }
-                const rect = bubble.getBoundingClientRect();
-                initialX = rect.left;
-                initialY = rect.top;
-                
-                document.addEventListener('mousemove', dragMove);
-                document.addEventListener('mouseup', dragEnd);
-                document.addEventListener('touchmove', dragMove, {passive: false});
-                document.addEventListener('touchend', dragEnd);
-            };
-
-            const dragMove = (e) => {
-                let clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
-                let clientY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
-                
-                const dx = clientX - startX;
-                const dy = clientY - startY;
-                
-                if (Math.abs(dx) > 5 || Math.abs(dy) > 5) isDragging = true;
-
-                if (isDragging) {
-                    e.preventDefault(); 
-                    let newX = initialX + dx;
-                    let newY = initialY + dy;
-                    
-                    newX = Math.max(0, Math.min(window.innerWidth - bubble.offsetWidth, newX));
-                    newY = Math.max(0, Math.min(window.innerHeight - bubble.offsetHeight, newY));
-
-                    bubble.style.left = newX + 'px';
-                    bubble.style.top = newY + 'px';
-                    bubble.style.bottom = 'auto';
-                    bubble.style.right = 'auto';
-                }
-            };
-
-            const dragEnd = (e) => {
-                document.removeEventListener('mousemove', dragMove);
-                document.removeEventListener('mouseup', dragEnd);
-                document.removeEventListener('touchmove', dragMove);
-                document.removeEventListener('touchend', dragEnd);
-                
-                if (!isDragging && id === 'calc-bubble') {
-                    document.getElementById('calc-popup').classList.remove('hidden');
-                }
-            };
-
-            bubble.addEventListener('mousedown', dragStart);
-            bubble.addEventListener('touchstart', dragStart, {passive: false});
-        };
-        setupDrag('calc-bubble');
         
         // 1. Bouton Login
         document.getElementById('btn-login').onclick = () => {
@@ -1500,7 +1112,6 @@
             rafraichirTouteLInterface();
         };
 
-        document.getElementById('btn-close-calc').onclick = () => document.getElementById('calc-popup').classList.add('hidden');
 
         // 10. Initialisation Thème
         const toggleDark = () => {
