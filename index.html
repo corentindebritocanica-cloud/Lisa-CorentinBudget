@@ -155,9 +155,9 @@
         .section-content.collapsed { max-height: 0 !important; }
 
         /* 13. LIGNES D'ARTICLES */
-        .item-row { display: flex; align-items: center; background: var(--card-bg); padding: 12px 0; border-bottom: 1px solid var(--border); touch-action: none; }
+        .item-row { display: flex; align-items: center; background: var(--card-bg); padding: 12px 0; border-bottom: 1px solid var(--border); touch-action: pan-y; }
         .item-row:last-child { border-bottom: none; }
-        .drag-handle { padding: 10px 10px 10px 0; color: var(--text-muted); cursor: grab; font-size: 1.1rem; }
+        .drag-handle { padding: 10px 10px 10px 0; color: var(--text-muted); cursor: grab; font-size: 1.1rem; touch-action: none; }
         .item-content { flex: 1; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
         .item-top { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
         .item-top textarea { flex: 1; font-weight: 600; padding: 0; resize: none; min-height: 24px; overflow: hidden; font-size: 0.95rem; }
@@ -783,7 +783,12 @@
             // Drag and Drop
             if (container._sortable) container._sortable.destroy();
             container._sortable = new Sortable(container, {
-                handle: '.drag-handle', animation: 150,
+                handle: '.drag-handle',
+                animation: 150,
+                delay: 150,
+                delayOnTouchOnly: true,
+                fallbackTolerance: 5,
+                touchStartThreshold: 5,
                 onEnd: () => {
                     const ids = Array.from(container.children).map(r => r.dataset.id);
                     const mois = getMoisActif();
